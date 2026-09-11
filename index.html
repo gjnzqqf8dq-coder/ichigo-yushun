@@ -35,6 +35,40 @@ hr.thick{border:none;border-top:2px solid var(--ink);margin:0}
 .hero h1{font-size:clamp(40px,9vw,96px);line-height:1.04;font-weight:900;letter-spacing:-.02em;margin-bottom:8px}
 .hero .ja{font-size:clamp(14px,2vw,19px);letter-spacing:.5em;color:var(--sub);font-weight:700;margin-bottom:26px}
 .hero-sub{font-size:clamp(14px,1.6vw,17px);max-width:640px;color:#3E3A34}
+.concept{font-size:clamp(20px,3.4vw,32px);font-weight:900;letter-spacing:-.01em;margin-bottom:20px;
+  padding-bottom:18px;border-bottom:2px solid var(--ink);display:inline-block}
+.concept b{color:var(--brand)}
+.cal{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;background:var(--line);border:2px solid var(--ink)}
+@media(max-width:820px){.cal{grid-template-columns:repeat(2,1fr)}}
+.cal>div{background:var(--card);padding:16px 14px 18px}
+.cal .m{font-family:"Helvetica Neue",Arial;font-size:19px;font-weight:900;letter-spacing:-.02em}
+.cal .w{font-size:10px;letter-spacing:.1em;color:var(--brand);font-weight:800;margin-top:2px}
+.cal .t{font-size:12px;line-height:1.75;margin-top:9px}
+.cal>div.hi{background:#FFF3F0}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line);border:2px solid var(--ink)}
+@media(max-width:820px){.acts{grid-template-columns:1fr}}
+.acts>div{background:var(--card);padding:26px}
+.acts .no{font-family:"Helvetica Neue",Arial;font-size:11px;font-weight:900;letter-spacing:.16em;color:var(--brand)}
+.acts h3{margin-top:8px;font-size:18px}
+.acts p{font-size:13px;color:#3E3A34;margin-top:8px}
+.acts .who{font-size:11px;color:var(--sub);margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.ww{display:grid;grid-template-columns:1fr 62px 1fr;gap:0;align-items:stretch;border:2px solid var(--ink)}
+@media(max-width:760px){.ww{grid-template-columns:1fr}}
+.ww>div{background:var(--card);padding:26px}
+.ww .mid{background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:20px;font-weight:900}
+@media(max-width:760px){.ww .mid{padding:8px}}
+.ww h3{font-size:15px}
+.ww ul{list-style:none;margin-top:12px}
+.ww li{font-size:12.5px;line-height:1.7;padding:8px 0 8px 15px;position:relative;border-bottom:1px solid var(--line)}
+.ww li:last-child{border-bottom:none}
+.ww li::before{content:"";position:absolute;left:0;top:16px;width:7px;height:2px;background:var(--brand)}
+.qa{border:2px solid var(--ink);background:var(--card)}
+.qa>div{border-bottom:1px solid var(--line);padding:20px 24px}
+.qa>div:last-child{border-bottom:none}
+.qa .q{font-size:14.5px;font-weight:800;position:relative;padding-left:26px}
+.qa .q::before{content:"Q";position:absolute;left:0;top:0;font-family:"Helvetica Neue",Arial;color:var(--brand);font-weight:900}
+.qa .a{font-size:13px;color:#3E3A34;margin-top:9px;padding-left:26px;position:relative;line-height:1.95}
+.qa .a::before{content:"A";position:absolute;left:0;top:0;font-family:"Helvetica Neue",Arial;color:var(--sub);font-weight:900}
 .hero-strip{display:flex;gap:0;margin-top:44px;border:2px solid var(--ink)}
 .hero-strip div{flex:1;aspect-ratio:1/1;border-right:2px solid var(--ink);background:var(--card);
   display:grid;place-items:center;overflow:hidden}
@@ -162,7 +196,10 @@ footer{border-top:2px solid var(--ink);padding:34px 0 60px;font-size:11px;line-h
   <div class="kicker">CULTA ／ 第1回 苺優駿 ／ 2027年5月30日（日）</div>
   <h1>苺優駿</h1>
   <div class="ja">I C H I G O　Y U S H U N</div>
-  <p class="hero-sub">まだ名前のない6つの系統が、日本一のいちごを決める。<br>
+  <div class="concept">一期一会を、<b>苺一会</b>に。</div>
+  <p class="hero-sub">日本ダービーに出られるのは3歳の一年だけ。どの馬も、一生に一度しか走らない。<br>
+   いちごも同じで、その年の実生からしか出られない。<br><br>
+   まだ名前のない6つの系統が、5月最終日曜、日本ダービーと同じ日に日本一を決める。<br>
    勝った1つだけが商品になり、翌年の交配親になる。<br>あなたは1つを選んで、そのオーナーになる。</p>
   <div class="hero-strip" id="strip"></div>
 </header>
@@ -247,9 +284,111 @@ footer{border-top:2px solid var(--ink);padding:34px 0 60px;font-size:11px;line-h
   <div id="result"></div>
 </section></div>
 
+<hr class="thick">
+<div class="wrap"><section id="cal">
+  <div class="sec-num">05 — CALENDAR</div>
+  <h2>2月に始まって、5月末に終わる</h2>
+  <p class="lead">決勝の日だけの企画ではありません。冬いちごが並んでいる2月に、その隣で春の出走表が公開されます。
+   スーパーで、サイトで、競馬場で。同じ6粒を、4か月かけて追いかけてもらいます。</p>
+  <div class="cal">
+    <div><div class="m">2月</div><div class="w">出走表 公開</div>
+      <div class="t">冬いちごの売り場の隣に、春に走る6系統の出走表が並ぶ。まだ食べられない。名前もない。</div></div>
+    <div><div class="m">3月</div><div class="w">投票 開始</div>
+      <div class="t">サイトで血統と数値を見て、1つを選ぶ。オーナーズクラブに入る。</div></div>
+    <div><div class="m">4月</div><div class="w">パドック</div>
+      <div class="t">6品種の食べ比べパックが店頭と競馬場に並ぶ。ここで初めて味が分かる。</div></div>
+    <div class="hi"><div class="m">5月</div><div class="w">決勝・最終日曜</div>
+      <div class="t">日本ダービーと同じ日。専門家の審査とオーナーズクラブの票で、日本一が決まる。</div></div>
+    <div><div class="m">6月</div><div class="w">商品化</div>
+      <div class="t">優勝系統に商品名が付く。翌年から全国のスーパーに並ぶ。日本初の夏いちご。</div></div>
+    <div><div class="m">翌2月</div><div class="w">次の出走表</div>
+      <div class="t">優勝品種が父として、翌年の出走表に載る。自分が選んだ系統の子を、また応援する。</div></div>
+  </div>
+</section></div>
+
+<hr class="thick">
+<div class="wrap"><section id="acts">
+  <div class="sec-num">06 — ACTIONS</div>
+  <h2>4つの場所でやる</h2>
+  <p class="lead">競馬場だけでやると、競馬を見る人しか食べないいちごになります。
+   スーパーだけでやると、ただの人気投票で終わります。4つを同時に動かして、初めて「日本で愛される」に届きます。</p>
+  <div class="acts">
+    <div><div class="no">ACTION 01</div><h3>サイト｜苺優駿</h3>
+      <p>いまあなたが見ているこれ。出走表、3代血統表、糖度と硬度、断面。触って選んで、オーナーになる。
+       いちごが走る映像が流れ、決勝の日に結果が出る。</p>
+      <div class="who">担当：CULTA ／ 通年</div></div>
+    <div><div class="no">ACTION 02</div><h3>スーパー｜春の出走表</h3>
+      <p>2月、冬いちごの売り場の隣に出走表を掲出。4月には6品種の食べ比べパックを販売。
+       この売り場には<b>日本ダービーの告知も並ぶ</b>。</p>
+      <div class="who">担当：CULTA × 量販店 × JRA ／ 2〜5月</div></div>
+    <div><div class="no">ACTION 03</div><h3>競馬場｜決勝ブース</h3>
+      <p>5月最終日曜、東京競馬場に出店。6品種の食べ比べパックをその場で販売し、
+       食べた人がその場で投票してオーナーズクラブに入る。来場者は5〜60代が中心。</p>
+      <div class="who">担当：CULTA × JRA ／ 5月最終日曜</div></div>
+    <div><div class="no">ACTION 04</div><h3>オーナーズクラブ</h3>
+      <p>一口馬主と同じ構造。選んだ系統の近況が届き、勝てば口取り式に立てる。
+       翌年は、自分が選んだ系統の子が出走表に載る。だから来年もまた見に来る。</p>
+      <div class="who">担当：CULTA ／ 通年・継続</div></div>
+  </div>
+</section></div>
+
+<hr class="thick">
+<div class="wrap"><section id="ww">
+  <div class="sec-num">07 — WHY DERBY</div>
+  <h2>いちごが乗っかるのではなく、両方が得をする</h2>
+  <p class="lead">日本ダービーの名前を借りるだけの企画は、借りた側しか得をしません。
+   この企画は、いちごが全国のスーパーという売り場を持っていて、日本ダービーがそこを持っていない、というところから始まります。</p>
+  <div class="ww">
+    <div><h3>CULTA が日本ダービーに渡すもの</h3><ul>
+      <li>全国のスーパーの青果売り場。2月から5月まで、いちごの隣にダービーの告知が並ぶ</li>
+      <li>競馬を見ない層への接点。買い物客は毎週そこを通る</li>
+      <li>「品種改良の頂点を決めるレース」という、ダービー本来の意味を説明する場</li>
+    </ul></div>
+    <div class="mid">⇄</div>
+    <div><h3>日本ダービーが CULTA に渡すもの</h3><ul>
+      <li>5月最終日曜という、いちごが終わる日に立てる旗</li>
+      <li>東京競馬場という、いちごが一度も並んだことのない売り場</li>
+      <li>血統・出走・オーナーという、100年かけて磨かれた仕組みそのもの</li>
+    </ul></div>
+  </div>
+  <p class="lead" style="margin-top:26px;margin-bottom:0">
+   共通点は品種改良です。サラブレッドは300年、いちごは120年、どちらも掛け合わせで頂点を決めてきました。
+   日本ダービーは1930年の趣意書に「競走馬の資質向上を図る」と書いてあります。人気投票ではありません。
+   <b>勝った1頭が次の世代の親になる。</b>苺優駿も同じです。</p>
+</section></div>
+
+<hr class="thick">
+<div class="wrap"><section id="qa">
+  <div class="sec-num">08 — QUESTIONS</div>
+  <h2>言われそうなこと</h2>
+  <p class="lead">この企画に対して出てくる質問と、その答えです。</p>
+  <div class="qa">
+    <div><div class="q">ダービーをやって、どうなるのか。</div>
+      <div class="a">優勝した1系統だけが商品化されて、翌年から全国のスーパーに並びます。
+       買う側には「自分が選んだいちごが勝った」という理由ができ、CULTAには「日本一になった品種」という売り方ができます。
+       ダービーはゴールではなく、商品化の入口です。</div></div>
+    <div><div class="q">競馬を見る人にしか届かないのでは。</div>
+      <div class="a">競馬場は4つの場所のうちの1つです。出走表は2月から全国のスーパーに並び、投票はサイトで誰でもできます。
+       競馬場は「いちごが一度も並んだことのない売り場」として足すものであって、そこだけでやるわけではありません。</div></div>
+    <div><div class="q">なぜ市販品ではなく、未発売の系統なのか。</div>
+      <div class="a">市販品を競わせると、4位になった商品の売上が落ちます。他社の品種が勝っても困ります。
+       まだ商品になっていないCULTAの系統だけで競えば、順位がついて損をする人が誰もいません。</div></div>
+    <div><div class="q">日本ダービー側に何の得があるのか。</div>
+      <div class="a">全国のスーパーの青果売り場に、2月から5月まで告知が出ます。競馬を見ない買い物客が毎週そこを通ります。
+       いちご側が売り場を持っていて、ダービー側が持っていない。そこが交換になります。</div></div>
+    <div><div class="q">春のいちごは、そもそもおいしくないのでは。</div>
+      <div class="a">その通りです。一般的な品種は気温が上がると果皮硬度が下がり、成熟日数が縮んで糖の蓄積が減ります。
+       だからこの競走は「5月末まで走れるか」を競います。走り切れた系統だけが商品になるので、
+       おいしくない春いちごは最初から出てきません。</div></div>
+    <div><div class="q">2月に出走表を出しても、まだ食べられない。</div>
+      <div class="a">食べられないから見に来ます。競馬も同じで、出走表が出てから走るまでに時間があり、その間に人は調べて選びます。
+       4月の食べ比べパックで初めて味が分かる。この待つ時間そのものが、いちごを覚える時間になります。</div></div>
+  </div>
+</section></div>
+
 <hr class="thick" id="chr" class="hide">
 <div class="wrap"><section id="cross" class="hide">
-  <div class="sec-num">05 — CROSSING</div>
+  <div class="sec-num">09 — CROSSING</div>
   <h2>自分で交配してみる</h2>
   <p class="lead">いちごの品種は、2つを掛け合わせて作ります。何が生まれるかは、交配した本人にも分かりません。
    1万株の実生から選び抜いて、系統番号が付くまで4〜5年。<br>
