@@ -113,7 +113,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 </div></section>
 
 <section class="scr" id="s1"><div class="inner">
-  <div class="head"><h2>パドック</h2><span class="lbl">01 PADDOCK</span></div>
+  <div class="head"><h2>下見所</h2><span class="lbl">01 PADDOCK</span></div>
   <p class="note" id="n1"></p><div id="list1"></div>
   <button class="btn" id="go2">オーナーになる</button><footer id="f1"></footer>
 </div></section>
@@ -270,7 +270,7 @@ function sheet(h){
   <tr><td class="g1" rowspan="4">${h.dam}</td><td class="g2" rowspan="2">${h.ds}</td><td class="g3">${h.dss}</td></tr>
   <tr><td class="g3">${h.dsd}</td></tr><tr><td class="g2" rowspan="2">${h.dd}</td><td class="g3">${h.dds}</td></tr>
   <tr><td class="g3">${h.ddd}</td></tr></tbody></table>
-  <div class="cap">上半分が父系、下半分が母系。${h.bms}<br>
+  <div class="cap">上半分が父系、下半分が母系。母の父は、JRAの表記では<b>ブルードメアサイヤー</b>という。${h.bms}<br>
    福羽・Haward17・ダナーは、日本のイチゴ品種のほぼ全部にさかのぼれる3つの始祖である。</div></div>
  <div class="lbl" style="margin-top:22px">ここまでの選抜</div>
  <div class="steps">${h.sel.map(s=>`<div>${s}</div>`).join('')}</div>
@@ -281,7 +281,7 @@ $('dim').onclick=()=>{$('dim').classList.remove('on');$('sheet').classList.remov
 $('d0').textContent=`第1回 ・ ${Y1}年5月30日（日）`;
 $('s0').onclick=()=>go('s1');
 
-$('n1').innerHTML=`レース前に出走馬を歩かせ、その日の状態を自分の目で見る時間を<b>パドック</b>という。<br><br>
+$('n1').innerHTML=`レース前に出走馬を歩かせ、その日の状態を自分の目で見る場所を<b>パドック</b>という。JRAの正式名称は<b>下見所</b>（したみじょ）。<br><br>
  ここに並ぶ6つは、まだ<b>商品になっていない系統</b>。名前はなく、系統番号で呼ばれている。
  <span class="r">市販品は1つも出ていない。</span>順位がついて既存商品の売上が落ちることが、この競走では起きない。<br><br>
  触ると、3代血統表と、ここまでの選抜が開く。`;
@@ -339,7 +339,7 @@ function next(){
  $('list5').innerHTML=N2.map(h=>row(h,{sire:true,mine:pick===WIN&&h.sire===w.name})).join('');
  bind('#list5',N2,sheet);
  $('f5').innerHTML=`勝った馬が次の世代の親になる。だからダービーは毎年つづく。<br>
-  ディープインパクトは2005年のダービー馬で、種牡馬として日本ダービー馬を7頭出した。`}
+  ディープインパクトは2005年のダービー馬で、種牡馬として日本ダービー馬を7頭出した。<br>枠の色は1白・2黒・3赤・4青・5黄・6緑・7橙・8桃。7枠と8枠は「オレンジ」「ピンク」ではない。`}
 $('go6').onclick=()=>{cross();go('s6')};
 
 const POOL=()=>[...H.map(h=>({id:h.id,ln:h.ln,brix:h.brix,acid:h.acid,firm:h.firm,wt:h.wt,days:h.days,shape:h.shape,ci:h.ci,
@@ -420,7 +420,7 @@ $('doCross').onclick=async()=>{
 $('f6').innerHTML=`第1回 苺優駿 ／ CULTA　　制作：東京藝術大学 デザイン科 桑田航希<br>
  電通「アイデアの学校」2026 提出企画。品種名・系統番号は架空。<br>
  単位と数値の幅は一次資料に準拠。近交係数は稲葉・吉田（園芸学研究 2006）、
- 選抜の実数は栃木県いちご研究所、果実の形は品種登録審査基準の9区分による。`;
+ 選抜の実数は栃木県いちご研究所、果実の形は品種登録審査基準の9区分、競馬の用語はJRA公式による。`;
 $('again').onclick=()=>{pick=null;pa=pb=null;slot='A';$('go3').disabled=true;$('go3').textContent='出資を確定する';
  $('bred').innerHTML='';$('doCross').disabled=true;$('ciBox').style.display='none';go('s0')};
 </script>
