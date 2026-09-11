@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>苺優駿 ｜ ICHIGO YUSHUN</title>
+<meta name="theme-color" content="#0A0A0A">
+<style>
+:root{--bg:#0A0A0A;--ink:#FFF;--sub:#8A8A8A;--dim:#565656;--line:#222;--card:#131313;--brand:#D81E3C;--pad:22px;
+ --w1:#FFF;--w2:#333;--w3:#D81E3C;--w4:#1E5FD9;--w5:#E8C31E;--w6:#1E9E5A}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+ -webkit-font-smoothing:antialiased;line-height:1.75;overflow-x:hidden}
+.num{font-family:"Helvetica Neue",Arial,sans-serif;font-variant-numeric:tabular-nums}
+.lbl{font-family:"Helvetica Neue",Arial,sans-serif;font-size:9.5px;letter-spacing:.3em;font-weight:600;color:var(--sub)}
+.scr{position:fixed;inset:0;overflow-y:auto;overscroll-behavior-y:contain;opacity:0;pointer-events:none;transition:opacity .5s;
+ padding:max(26px,env(safe-area-inset-top)) var(--pad) calc(30px + env(safe-area-inset-bottom))}
+.scr.on{opacity:1;pointer-events:auto}
+.inner{max-width:560px;margin:0 auto}
+.center{min-height:100dvh;display:flex;flex-direction:column;justify-content:center}
+.ttl{font-size:clamp(28px,8.4vw,42px);font-weight:200;letter-spacing:.36em;margin-left:.36em;line-height:1.32;text-align:center}
+.ttl-ja{font-size:12px;letter-spacing:.62em;margin-left:.62em;color:var(--sub);margin-top:20px;text-align:center}
+.rule{width:36px;height:1px;background:var(--brand);margin:32px auto}
+.ctr{text-align:center}
+.tap{font-size:10px;letter-spacing:.34em;color:var(--dim);animation:bl 2.6s ease-in-out infinite;text-align:center;margin-top:58px}
+@keyframes bl{0%,100%{opacity:.3}50%{opacity:.95}}
+.head{display:flex;align-items:baseline;gap:10px;padding-bottom:13px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.head h2{font-size:15.5px;font-weight:600;letter-spacing:.08em}
+.head .lbl{margin-left:auto}
+.note{font-size:12px;color:var(--sub);line-height:2;margin-bottom:22px}
+.note b{color:#D8D8D8}.note .r{color:var(--brand)}
+.row{display:grid;grid-template-columns:24px 1fr auto;gap:11px;align-items:center;position:relative;
+ padding:13px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.row:active{opacity:.5}
+.waku{width:24px;height:24px;display:grid;place-items:center;font-size:11px;font-weight:700;border-radius:2px}
+.ln{font-size:13.5px;font-weight:500;letter-spacing:.05em;font-family:"Helvetica Neue",Arial,sans-serif}
+.meta{font-size:10px;color:var(--sub);margin-top:3px}
+.rt{text-align:right;line-height:1.15}
+.rt b{font-size:16px;font-weight:600}
+.rt small{display:block;font-size:8.5px;letter-spacing:.16em;color:var(--dim);margin-top:4px}
+.mk{position:absolute;left:-3px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--brand)}
+.row.sel .ln{color:var(--brand)}
+.sire{font-size:10px;color:var(--brand);margin-top:3px}.mine{font-size:10px;color:var(--brand);margin-top:2px}
+#dim{position:fixed;inset:0;background:rgba(0,0,0,.74);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .3s;z-index:20}
+#dim.on{opacity:1;pointer-events:auto}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--card);border-top:1px solid var(--line);
+ border-radius:15px 15px 0 0;max-height:88dvh;overflow-y:auto;transform:translateY(101%);
+ transition:transform .4s cubic-bezier(.22,.9,.28,1);padding:8px var(--pad) calc(32px + env(safe-area-inset-bottom))}
+#sheet.on{transform:translateY(0)}
+.grab{width:32px;height:4px;border-radius:3px;background:var(--line);margin:6px auto 18px}
+.sh-ln{font-size:19px;font-weight:400;letter-spacing:.09em;font-family:"Helvetica Neue",Arial,sans-serif}
+.sh-sub{font-size:10.5px;color:var(--sub);margin-top:5px;letter-spacing:.09em}
+.spec{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin:20px 0}
+.spec>div{background:var(--card);padding:10px 12px}
+.spec dt{font-size:9px;letter-spacing:.14em;color:var(--dim)}
+.spec dd{font-size:14px;margin-top:3px;font-weight:500}
+.spec dd i{font-style:normal;font-size:9px;color:var(--dim);margin-left:3px}
+.ped table{width:100%;border-collapse:collapse;font-size:10.5px;margin-top:7px}
+.ped td{border:1px solid var(--line);padding:7px 8px;line-height:1.35}
+.ped .g1{width:38%;font-size:12px;font-weight:500}
+.ped .g2{width:32%;color:#B4B4B4}
+.ped .g3{width:30%;color:var(--dim);font-size:9.5px}
+.cap{font-size:9.5px;color:var(--dim);margin-top:7px;line-height:1.8}
+.tale{font-size:13px;line-height:2;color:#C8C8C8;border-left:1px solid var(--brand);padding-left:13px;margin-top:20px}
+.steps{margin-top:14px}
+.steps div{font-size:11px;color:var(--sub);padding:5px 0 5px 16px;position:relative;line-height:1.6}
+.steps div::before{content:"";position:absolute;left:0;top:13px;width:5px;height:1px;background:var(--brand)}
+.btn{display:block;width:100%;padding:15px;margin-top:24px;background:var(--brand);color:#fff;border:none;font-family:inherit;
+ font-size:13.5px;font-weight:600;letter-spacing:.13em;border-radius:2px;cursor:pointer;transition:transform .18s cubic-bezier(.32,1.5,.45,1)}
+.btn:active{transform:scale(.985)}
+.btn[disabled]{background:#1C1C1C;color:var(--dim);cursor:default}
+.btn.g{background:none;border:1px solid var(--line);color:var(--ink);margin-top:11px}
+.phase{text-align:center;font-size:10.5px;letter-spacing:.32em;color:var(--sub);margin-bottom:26px;min-height:15px}
+.jd{display:grid;grid-template-columns:24px 1fr auto auto;gap:11px;align-items:center;padding:13px 0;
+ border-bottom:1px solid var(--line);opacity:.14;transition:opacity .55s}
+.jd.lit{opacity:1}
+.jv{font-size:14px;font-weight:600;min-width:50px;text-align:right}
+.jw{font-size:10px;color:var(--sub);min-width:52px;text-align:right}
+.crown{width:34px;height:34px;margin:0 auto 20px;stroke:var(--brand);fill:none;stroke-width:1.1;display:block}
+.born{font-size:10px;letter-spacing:.3em;color:var(--brand);text-align:center}
+.newname{font-size:clamp(26px,8vw,38px);font-weight:300;letter-spacing:.2em;margin-left:.2em;text-align:center;margin-top:14px}
+.fromln{font-size:10.5px;color:var(--dim);text-align:center;margin-top:12px;letter-spacing:.08em}
+.vd{font-size:11px;letter-spacing:.3em;margin-top:26px;padding:10px 0;text-align:center;
+ border-top:1px solid var(--line);border-bottom:1px solid var(--line);color:var(--sub)}
+.vd.hit{color:var(--brand)}
+.bars{display:flex;gap:5px;justify-content:center;margin-top:24px}
+.bars i{width:24px;height:2px;display:block;border-radius:2px;opacity:.35}
+.bars i.on{height:4px;opacity:1}
+.pick2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pick2 button{background:var(--card);border:1px solid var(--line);color:var(--ink);font-family:inherit;padding:13px 10px;
+ border-radius:2px;cursor:pointer;text-align:left}
+.pick2 button .lbl{display:block;margin-bottom:5px}
+.pick2 button b{font-size:12px;font-family:"Helvetica Neue",Arial,sans-serif;letter-spacing:.04em;font-weight:500}
+.pick2 button.on{border-color:var(--brand)}
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 4px}
+.opts button{background:none;border:1px solid var(--line);color:var(--sub);font-family:"Helvetica Neue",Arial;font-size:11px;
+ padding:7px 11px;border-radius:2px;cursor:pointer;letter-spacing:.04em}
+.opts button.on{border-color:var(--brand);color:var(--brand)}
+.ci{display:flex;align-items:baseline;gap:9px;margin-top:16px;padding:11px 13px;border:1px solid var(--line);background:var(--card)}
+.ci b{font-size:19px;font-weight:600}
+.ci span{font-size:10.5px;color:var(--sub);line-height:1.6}
+#bred{margin-top:24px}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:9.5px;line-height:2;color:var(--dim)}
+</style>
+</head>
+<body>
+
+<section class="scr on" id="s0"><div class="inner center">
+  <div class="ttl">ICHIGO<br>YUSHUN</div><div class="ttl-ja">苺 優 駿</div>
+  <div class="rule"></div><div class="ctr lbl" id="d0"></div>
+  <div class="tap">TAP TO START</div>
+</div></section>
+
+<section class="scr" id="s1"><div class="inner">
+  <div class="head"><h2>パドック</h2><span class="lbl">01 PADDOCK</span></div>
+  <p class="note" id="n1"></p><div id="list1"></div>
+  <button class="btn" id="go2">オーナーになる</button><footer id="f1"></footer>
+</div></section>
+
+<section class="scr" id="s2"><div class="inner">
+  <div class="head"><h2>出資する</h2><span class="lbl">02 OWNERS CLUB</span></div>
+  <p class="note" id="n2"></p><div id="list2"></div>
+  <button class="btn" id="go3" disabled>出資を確定する</button>
+</div></section>
+
+<section class="scr" id="s3"><div class="inner center">
+  <div class="phase" id="phase"></div><div id="list3"></div>
+</div></section>
+
+<section class="scr" id="s4"><div class="inner center">
+  <svg class="crown" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4v10H3z"/></svg>
+  <div class="born" id="born"></div><div class="newname" id="newname"></div>
+  <div class="fromln" id="fromln"></div><div class="vd" id="vd"></div>
+  <div class="bars" id="bars"></div>
+  <p class="note" id="n4" style="margin-top:30px"></p>
+  <button class="btn" id="go5">翌年へ</button>
+</div></section>
+
+<section class="scr" id="s5"><div class="inner">
+  <div class="head"><h2>翌年</h2><span class="lbl">05 NEXT SEASON</span></div>
+  <p class="note" id="n5"></p><div id="list5"></div>
+  <button class="btn" id="go6">自分で交配してみる</button><footer id="f5"></footer>
+</div></section>
+
+<section class="scr" id="s6"><div class="inner">
+  <div class="head"><h2>交配</h2><span class="lbl">06 CROSSING</span></div>
+  <p class="note" id="n6"></p>
+  <div class="pick2">
+    <button id="pA"><span class="lbl">SIRE 父</span><b>選ぶ</b></button>
+    <button id="pB"><span class="lbl">DAM 母</span><b>選ぶ</b></button>
+  </div>
+  <div class="opts" id="opts"></div>
+  <div class="ci" id="ciBox" style="display:none"><b class="num" id="ciV"></b><span id="ciT"></span></div>
+  <button class="btn" id="doCross" disabled>交配する</button>
+  <div id="bred"></div>
+  <button class="btn g" id="again">はじめから</button><footer id="f6"></footer>
+</div></section>
+
+<div id="dim"></div>
+<div id="sheet"><div class="grab"></div><div id="sheetBody"></div></div>
+
+<script>
+/* ===========================================================================
+   苺優駿 ICHIGO YUSHUN ／ 単位と数値の幅は一次資料に準拠
+   糖度 Brix・酸度 %・糖酸比／果皮硬度 g/φ2mm（栃木県農業試験場の表記）
+   果実の形＝品種登録審査基準 形質37 の9区分（2011年改訂）
+   近交係数＝稲葉幸雄・吉田智彦 園芸学研究 5(3):219-225, 2006
+     やよいひめ0.346 とちおとめ0.261 あまおう0.213 女峰0.171 とよのか0.062 平均0.172
+     総当たり交配の雑種は 0.067〜0.440（平均0.210）／0.3程度までは近交弱勢による減収なし
+   選抜の実数＝栃木県いちご研究所：交配70組合せ／1果から種子300〜500粒／1万株→300→30→5→1
+   =========================================================================== */
+const Y1=2027,Y2=2028;
+const WK=['','var(--w1)','var(--w2)','var(--w3)','var(--w4)','var(--w5)','var(--w6)'];
+const FG=['','#111','#fff','#fff','#fff','#111','#fff'];
+
+const H=[
+ {id:'a',w:1,ln:'CULTA i-2025-14',seed:'25-14-208',brix:10.4,acid:0.71,firm:64,wt:24.6,days:34,shape:'じん臓形',ci:0.164,from:'静岡',
+  sire:'Snow Veil',ss:'North Bell',sss:'Haward17',ssd:'Pale Moon',sd:'Silk Dawn',sds:'ダナー',sdd:'Early Snow',
+  dam:'Pale Aurora',ds:'Winter Bell',dss:'North Bell',dsd:'福羽',dd:'Aurora Mist',dds:'Snow Veil',ddd:'Quiet Dawn',
+  bms:'母の父 Winter Bell。父と母の父に North Bell が重なる。',name:'WHITE CROWN',exp:88.4,vote:14,
+  sel:['2025年2月 交配（70組合せのうちの1つ）','2025年4月 採種 412粒','2026年1月 実生から一次選抜 1万株→300','2026年11月 二次選抜 300→30','2027年2月 系統番号を付与'],
+  tale:'白い果皮のまま完熟する。見た目で熟度が読めないので、これまで出荷の対象にならなかった。'},
+ {id:'b',w:2,ln:'CULTA i-2025-22',seed:'25-22-061',brix:10.8,acid:0.79,firm:86,wt:22.9,days:38,shape:'円錐形',ci:0.241,from:'栃木',
+  sire:'Night Run',ss:'Dark Field',sss:'ダナー',ssd:'Low Light',sd:'Velvet One',sds:'Deep Red',sdd:'Still Water',
+  dam:'Quiet Dawn',ds:'Grey Stone',dss:'ダナー',dsd:'Long Shade',dd:'Morning Ash',dds:'Night Run',ddd:'Pale Moon',
+  bms:'母の父 Grey Stone。父系と母系の両方にダナーが入る。',name:'MIDNIGHT',exp:90.1,vote:11,
+  sel:['2025年2月 交配','2025年4月 採種 338粒','2026年1月 一次選抜 1万株→300','2026年11月 二次選抜 300→30','2027年2月 系統番号を付与'],
+  tale:'果皮硬度86は6系統で最も高い。3月以降も軟化が遅く、遠くまで運べる。'},
+ {id:'c',w:3,ln:'CULTA i-2025-03',seed:'25-03-117',brix:11.6,acid:0.68,firm:78,wt:23.8,days:31,shape:'円錐形',ci:0.071,from:'福岡',
+  sire:'Velvet One',ss:'Deep Red',sss:'Crimson Root',ssd:'Soft Ember',sd:'Still Water',sds:'アイベリー',sdd:'Quiet Dawn',
+  dam:'Ruby Grace',ds:'Crimson Root',dss:'Old Flame',dsd:'Red Sand',dd:'Grace Note',dds:'福羽',ddd:'Silk Dawn',
+  bms:'母の父 Crimson Root。祖母の父に来歴不詳のアイベリーが入り、そこで血統が途切れている。',name:'RED CROWN',exp:94.6,vote:31,
+  sel:['2025年2月 交配','2025年4月 採種 489粒','2026年1月 一次選抜 1万株→300','2026年11月 二次選抜 300→30','2027年2月 系統番号を付与'],
+  tale:'近交係数0.071は6系統で最も低い。遠い親どうしを掛けた個体で、糖酸比17.1と果皮硬度78を同時に持つ。'},
+ {id:'d',w:4,ln:'CULTA i-2025-31',seed:'25-31-024',brix:10.1,acid:0.84,firm:59,wt:21.4,days:36,shape:'楔形',ci:0.198,from:'長野',
+  sire:'Blue Hour',ss:'Cold Spring',sss:'North Bell',ssd:'Sea Glass',sd:'Marine',sds:'Deep Blue',sdd:'Tide Line',
+  dam:'Sea Glass',ds:'Deep Blue',dss:'Cold Spring',dsd:'Salt Wind',dd:'Tide Line',dds:'Blue Hour',ddd:'Morning Ash',
+  bms:'母の父 Deep Blue。父と母が近く、係数が上がっている。',name:'AZURE',exp:89.2,vote:9,
+  sel:['2025年2月 交配','2025年4月 採種 301粒','2026年1月 一次選抜 1万株→300','2026年11月 二次選抜 300→30','2027年2月 系統番号を付与'],
+  tale:'酸度0.84%は6系統で最も高い。そのまま食べるより、加工で評価されてきた。'},
+ {id:'e',w:5,ln:'CULTA i-2025-08',seed:'25-08-155',brix:10.6,acid:0.62,firm:54,wt:25.1,days:29,shape:'心臓形',ci:0.287,from:'熊本',
+  sire:'Sun Drop',ss:'Amber Field',sss:'Gold Vein',ssd:'Warm Sand',sd:'Honey Line',sds:'Sun Drop',sdd:'Soft Ember',
+  dam:'Warm Sand',ds:'Gold Vein',dss:'Old Flame',dsd:'Dry Light',dd:'Soft Ember',dds:'Amber Field',ddd:'Grace Note',
+  bms:'母の父 Gold Vein。父の父と母の父が同じで、近交係数0.287は限界に近い。',name:'GOLDEN',exp:86.7,vote:19,
+  sel:['2025年2月 交配','2025年4月 採種 455粒','2026年1月 一次選抜 1万株→300','2026年11月 二次選抜 300→30','2027年2月 系統番号を付与'],
+  tale:'一果重25.1gは6系統で最大。ただし近交係数0.287は、収量が落ち始める0.3のすぐ手前にある。'},
+ {id:'f',w:6,ln:'CULTA i-2025-19',seed:'25-19-072',brix:10.3,acid:0.76,firm:73,wt:22.2,days:37,shape:'卵円形',ci:0.132,from:'佐賀',
+  sire:'Green Note',ss:'Leaf Song',sss:'ダナー',ssd:'Fern Line',sd:'Dew Point',sds:'Cold Spring',sdd:'Long Shade',
+  dam:'Fern Line',ds:'Leaf Song',dss:'Grey Stone',dsd:'Moss Bell',dd:'Long Shade',dds:'Green Note',ddd:'Still Water',
+  bms:'母の父 Leaf Song。父と母の父が同じ。',name:'EMERALD',exp:87.9,vote:16,
+  sel:['2025年2月 交配','2025年4月 採種 367粒','2026年1月 一次選抜 1万株→300','2026年11月 二次選抜 300→30','2027年2月 系統番号を付与'],
+  tale:'炭そ病と萎黄病の両方に耐病性を持つ。味では目立たないが、畑では最も安定している。'}
+];
+const WIN='c';
+const N2=[
+ {id:'n1',w:1,ln:'CULTA i-2026-02',seed:'26-02-031',brix:11.9,acid:0.66,firm:80,wt:24.4,days:30,shape:'円錐形',ci:0.058,from:'福岡',
+  sire:'RED CROWN',ss:'Velvet One',sss:'Deep Red',ssd:'Still Water',sd:'Ruby Grace',sds:'Crimson Root',sdd:'Grace Note',
+  dam:'Snow Veil',ds:'North Bell',dss:'Haward17',dsd:'Pale Moon',dd:'Silk Dawn',dds:'ダナー',ddd:'Early Snow',
+  bms:'母の父 North Bell。父の血統と重ならない。',
+  sel:['2026年2月 交配','2026年4月 採種 502粒','2027年1月 一次選抜 1万株→300','2027年11月 二次選抜 300→30'],
+  tale:'第1回の優勝系統を父に持つ。近交係数0.058は父をさらに下回った。'},
+ {id:'n2',w:2,ln:'CULTA i-2026-11',seed:'26-11-094',brix:11.2,acid:0.73,firm:89,wt:23.6,days:35,shape:'円錐形',ci:0.146,from:'栃木',
+  sire:'RED CROWN',ss:'Velvet One',sss:'Deep Red',ssd:'Still Water',sd:'Ruby Grace',sds:'Crimson Root',sdd:'Grace Note',
+  dam:'Quiet Dawn',ds:'Grey Stone',dss:'ダナー',dsd:'Long Shade',dd:'Morning Ash',dds:'Night Run',ddd:'Pale Moon',
+  bms:'母の父 Grey Stone。硬度を重ねた配合。',
+  sel:['2026年2月 交配','2026年4月 採種 388粒','2027年1月 一次選抜 1万株→300','2027年11月 二次選抜 300→30'],
+  tale:'果皮硬度89は歴代で最も高い。父と母の父の両方から硬度を継いだ。'},
+ {id:'n3',w:3,ln:'CULTA i-2026-27',seed:'26-27-140',brix:10.7,acid:0.80,firm:75,wt:22.0,days:36,shape:'卵円形',ci:0.212,from:'佐賀',
+  sire:'Night Run',ss:'Dark Field',sss:'ダナー',ssd:'Low Light',sd:'Velvet One',sds:'Deep Red',sdd:'Still Water',
+  dam:'Fern Line',ds:'Leaf Song',dss:'Grey Stone',dsd:'Moss Bell',dd:'Long Shade',dds:'Green Note',ddd:'Still Water',
+  bms:'母の父 Leaf Song。',
+  sel:['2026年2月 交配','2026年4月 採種 312粒','2027年1月 一次選抜 1万株→300','2027年11月 二次選抜 300→30'],
+  tale:'第1回には出ていない配合。父 Night Run は第1回2枠の父でもある。'}
+];
+[...H,...N2].forEach(h=>h.ratio=+(h.brix/h.acid).toFixed(1));
+
+const K='ichigo.yushun.v3';
+let S=(()=>{try{return JSON.parse(localStorage.getItem(K))||{}}catch(e){return{}}})();
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+let pick=null,pa=null,pb=null,slot='A';
+const $=id=>document.getElementById(id), sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const go=id=>{document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id===id));$(id).scrollTop=0};
+
+function row(h,o={}){return `<div class="row${o.sel?' sel':''}" data-id="${h.id}">
+ ${o.sel?'<span class="mk">◎</span>':''}
+ <div class="waku num" style="background:${WK[h.w]};color:${FG[h.w]}">${h.w}</div>
+ <div><div class="ln">${h.ln}</div><div class="meta">3歳・${h.from}・${h.shape}・${h.wt}g</div>
+ ${o.sire?`<div class="sire">父 ${h.sire}</div>`:''}${o.mine?'<div class="mine">あなたが出資した系統の子</div>':''}</div>
+ <div class="rt"><b class="num">${h.ratio}</b><small>糖酸比</small></div></div>`}
+const bind=(sel,arr,fn)=>document.querySelectorAll(sel+' .row').forEach(r=>r.onclick=()=>fn(arr.find(x=>x.id===r.dataset.id)));
+
+function sheet(h){
+ $('sheetBody').innerHTML=`<div class="sh-ln">${h.ln}</div>
+ <div class="sh-sub">枠${h.w}・3歳・${h.from}・未商品化系統・実生個体番号 ${h.seed}</div>
+ <div class="spec">
+  <div><dt>糖度</dt><dd class="num">${h.brix}<i>Brix</i></dd></div>
+  <div><dt>酸度</dt><dd class="num">${h.acid}<i>%</i></dd></div>
+  <div><dt>糖酸比</dt><dd class="num">${h.ratio}</dd></div>
+  <div><dt>果皮硬度</dt><dd class="num">${h.firm}<i>g/φ2mm</i></dd></div>
+  <div><dt>一果重</dt><dd class="num">${h.wt}<i>g</i></dd></div>
+  <div><dt>成熟日数</dt><dd class="num">${h.days}<i>日</i></dd></div>
+  <div><dt>果実の形</dt><dd>${h.shape}</dd></div>
+  <div><dt>近交係数</dt><dd class="num" style="color:${h.ci<0.15?'var(--brand)':h.ci>=0.28?'#E8C31E':'var(--ink)'}">${h.ci.toFixed(3)}</dd></div>
+ </div>
+ <div class="ped"><div class="lbl">3代血統表</div><table><tbody>
+  <tr><td class="g1" rowspan="4">${h.sire}</td><td class="g2" rowspan="2">${h.ss}</td><td class="g3">${h.sss}</td></tr>
+  <tr><td class="g3">${h.ssd}</td></tr><tr><td class="g2" rowspan="2">${h.sd}</td><td class="g3">${h.sds}</td></tr>
+  <tr><td class="g3">${h.sdd}</td></tr>
+  <tr><td class="g1" rowspan="4">${h.dam}</td><td class="g2" rowspan="2">${h.ds}</td><td class="g3">${h.dss}</td></tr>
+  <tr><td class="g3">${h.dsd}</td></tr><tr><td class="g2" rowspan="2">${h.dd}</td><td class="g3">${h.dds}</td></tr>
+  <tr><td class="g3">${h.ddd}</td></tr></tbody></table>
+  <div class="cap">上半分が父系、下半分が母系。${h.bms}<br>
+   福羽・Haward17・ダナーは、日本のイチゴ品種のほぼ全部にさかのぼれる3つの始祖である。</div></div>
+ <div class="lbl" style="margin-top:22px">ここまでの選抜</div>
+ <div class="steps">${h.sel.map(s=>`<div>${s}</div>`).join('')}</div>
+ <div class="tale">${h.tale}</div>`;
+ $('dim').classList.add('on');$('sheet').classList.add('on')}
+$('dim').onclick=()=>{$('dim').classList.remove('on');$('sheet').classList.remove('on')};
+
+$('d0').textContent=`第1回 ・ ${Y1}年5月30日（日）`;
+$('s0').onclick=()=>go('s1');
+
+$('n1').innerHTML=`レース前に出走馬を歩かせ、その日の状態を自分の目で見る時間を<b>パドック</b>という。<br><br>
+ ここに並ぶ6つは、まだ<b>商品になっていない系統</b>。名前はなく、系統番号で呼ばれている。
+ <span class="r">市販品は1つも出ていない。</span>順位がついて既存商品の売上が落ちることが、この競走では起きない。<br><br>
+ 触ると、3代血統表と、ここまでの選抜が開く。`;
+$('list1').innerHTML=H.map(h=>row(h)).join('');bind('#list1',H,sheet);
+$('f1').innerHTML=`苺優駿＝日本ダービーの正式名称「東京優駿」から。優駿とは、優れた馬のこと。<br>
+ 系統番号は、実生個体番号 → 系統番号 → 出願名称 → 商標 の順に名前が変わる。商標が付くのは、登録されたあと。`;
+$('go2').onclick=()=>{paint2();go('s2')};
+
+$('n2').innerHTML=`競馬には<b>一口馬主</b>という仕組みがある。1頭を大勢で分けて持ち、近況を受け取り、勝てば口取り式に立てる。<br><br>
+ 苺優駿でも、6系統から<b>1つだけ</b>を選んで出資する。<span class="r">選べるのは1つ。あとから変えられない。</span>
+ ダービーに出られるのは3歳の一年だけで、どの馬も一生に一度しか走らないからである。`;
+function paint2(){$('list2').innerHTML=H.map(h=>row(h,{sel:pick===h.id})).join('');
+ document.querySelectorAll('#list2 .row').forEach(r=>r.onclick=()=>{pick=r.dataset.id;paint2();
+  const b=$('go3');b.disabled=false;b.textContent=`${H.find(h=>h.id===pick).ln} に出資する`})}
+$('go3').onclick=()=>{go('s3');judge()};
+
+async function judge(){
+ const ph=$('phase');
+ $('list3').innerHTML=H.map(h=>`<div class="jd" data-id="${h.id}">
+  <div class="waku num" style="background:${WK[h.w]};color:${FG[h.w]}">${h.w}</div>
+  <div class="ln">${h.ln}</div><div class="jv num" style="color:var(--dim)">－－</div>
+  <div class="jw num" style="color:var(--dim)">－－</div></div>`).join('');
+ const rows=[...document.querySelectorAll('.jd')];
+ ph.textContent='系統番号を伏せて審査'; await sleep(1500);
+ for(const h of [...H].sort((a,b)=>(a.exp+a.vote)-(b.exp+b.vote))){
+  const el=rows.find(r=>r.dataset.id===h.id);el.classList.add('lit');
+  const jv=el.querySelector('.jv'),jw=el.querySelector('.jw');
+  jv.style.color='var(--ink)';jw.style.color='var(--sub)';
+  let v=0;const t=setInterval(()=>{v+=Math.random()*9;jv.textContent=Math.min(v,h.exp).toFixed(1)},40);
+  await sleep(680);clearInterval(t);jv.textContent=h.exp.toFixed(1);jw.textContent=h.vote+'%';
+  if(h.id===WIN){jv.style.color='var(--brand)';jw.style.color='var(--brand)'}
+  await sleep(240)}
+ ph.textContent='専門家の点 ＋ オーナーズクラブの票';await sleep(1300);
+ result();go('s4')}
+
+function result(){
+ const w=H.find(h=>h.id===WIN),me=H.find(h=>h.id===pick),hit=pick===WIN;
+ $('born').textContent='日本初の夏いちご、誕生';
+ $('newname').textContent=w.name;
+ $('fromln').textContent=`${w.ln} に商品名が与えられた`;
+ const v=$('vd');v.textContent=hit?'的中 ／ 口取り式に立てます':'不的中';v.className='vd'+(hit?' hit':'');
+ $('bars').innerHTML=H.map(h=>`<i style="background:${WK[h.w]}" class="${h.id===WIN?'on':''}"></i>`).join('');
+ $('n4').innerHTML=(hit?`あなたが出資した <b class="r">${me.ln}</b> が勝った。${me.tale}`
+  :`あなたが出資したのは <b>${me.ln}</b>。${me.tale}<br><br>勝ったのは ${w.ln}。${w.tale}`)
+  +`<br><br>5月末まで糖度と硬度を保てる系統が日本一になった。つまり <b class="r">夏に食べられるイチゴが生まれた</b> ということである。<br><br>
+    商品化されるのはこの1系統だけ。残る5つは、翌年の交配親として畑に残る。`;
+ S.y1={pick:pick,hit:hit};save()}
+$('go5').onclick=()=>{next();go('s5')};
+
+function next(){
+ const w=H.find(h=>h.id===WIN);
+ $('n5').innerHTML=`<b>第2回 ・ ${Y2}年5月28日（日）</b><br><br>
+  優勝した <b class="r">${w.name}</b> は交配親になった。出走表の「父」の欄に、その名前が載っている。`
+  +(pick===WIN?'<br><span class="r">あなたが出資した系統の子が、今年走る。</span>':'');
+ $('list5').innerHTML=N2.map(h=>row(h,{sire:true,mine:pick===WIN&&h.sire===w.name})).join('');
+ bind('#list5',N2,sheet);
+ $('f5').innerHTML=`勝った馬が次の世代の親になる。だからダービーは毎年つづく。<br>
+  ディープインパクトは2005年のダービー馬で、種牡馬として日本ダービー馬を7頭出した。`}
+$('go6').onclick=()=>{cross();go('s6')};
+
+const POOL=()=>[...H.map(h=>({id:h.id,ln:h.ln,brix:h.brix,acid:h.acid,firm:h.firm,wt:h.wt,days:h.days,shape:h.shape,ci:h.ci,
+  anc:[h.ss,h.sd,h.ds,h.dd,h.sss,h.ssd,h.sds,h.sdd,h.dss,h.dsd,h.dds,h.ddd]})),
+ (x=>({id:'win',ln:x.name,brix:x.brix,acid:x.acid,firm:x.firm,wt:x.wt,days:x.days,shape:x.shape,ci:x.ci,
+  anc:[x.ss,x.sd,x.ds,x.dd,x.sss,x.ssd,x.sds,x.sdd,x.dss,x.dsd,x.dds,x.ddd]}))(H.find(h=>h.id===WIN))];
+
+function cross(){
+ $('n6').innerHTML=`イチゴの育種には、競馬と同じ指標がある。<b>近交係数</b>。血統がどれだけ近いかを表す数で、
+  <span class="r">0.3を超えると収量が落ちる</span>と報告されている。<br><br>
+  日本の主要品種は、やよいひめ0.346、とちおとめ0.261、あまおう0.213。福羽・Haward17・ダナーという
+  3つの始祖に、ほぼ全部がさかのぼる。<b>もう血統が近すぎる。</b><br><br>
+  CULTAが2年で品種を作れる意味は、ここにある。<b>遠い親どうしを掛けられる。</b><br><br>
+  親を2つ選ぶ。<span class="r">生まれるものは選べない。</span>`;
+ paintOpts()}
+
+function ciOf(A,B){ // 共通祖先の重なりから近交係数を概算
+ if(!A||!B) return null;
+ const set=new Set(A.anc), shared=B.anc.filter(x=>set.has(x));
+ const uniq=new Set(shared).size;
+ return Math.min(0.44,Math.max(0.02,+(0.030+uniq*0.058+(A.ci+B.ci)/9).toFixed(3)));
+}
+function paintOpts(){
+ $('opts').innerHTML=POOL().map(p=>`<button data-id="${p.id}" class="${(slot==='A'?pa:pb)===p.id?'on':''}">${p.ln}</button>`).join('');
+ document.querySelectorAll('#opts button').forEach(b=>b.onclick=()=>{
+  const v=b.dataset.id;
+  if(slot==='A'){pa=v;slot='B'}else{pb=v;slot='A'}
+  const A=POOL().find(p=>p.id===pa),B=POOL().find(p=>p.id===pb);
+  $('pA').querySelector('b').textContent=A?A.ln:'選ぶ';$('pA').classList.toggle('on',slot==='A');
+  $('pB').querySelector('b').textContent=B?B.ln:'選ぶ';$('pB').classList.toggle('on',slot==='B');
+  const ci=ciOf(A,B);
+  if(ci!=null&&pa!==pb){
+   $('ciBox').style.display='flex';$('ciV').textContent=ci.toFixed(3);
+   $('ciV').style.color=ci<0.15?'var(--brand)':ci>0.30?'#E8C31E':'var(--ink)';
+   $('ciT').innerHTML=ci<0.15?'遠い血統どうし。良い個体が出やすい。'
+    :ci>0.30?'近すぎる。0.3を超えると収量が落ちる。':'標準的な範囲。平均は0.210。';
+  }else $('ciBox').style.display='none';
+  $('doCross').disabled=!(pa&&pb&&pa!==pb);
+  paintOpts()})}
+$('pA').onclick=()=>{slot='A';paintOpts()};$('pB').onclick=()=>{slot='B';paintOpts()};
+
+$('doCross').onclick=async()=>{
+ const A=POOL().find(p=>p.id===pa),B=POOL().find(p=>p.id===pb),ci=ciOf(A,B);
+ const g=ci<0.15?1:ci>0.30?-1:0;                       // 近交係数が低いほど良い個体が出やすい
+ const mid=(x,y)=>(x+y)/2, jit=r=>(Math.random()*2-1)*r;
+ const brix=+(mid(A.brix,B.brix)+jit(.55)+g*.42).toFixed(1);
+ const acid=+(mid(A.acid,B.acid)+jit(.06)).toFixed(2);
+ const firm=Math.round(Math.max(A.firm,B.firm)*.62+Math.min(A.firm,B.firm)*.38+jit(5)+g*4);
+ const wt=+(mid(A.wt,B.wt)+jit(1.4)+g*.9).toFixed(1);
+ const days=Math.round(mid(A.days,B.days)+jit(3));
+ const shape=Math.random()<.5?A.shape:B.shape;
+ const seeds=300+Math.floor(Math.random()*201);
+ const no=String(Math.floor(Math.random()*89)+10);
+ const ratio=+(brix/acid).toFixed(1);
+ const box=$('bred');box.innerHTML=`<div class="lbl">交配</div>`;
+ for(const s of [`採種 ${seeds}粒`,'実生 1万株 → 一次選抜 300','二次選抜 300 → 30','三次選抜 30 → 5','系統番号を付与']){
+  box.innerHTML+=`<div class="steps"><div>${s}</div></div>`;await sleep(600)}
+ box.innerHTML=`<div class="lbl">生まれた系統</div>
+  <div class="sh-ln" style="margin-top:8px">CULTA i-2028-${no}</div>
+  <div class="sh-sub">${A.ln} × ${B.ln}　／　近交係数 ${ci.toFixed(3)}</div>
+  <div class="spec">
+   <div><dt>糖度</dt><dd class="num">${brix}<i>Brix</i></dd></div>
+   <div><dt>酸度</dt><dd class="num">${acid}<i>%</i></dd></div>
+   <div><dt>糖酸比</dt><dd class="num" style="color:${ratio>=16?'var(--brand)':'var(--ink)'}">${ratio}</dd></div>
+   <div><dt>果皮硬度</dt><dd class="num">${firm}<i>g/φ2mm</i></dd></div>
+   <div><dt>一果重</dt><dd class="num">${wt}<i>g</i></dd></div>
+   <div><dt>成熟日数</dt><dd class="num">${days}<i>日</i></dd></div>
+   <div><dt>果実の形</dt><dd>${shape}</dd></div>
+   <div><dt>近交係数</dt><dd class="num" style="color:${ci<0.15?'var(--brand)':ci>0.30?'#E8C31E':'var(--ink)'}">${ci.toFixed(3)}</dd></div>
+  </div>
+  <div class="tale">${ratio>=16&&firm>=75?'糖酸比と果皮硬度を両立した。5月末まで走れる可能性がある。'
+   :ratio>=16?'糖酸比は高い。ただし果皮が柔らかく、遠くへは運べない。'
+   :firm>=80?'硬さは十分。ただし糖酸比が伸びなかった。'
+   :'親を超えなかった。1万株のうち、系統番号まで残るのは5つしかない。'}</div>
+  <div class="cap">果皮硬度は硬い親に寄りやすく、糖度は両親の中間に出やすい。
+   同じ組合せでも生まれるものは毎回ちがう。交配してから系統番号が付くまで、実際には4〜5年かかる。</div>`};
+
+$('f6').innerHTML=`第1回 苺優駿 ／ CULTA　　制作：東京藝術大学 デザイン科 桑田航希<br>
+ 電通「アイデアの学校」2026 提出企画。品種名・系統番号は架空。<br>
+ 単位と数値の幅は一次資料に準拠。近交係数は稲葉・吉田（園芸学研究 2006）、
+ 選抜の実数は栃木県いちご研究所、果実の形は品種登録審査基準の9区分による。`;
+$('again').onclick=()=>{pick=null;pa=pb=null;slot='A';$('go3').disabled=true;$('go3').textContent='出資を確定する';
+ $('bred').innerHTML='';$('doCross').disabled=true;$('ciBox').style.display='none';go('s0')};
+</script>
+</body>
+</html>
