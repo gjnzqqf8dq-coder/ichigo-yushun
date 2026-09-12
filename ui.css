@@ -275,3 +275,16 @@ html.still *,html.still *::before,html.still *::after{animation-duration:.01ms!i
 
 #v-dex .rail.r{top:92px}
 #v-dex .rail.l{top:96px}
+
+/* 375px 幅（実機）での詰め */
+@media(max-width:400px){
+  .hh h1{font-size:25px}
+  .rail{font-size:8px;letter-spacing:.2em}
+  .brd{grid-template-columns:128px minmax(0,1fr);gap:12px}
+  .brd .ph{width:128px;height:200px}
+  .brd .nm{font-size:21px}
+  .bstat .k{white-space:nowrap;font-size:9px}
+  .bstat .v{font-size:15px}
+  .bstat .v em{font-size:8.5px}
+  .bstat div{padding:8px 2px}
+}
