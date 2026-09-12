@@ -73,7 +73,7 @@ body.nofoot #tabs{transform:translateY(140%);opacity:0}
   color:var(--g2);position:relative;z-index:1;transition:color var(--d-mic) var(--e-mic)}
 #tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;
   stroke-linecap:round;stroke-linejoin:round;transition:transform var(--d-en) var(--e-out)}
-#tabs span{font-size:10px;letter-spacing:.06em;font-weight:500}
+#tabs span{font-family:var(--en);font-size:9px;letter-spacing:.2em;font-weight:500}
 #tabs .on{color:var(--rd)}
 #tabs .on svg{transform:translateY(-1px) scale(1.06)}
 

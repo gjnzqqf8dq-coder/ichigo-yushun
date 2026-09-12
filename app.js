@@ -420,7 +420,7 @@ V.about = function () {
   var v = $('#v-about'); v.classList.remove('noscroll');
   v.innerHTML =
     '<div class="ctop">' +
-      '<div class="lbl">ABOUT THE DERBY</div>' +
+      '<div class="lbl">READ</div>' +
       '<h1 class="big" id="acopy" style="margin-top:8px;font-size:25px">東京優駿と同じ日に、\nいちごの日本一を決める。</h1>' +
       '<div class="sec"><b>THE NAME</b><span>名前の由来</span></div>' +
       '<p class="b" style="margin-top:10px">日本ダービーの正式名称は東京優駿。優駿とは、すぐれた馬のこと。苺優駿は、そのいちご版という意味です。</p>' +
