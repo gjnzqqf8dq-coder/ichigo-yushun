@@ -1,0 +1,223 @@
+/* =========================================================================
+   ICHIGO YUSHUN 2027 — アプリ本体
+   白85 / 黒グレー10 / ストロベリーレッド5。8pxグリッド。
+   ========================================================================= */
+:root{
+  --w:#fff; --paper:#FBFBFA; --ink:#0E0E0E; --g1:#5E5E5E; --g2:#909090; --g3:#C4C4C4;
+  --line:#E9E9E7; --line2:#F3F3F1; --rd:#E4002B; --dk:#0C0C0C;
+  --en:"Helvetica Neue",Inter,-apple-system,"Segoe UI",Arial,sans-serif;
+  --jp:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --head:56px; --tab:68px;
+  --safeb:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  background:var(--paper);color:var(--ink);font-family:var(--jp);
+  font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased;
+  overscroll-behavior:none;
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:var(--rd);color:#fff}
+
+/* ---------- 端末シェル ---------- */
+#shell{
+  position:relative;width:100%;max-width:430px;margin:0 auto;height:100dvh;
+  background:var(--w);overflow:hidden;
+  box-shadow:0 0 0 1px var(--line),0 30px 90px rgba(0,0,0,.09);
+}
+@media(min-width:900px){
+  body{display:flex;align-items:center;justify-content:center;padding:24px 0}
+  #shell{height:min(920px,calc(100dvh - 48px));border-radius:38px}
+}
+
+/* 方眼 */
+#grid{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.55;
+  background-image:linear-gradient(var(--line2) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--line2) 1px,transparent 1px);
+  background-size:100% 88px,88px 100%;background-position:0 0}
+#fieldwrap{position:absolute;inset:0;z-index:1;pointer-events:none}
+#field{width:100%;height:100%;display:block}
+
+/* ---------- 固定ヘッダ ---------- */
+#head{position:absolute;top:0;left:0;right:0;height:var(--head);z-index:20;
+  display:flex;align-items:center;justify-content:space-between;padding:0 22px;
+  background:linear-gradient(#fff 62%,rgba(255,255,255,0));}
+#head .mark{display:flex;align-items:center;gap:9px}
+#head .mark svg{width:22px;height:13px;fill:none;stroke:var(--rd);stroke-width:1.3}
+#head .mark b{font-family:var(--en);font-size:11px;letter-spacing:.3em;font-weight:400}
+#head .rt{font-family:var(--en);font-size:9.5px;letter-spacing:.24em;color:var(--g2);
+  font-variant-numeric:tabular-nums}
+#back{width:34px;height:34px;margin-left:-9px;display:none;align-items:center;justify-content:center}
+#back i{width:9px;height:9px;border-left:1.2px solid var(--ink);border-bottom:1.2px solid var(--ink);
+  transform:rotate(45deg);margin-left:3px}
+body.hasback #back{display:flex}
+body.hasback #head .mark{display:none}
+
+/* ---------- 画面 ---------- */
+#views{position:absolute;inset:0;z-index:10}
+.view{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;padding:var(--head) 0 calc(var(--tab) + var(--safeb) + 16px);
+  opacity:0;visibility:hidden;transform:translateY(10px);
+  transition:opacity .42s var(--ease),transform .52s var(--ease),visibility .42s}
+.view.on{opacity:1;visibility:visible;transform:none}
+.view.out{opacity:0;transform:translateY(-10px)}
+body.nofoot .view{padding-bottom:calc(var(--safeb) + 16px)}
+.pad{padding:0 22px}
+.stage{position:relative;pointer-events:none}
+
+/* ---------- 下タブ ---------- */
+#tabs{position:absolute;left:0;right:0;bottom:0;z-index:20;height:calc(var(--tab) + var(--safeb));
+  padding-bottom:var(--safeb);display:flex;align-items:center;
+  background:rgba(255,255,255,.86);backdrop-filter:saturate(180%) blur(18px);
+  border-top:1px solid var(--line);transition:transform .4s var(--ease)}
+body.nofoot #tabs{transform:translateY(110%)}
+#tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;padding-top:2px}
+#tabs i{width:13px;height:13px;border:1.2px solid var(--g3);transition:.3s var(--ease)}
+#tabs .t2 i{border-radius:50%}
+#tabs .t3 i{transform:rotate(45deg)}
+#tabs .t4 i{border-radius:50% 50% 50% 0}
+#tabs span{font-family:var(--en);font-size:8px;letter-spacing:.2em;color:var(--g3)}
+#tabs .on i{border-color:var(--rd);background:var(--rd)}
+#tabs .on span{color:var(--ink)}
+
+/* ---------- 文字 ---------- */
+.en{font-family:var(--en);letter-spacing:.24em;font-weight:400;font-variant-numeric:tabular-nums}
+.xs{font-size:9.5px;letter-spacing:.26em;color:var(--g1)}
+.sm{font-size:11.5px}
+.lg{font-size:22px;letter-spacing:.2em}
+.xl{font-size:34px;letter-spacing:.15em;line-height:1.15}
+.num{font-family:var(--en);font-variant-numeric:tabular-nums;letter-spacing:.01em}
+h2.t{font-size:20px;line-height:1.62;letter-spacing:.04em;font-weight:600}
+h3.t{font-size:15px;line-height:1.7;letter-spacing:.04em;font-weight:600}
+p.b{font-size:12.5px;line-height:2.05;letter-spacing:.03em;color:var(--g1)}
+.rd{color:var(--rd)}
+.sec{display:flex;align-items:baseline;justify-content:space-between;
+  margin:30px 0 2px;padding-bottom:9px;border-bottom:1px solid var(--line)}
+.sec b{font-family:var(--en);font-size:9.5px;letter-spacing:.26em;font-weight:400}
+.sec span{font-size:10px;color:var(--g2)}
+
+/* ---------- 部品 ---------- */
+.btn{display:flex;width:100%;align-items:center;justify-content:center;height:52px;border-radius:999px;
+  font-family:var(--en);font-size:10.5px;letter-spacing:.26em;transition:.28s var(--ease)}
+.btn.k{background:var(--ink);color:#fff}
+.btn.k:active{transform:scale(.975);background:#000}
+.btn.o{border:1px solid var(--ink)}
+.btn.o:active{background:var(--ink);color:#fff}
+.btn[disabled]{opacity:.28;pointer-events:none}
+.btn .ja{font-family:var(--jp);letter-spacing:.12em;font-size:12.5px}
+
+.row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.row .k{font-size:11px;color:var(--g1);letter-spacing:.04em}
+.row .v{margin-left:auto;font-family:var(--en);font-size:13px;font-variant-numeric:tabular-nums}
+.row .v em{font-style:normal;font-size:9.5px;color:var(--g2);margin-left:3px;letter-spacing:.12em}
+
+.meter{height:2px;background:var(--line);position:relative;margin-top:8px;overflow:hidden}
+.meter i{position:absolute;left:0;top:0;bottom:0;background:var(--ink);width:0;
+  transition:width 1.1s var(--ease)}
+.meter.r i{background:var(--rd)}
+
+.wk{width:14px;height:14px;flex:none;border:1px solid rgba(0,0,0,.16);border-radius:2px}
+.xh{position:absolute;width:9px;height:9px;opacity:.55;pointer-events:none;
+  background:linear-gradient(var(--g3),var(--g3)) center/1px 100% no-repeat,
+             linear-gradient(var(--g3),var(--g3)) center/100% 1px no-repeat}
+
+/* ---------- 01 OPENING ---------- */
+#v-intro{text-align:center}
+#v-intro .stage{height:38dvh;min-height:250px;margin-top:6px}
+#v-intro .cd{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:26px}
+#v-intro .cd b{display:block;font-family:var(--en);font-size:23px;font-weight:400;font-variant-numeric:tabular-nums}
+#v-intro .cd span{display:block;margin-top:6px;font-size:7.5px;letter-spacing:.16em;color:var(--g2);font-family:var(--en)}
+
+/* ---------- 02 PADDOCK ---------- */
+#v-paddock .stage{height:230px}
+.dots{display:flex;justify-content:center;gap:7px;margin-top:2px}
+.dots i{width:22px;height:3px;background:var(--line);transition:.35s var(--ease);border-radius:2px}
+.dots i.on{background:var(--ink);width:34px}
+.deck{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;
+  padding:18px 22px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.deck::-webkit-scrollbar{display:none}
+.card{flex:0 0 calc(100% - 44px);scroll-snap-align:center;
+  border:1px solid var(--line);border-radius:20px;padding:20px;background:#fff}
+.card .top{display:flex;align-items:center;gap:11px}
+.card .top .ln{font-family:var(--en);font-size:15px;letter-spacing:.12em}
+.card .top .fr{margin-left:auto;font-family:var(--en);font-size:9px;letter-spacing:.22em;color:var(--g2)}
+.card .note{font-size:11.5px;line-height:1.95;color:var(--g1);margin-top:14px;letter-spacing:.03em}
+.ped{display:grid;grid-template-columns:auto 1fr;gap:9px 14px;margin-top:6px;align-items:center}
+.ped .k{font-size:10px;color:var(--g2)}
+.ped .v{font-family:var(--en);font-size:11.5px;letter-spacing:.13em}
+.steps{display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap}
+.steps span{font-family:var(--en);font-size:8.5px;letter-spacing:.14em;color:var(--g2);
+  border:1px solid var(--line);border-radius:999px;padding:5px 9px}
+.steps span:last-child{border-color:var(--rd);color:var(--rd)}
+
+/* ---------- 04 RACE ---------- */
+#v-race .stage{height:190px}
+.rail{height:1px;background:var(--line);margin:0 22px;position:relative}
+.rail i{position:absolute;left:0;top:-1px;height:3px;background:var(--rd);width:0;
+  transition:width .6s linear}
+.phase{display:flex;justify-content:space-between;padding:10px 22px 0}
+.phase span{font-family:var(--en);font-size:8px;letter-spacing:.18em;color:var(--g3);transition:.3s}
+.phase span.on{color:var(--ink)}
+.board{position:relative}
+.lrow{position:absolute;left:0;right:0;top:0;height:54px;
+  display:grid;grid-template-columns:20px 14px 1fr auto;align-items:center;gap:11px;
+  border-bottom:1px solid var(--line);
+  transition:transform .72s var(--ease)}
+.lrow .pos{font-family:var(--en);font-size:12px;color:var(--g2);font-variant-numeric:tabular-nums}
+.lrow .nm{font-family:var(--en);font-size:12.5px;letter-spacing:.11em}
+.lrow .sc{font-family:var(--en);font-size:13px;font-variant-numeric:tabular-nums}
+.lrow.lead .pos,.lrow.lead .sc{color:var(--rd)}
+.lrow .bar{position:absolute;left:45px;right:0;bottom:11px;height:2px;background:var(--line2)}
+.lrow .bar i{position:absolute;inset:0 auto 0 0;background:var(--g3);width:0;
+  transition:width .55s var(--ease)}
+.lrow.lead .bar i{background:var(--rd)}
+.jgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:14px}
+.jgrid div{border:1px solid var(--line);border-radius:10px;padding:10px 6px;text-align:center;
+  transition:.4s var(--ease)}
+.jgrid div.on{border-color:var(--ink)}
+.jgrid b{display:block;font-size:9px;font-weight:400;color:var(--g1);letter-spacing:.02em}
+.jgrid span{display:block;margin-top:6px;font-family:var(--en);font-size:8px;color:var(--g3);letter-spacing:.1em}
+.jgrid div.on span{color:var(--rd)}
+
+/* ---------- 05 RESULT ---------- */
+#v-result{text-align:center}
+#v-result .stage{height:250px}
+.reveal{font-family:var(--en);font-size:28px;letter-spacing:.2em;display:flex;justify-content:center;flex-wrap:wrap}
+.reveal span{opacity:0;transform:translateY(12px);animation:up .6s var(--ease) forwards}
+@keyframes up{to{opacity:1;transform:none}}
+
+/* ---------- 06 STABLE / CROSSING ---------- */
+.pick{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+.pick button{border:1px solid var(--line);border-radius:12px;padding:12px 6px;text-align:center;
+  transition:.25s var(--ease)}
+.pick button .n{font-family:var(--en);font-size:10px;letter-spacing:.1em;display:block;margin-top:7px}
+.pick button.on{border-color:var(--ink);background:var(--ink)}
+.pick button.on .n{color:#fff}
+.pick .sw{display:block;width:16px;height:16px;margin:0 auto;border-radius:3px;border:1px solid rgba(0,0,0,.16)}
+.childcard{border:1px solid var(--ink);border-radius:20px;padding:22px;margin-top:20px}
+
+/* ---------- ACCORDION ---------- */
+.qa{border-bottom:1px solid var(--line)}
+.qa>button{width:100%;display:flex;align-items:flex-start;gap:12px;padding:17px 0;text-align:left}
+.qa>button .q{font-size:12.5px;line-height:1.75;letter-spacing:.03em;font-weight:600}
+.qa>button .pm{margin-left:auto;flex:none;width:11px;height:11px;position:relative;margin-top:6px}
+.qa>button .pm::before,.qa>button .pm::after{content:"";position:absolute;background:var(--ink);
+  transition:.32s var(--ease)}
+.qa>button .pm::before{left:0;right:0;top:5px;height:1px}
+.qa>button .pm::after{top:0;bottom:0;left:5px;width:1px}
+.qa.open>button .pm::after{transform:scaleY(0)}
+.qa .a{max-height:0;overflow:hidden;transition:max-height .45s var(--ease)}
+.qa .a p{font-size:11.5px;line-height:2;color:var(--g1);padding:0 0 18px;letter-spacing:.03em}
+
+/* ---------- TOAST / SHEET ---------- */
+#toast{position:absolute;left:50%;bottom:calc(var(--tab) + 26px);transform:translate(-50%,14px);
+  z-index:40;background:var(--ink);color:#fff;border-radius:999px;padding:12px 22px;
+  font-family:var(--en);font-size:9.5px;letter-spacing:.22em;opacity:0;pointer-events:none;
+  transition:.4s var(--ease)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.hint{font-family:var(--en);font-size:8.5px;letter-spacing:.22em;color:var(--g3);text-align:center;
+  padding:14px 0 0}
+.fade{animation:fi .7s var(--ease) both}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}

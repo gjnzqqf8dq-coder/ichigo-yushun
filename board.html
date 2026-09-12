@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ICHIGO YUSHUN 2027 — UI</title>
+<link rel="stylesheet" href="board.css?v=1">
+</head>
+<body>
+
+<div class="board">
+  <div class="bhead">
+    <h1>ICHIGO YUSHUN</h1>
+    <p>STRAWBERRIES RACE A BRIGHTER TOMORROW.　2027</p>
+    <div class="jp">WHITE LAB × HORSE RACING × STRAWBERRY × PARTICLE DATA × LUXURY EDITORIAL<br>
+      24画面。タップで単体表示になります。</div>
+  </div>
+  <div id="groups"></div>
+</div>
+
+<div class="ov" id="ov">
+  <div class="ttl" id="ovt"></div>
+  <div class="cls" id="ovc">CLOSE</div>
+  <div class="nav p" id="ovp"><i></i></div>
+  <div class="nav n" id="ovn"><i></i></div>
+  <div id="ovbody"></div>
+</div>
+
+<script src="particles.js?v=5"></script>
+<script src="screens.js?v=6"></script>
+<script>
+/* ---------- 粒子の起動 ---------- */
+function initParticles(root, anim){
+  root.querySelectorAll('canvas[data-p]').forEach(function(c){
+    var d = c.dataset;
+    var W = +d.w || 200, H = +d.h || W;
+    var o = { anim: anim && d.anim === '1' };
+    if (d.dir) o.dir = d.dir;
+    if (d.spread) o.spread = +d.spread;
+    if (d.dark === '1') o.tint = [255,255,255];
+    switch (d.p) {
+      case 'berry':  PT.fromImage(c, d.src, W, H, o); break;
+      case 'dna':    PT.dna(c, W, H, o); break;
+      case 'japan':  PT.japan(c, W, o); break;
+      case 'horse':  PT.horse(c, W, o); break;
+      case 'horses': PT.horses(c, W, o); break;
+    }
+  });
+}
+function stopParticles(root){
+  root.querySelectorAll('canvas').forEach(function(c){ if (c._stop) c._stop(); });
+}
+
+/* ---------- 端末を1台つくる ---------- */
+function buildPhone(s){
+  var w = document.createElement('div');
+  w.className = 'ph-frame' + (s.dark ? ' dark' : '');
+  w.innerHTML = s.h;
+  return w;
+}
+
+/* ---------- ボード ---------- */
+var SCALE = parseFloat(new URLSearchParams(location.search).get('s')) || 0.52;
+var groups = document.getElementById('groups');
+var curRow = null;
+SCREENS.forEach(function(s, i){
+  if (s.gt) {
+    var g = document.createElement('div');
+    g.className = 'grp';
+    g.innerHTML = '<h2><span>' + s.g + '　' + s.gt + '</span><em>' + s.gj + '</em></h2><div class="row"></div>';
+    groups.appendChild(g);
+    curRow = g.querySelector('.row');
+  }
+  var cell = document.createElement('div');
+  cell.className = 'cell';
+  cell.style.width = Math.round(375 * SCALE) + 'px';
+  var box = document.createElement('div');
+  box.style.width = Math.round(375 * SCALE) + 'px';
+  box.style.height = Math.round(812 * SCALE) + 'px';
+  box.style.overflow = 'hidden';
+  var sc = document.createElement('div');
+  sc.className = 'scaler';
+  sc.style.transform = 'scale(' + SCALE + ')';
+  var ph = buildPhone(s);
+  sc.appendChild(ph); box.appendChild(sc);
+  cell.appendChild(box);
+  cell.insertAdjacentHTML('beforeend',
+    '<div class="cap">' + String(i + 1).padStart(2,'0') + '　' + s.id.toUpperCase() + '</div>');
+  cell.onclick = function(){ openScreen(i); };
+  curRow.appendChild(cell);
+  initParticles(ph, false);
+});
+
+/* ---------- 単画面 ---------- */
+var ov = document.getElementById('ov'), ovb = document.getElementById('ovbody'),
+    ovt = document.getElementById('ovt'), idx = 0;
+function openScreen(i){
+  idx = (i + SCREENS.length) % SCREENS.length;
+  var s = SCREENS[idx];
+  stopParticles(ovb); ovb.innerHTML = '';
+  var ph = buildPhone(s);
+  ovb.appendChild(ph);
+  initParticles(ph, true);
+  ovt.textContent = String(idx + 1).padStart(2,'0') + ' / 24　' + s.id.toUpperCase();
+  ov.classList.add('on');
+}
+function closeScreen(){ stopParticles(ovb); ovb.innerHTML = ''; ov.classList.remove('on'); }
+document.getElementById('ovc').onclick = closeScreen;
+document.getElementById('ovp').onclick = function(){ openScreen(idx - 1); };
+document.getElementById('ovn').onclick = function(){ openScreen(idx + 1); };
+ov.onclick = function(e){ if (e.target === ov) closeScreen(); };
+document.onkeydown = function(e){
+  if (!ov.classList.contains('on')) return;
+  if (e.key === 'Escape') closeScreen();
+  if (e.key === 'ArrowLeft') openScreen(idx - 1);
+  if (e.key === 'ArrowRight') openScreen(idx + 1);
+};
+</script>
+</body>
+</html>
