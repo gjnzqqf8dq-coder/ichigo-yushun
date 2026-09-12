@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>苺優駿 ｜ ICHIGO YUSHUN</title>
+<meta name="theme-color" content="#FAF6EE">
+<style>
+:root{
+  --bg:#FAF6EE; --ink:#111111; --sub:#7A736A; --line:#E2DACB; --card:#FFFFFF;
+  --brand:#D8102F;
+  --w1:#FFFFFF; --w2:#111111; --w3:#D8102F; --w4:#1B55C4; --w5:#E8B800; --w6:#118A4B;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);
+  font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif;
+  -webkit-font-smoothing:antialiased;line-height:1.8;overflow-x:hidden}
+.wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+section{padding:88px 0}
+.mono{font-family:"Helvetica Neue",Arial,sans-serif;font-variant-numeric:tabular-nums}
+.sec-num{font-family:"Helvetica Neue",Arial,sans-serif;font-size:10.5px;letter-spacing:.3em;
+  font-weight:700;color:var(--sub);margin-bottom:14px}
+h2{font-size:clamp(24px,3.4vw,38px);line-height:1.32;margin-bottom:14px;font-weight:800;letter-spacing:-.01em}
+h3{font-size:16px;font-weight:800;margin-bottom:8px}
+.lead{font-size:14.5px;color:#3E3A34;max-width:660px;margin-bottom:40px}
+.tag{display:inline-block;font-size:10px;letter-spacing:.14em;font-weight:800;
+  border:2px solid var(--ink);padding:3px 9px;margin-bottom:14px}
+hr.thick{border:none;border-top:2px solid var(--ink);margin:0}
+
+/* hero */
+.hero{padding:112px 0 68px}
+.kicker{font-family:"Helvetica Neue",Arial,sans-serif;font-size:10.5px;letter-spacing:.34em;
+  color:var(--sub);font-weight:700;margin-bottom:24px}
+.hero h1{font-size:clamp(40px,9vw,96px);line-height:1.04;font-weight:900;letter-spacing:-.02em;margin-bottom:8px}
+.hero .ja{font-size:clamp(14px,2vw,19px);letter-spacing:.5em;color:var(--sub);font-weight:700;margin-bottom:26px}
+.hero-sub{font-size:clamp(14px,1.6vw,17px);max-width:640px;color:#3E3A34}
+.concept{font-size:clamp(20px,3.4vw,32px);font-weight:900;letter-spacing:-.01em;margin-bottom:20px;
+  padding-bottom:18px;border-bottom:2px solid var(--ink);display:inline-block}
+.concept b{color:var(--brand)}
+.cal{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;background:var(--line);border:2px solid var(--ink)}
+@media(max-width:820px){.cal{grid-template-columns:repeat(2,1fr)}}
+.cal>div{background:var(--card);padding:16px 14px 18px}
+.cal .m{font-family:"Helvetica Neue",Arial;font-size:19px;font-weight:900;letter-spacing:-.02em}
+.cal .w{font-size:10px;letter-spacing:.1em;color:var(--brand);font-weight:800;margin-top:2px}
+.cal .t{font-size:12px;line-height:1.75;margin-top:9px}
+.cal>div.hi{background:#FFF3F0}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line);border:2px solid var(--ink)}
+@media(max-width:820px){.acts{grid-template-columns:1fr}}
+.acts>div{background:var(--card);padding:26px}
+.acts .no{font-family:"Helvetica Neue",Arial;font-size:11px;font-weight:900;letter-spacing:.16em;color:var(--brand)}
+.acts h3{margin-top:8px;font-size:18px}
+.acts p{font-size:13px;color:#3E3A34;margin-top:8px}
+.acts .who{font-size:11px;color:var(--sub);margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.ww{display:grid;grid-template-columns:1fr 62px 1fr;gap:0;align-items:stretch;border:2px solid var(--ink)}
+@media(max-width:760px){.ww{grid-template-columns:1fr}}
+.ww>div{background:var(--card);padding:26px}
+.ww .mid{background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:20px;font-weight:900}
+@media(max-width:760px){.ww .mid{padding:8px}}
+.ww h3{font-size:15px}
+.ww ul{list-style:none;margin-top:12px}
+.ww li{font-size:12.5px;line-height:1.7;padding:8px 0 8px 15px;position:relative;border-bottom:1px solid var(--line)}
+.ww li:last-child{border-bottom:none}
+.ww li::before{content:"";position:absolute;left:0;top:16px;width:7px;height:2px;background:var(--brand)}
+.qa{border:2px solid var(--ink);background:var(--card)}
+.qa>div{border-bottom:1px solid var(--line);padding:20px 24px}
+.qa>div:last-child{border-bottom:none}
+.qa .q{font-size:14.5px;font-weight:800;position:relative;padding-left:26px}
+.qa .q::before{content:"Q";position:absolute;left:0;top:0;font-family:"Helvetica Neue",Arial;color:var(--brand);font-weight:900}
+.qa .a{font-size:13px;color:#3E3A34;margin-top:9px;padding-left:26px;position:relative;line-height:1.95}
+.qa .a::before{content:"A";position:absolute;left:0;top:0;font-family:"Helvetica Neue",Arial;color:var(--sub);font-weight:900}
+.hero-strip{display:flex;gap:0;margin-top:44px;border:2px solid var(--ink)}
+.hero-strip div{flex:1;aspect-ratio:1/1;border-right:2px solid var(--ink);background:var(--card);
+  display:grid;place-items:center;overflow:hidden}
+.hero-strip div:last-child{border-right:none}
+.hero-strip img{width:82%;height:82%;object-fit:contain;mix-blend-mode:multiply}
+
+/* 候補グリッド */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line);border:2px solid var(--ink)}
+@media(max-width:720px){.grid{grid-template-columns:repeat(2,1fr)}}
+.cell{background:var(--card);aspect-ratio:1/1;position:relative;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;transition:background .2s}
+.cell:hover{background:#FFFDF6}
+.cell .float{width:78%;height:62%;display:grid;place-items:center;position:relative;
+  transition:transform .45s cubic-bezier(.2,.9,.3,1.2)}
+.cell:hover .float{transform:translateY(-7px)}
+.cell img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.cell .ph{width:56%;aspect-ratio:1/1.15;border:2px dashed var(--line);border-radius:50% 50% 48% 48%/62% 62% 38% 38%}
+.cell .idx{position:absolute;top:9px;left:11px;font-family:"Helvetica Neue",Arial;font-size:10px;font-weight:800;color:#C9C0B1}
+.cell .wk{position:absolute;top:8px;right:9px;width:19px;height:19px;border:1.5px solid var(--ink);
+  display:grid;place-items:center;font-size:10px;font-weight:800;font-family:"Helvetica Neue",Arial}
+.cell .nm{font-family:"Helvetica Neue",Arial;font-size:11px;font-weight:700;letter-spacing:.04em;margin-top:8px}
+.cell .sh{font-size:10px;color:var(--sub);margin-top:1px}
+.cell.on{background:#FFF6F2}
+.cell.on::after{content:"◎";position:absolute;bottom:7px;left:11px;color:var(--brand);font-size:15px;font-weight:800}
+
+/* 詳細 */
+.detail{border:2px solid var(--ink);background:var(--card);margin-top:2px;padding:26px}
+.d-head{display:flex;align-items:flex-start;gap:22px;flex-wrap:wrap}
+.d-img{width:150px;height:150px;flex:none;display:grid;place-items:center}
+.d-img img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.d-ttl{font-family:"Helvetica Neue",Arial;font-size:24px;font-weight:700;letter-spacing:.03em}
+.d-sub{font-size:12px;color:var(--sub);margin-top:4px}
+.spec{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--line);
+  border:2px solid var(--ink);margin-top:22px}
+@media(max-width:720px){.spec{grid-template-columns:repeat(2,1fr)}}
+.spec>div{background:var(--card);padding:11px 13px}
+.spec dt{font-size:9.5px;letter-spacing:.1em;color:var(--sub);font-weight:700}
+.spec dd{font-size:17px;margin-top:2px;font-weight:800;font-family:"Helvetica Neue",Arial}
+.spec dd i{font-style:normal;font-size:10px;color:var(--sub);margin-left:3px;font-weight:400}
+.ped{margin-top:22px}
+.ped table{width:100%;border-collapse:collapse;font-size:11.5px;border:2px solid var(--ink)}
+.ped td{border:1px solid var(--line);padding:8px 9px;line-height:1.4}
+.ped .g1{width:36%;font-size:13px;font-weight:700}
+.ped .g2{width:33%}
+.ped .g3{width:31%;color:var(--sub);font-size:10.5px}
+.cap{font-size:11px;color:var(--sub);margin-top:9px;line-height:1.85}
+.tale{font-size:14px;line-height:2;margin-top:20px;border-left:3px solid var(--brand);padding-left:15px}
+.steps{margin-top:18px;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;background:var(--line);border:2px solid var(--ink)}
+@media(max-width:720px){.steps{grid-template-columns:1fr}}
+.steps div{background:var(--card);padding:10px 11px;font-size:10.5px;line-height:1.6}
+.steps b{display:block;font-size:9.5px;letter-spacing:.1em;color:var(--brand);margin-bottom:2px}
+
+/* ルール */
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+@media(max-width:820px){.rules{grid-template-columns:1fr}}
+.rule-box{background:var(--card);border:2px solid var(--ink);padding:24px;margin-bottom:24px}
+.rule-box p{font-size:13px;color:#3E3A34;margin-top:8px}
+.wkrow{display:flex;gap:7px;margin-top:14px;flex-wrap:wrap}
+.wkrow span{width:30px;height:30px;border:2px solid var(--ink);display:grid;place-items:center;
+  font-size:11px;font-weight:800;font-family:"Helvetica Neue",Arial}
+.cibar{height:12px;border:2px solid var(--ink);margin-top:14px;position:relative;background:var(--card)}
+.cibar i{position:absolute;top:0;bottom:0;left:0;background:var(--brand);opacity:.18}
+.cibar u{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--ink);text-decoration:none}
+.cilbl{display:flex;justify-content:space-between;font-size:10px;color:var(--sub);margin-top:5px;font-family:"Helvetica Neue",Arial}
+
+/* ボタン */
+.btn{font-family:inherit;font-size:14px;font-weight:800;letter-spacing:.06em;padding:15px 22px;
+  background:var(--ink);color:var(--bg);border:2px solid var(--ink);cursor:pointer;margin-top:26px;
+  transition:transform .18s cubic-bezier(.32,1.5,.45,1)}
+.btn:active{transform:scale(.98)}
+.btn:disabled{background:var(--card);color:#C9C0B1;border-color:var(--line);cursor:default}
+.btn.br{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.g{background:var(--card);color:var(--ink)}
+.wide{display:block;width:100%}
+
+/* 審査 */
+.jd{display:grid;grid-template-columns:26px 1fr auto auto;gap:14px;align-items:center;
+  padding:13px 2px;border-bottom:1px solid var(--line);opacity:.2;transition:opacity .5s}
+.jd.lit{opacity:1}
+.jd .wk{width:24px;height:24px;border:2px solid var(--ink);display:grid;place-items:center;
+  font-size:10px;font-weight:800;font-family:"Helvetica Neue",Arial}
+.jd .n{font-family:"Helvetica Neue",Arial;font-size:13px;font-weight:700}
+.jv{font-family:"Helvetica Neue",Arial;font-size:16px;font-weight:800;min-width:56px;text-align:right}
+.jw{font-family:"Helvetica Neue",Arial;font-size:11px;color:var(--sub);min-width:46px;text-align:right}
+.phase{font-size:11px;letter-spacing:.26em;color:var(--sub);font-weight:700;margin-bottom:20px;min-height:16px}
+
+/* 結果 */
+.result{border:2px solid var(--ink);background:var(--card);padding:34px;text-align:center;margin-top:26px}
+.result .crown{width:34px;height:34px;stroke:var(--brand);fill:none;stroke-width:1.4;margin:0 auto 14px;display:block}
+.result .rimg{width:190px;height:190px;margin:0 auto 6px}
+.result .rimg img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.result .born{font-size:10.5px;letter-spacing:.26em;color:var(--brand);font-weight:800}
+.result .nn{font-size:clamp(28px,6vw,44px);font-weight:900;letter-spacing:.02em;margin-top:8px}
+.result .fr{font-size:11.5px;color:var(--sub);margin-top:6px}
+.verdict{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.2em;border:2px solid var(--ink);
+  padding:7px 18px;margin-top:20px}
+.verdict.hit{background:var(--brand);border-color:var(--brand);color:#fff}
+.rtext{font-size:14px;line-height:2;margin-top:24px;text-align:left;max-width:620px;margin-left:auto;margin-right:auto}
+
+/* 交配 */
+.gen{display:grid;grid-template-columns:330px 1fr;gap:44px;align-items:start}
+@media(max-width:920px){.gen{grid-template-columns:1fr}}
+.pool{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pool button{font-family:"Helvetica Neue",Arial;font-size:11px;font-weight:700;padding:7px 10px;
+  background:var(--card);border:2px solid var(--ink);cursor:pointer}
+.pool button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.parent{border:2px solid var(--ink);background:var(--card);padding:13px 15px;margin-bottom:10px}
+.parent b{display:block;font-family:"Helvetica Neue",Arial;font-size:13px;font-weight:700;margin-top:3px}
+.ciout{border:2px solid var(--ink);background:var(--card);padding:16px 18px;margin-top:16px;display:none}
+.ciout .v{font-family:"Helvetica Neue",Arial;font-size:30px;font-weight:900;line-height:1}
+.ciout .t{font-size:12px;color:#3E3A34;margin-top:6px}
+.genout{border:2px solid var(--ink);background:var(--card);padding:28px;min-height:200px}
+.genout .ln{font-family:"Helvetica Neue",Arial;font-size:22px;font-weight:800}
+.growing{font-size:12px;color:var(--sub);padding:5px 0 5px 16px;position:relative}
+.growing::before{content:"";position:absolute;left:0;top:14px;width:8px;height:2px;background:var(--brand)}
+
+footer{border-top:2px solid var(--ink);padding:34px 0 60px;font-size:11px;line-height:2;color:var(--sub)}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="hero">
+  <div class="kicker">CULTA ／ 第1回 苺優駿 ／ 2027年5月30日（日）</div>
+  <h1>苺優駿</h1>
+  <div class="ja">I C H I G O　Y U S H U N</div>
+  <div class="concept">一期一会を、<b>苺一会</b>に。</div>
+  <p class="hero-sub">日本ダービーに出られるのは3歳の一年だけ。どの馬も、一生に一度しか走らない。<br>
+   いちごも同じで、その年の実生からしか出られない。<br><br>
+   まだ名前のない6つの系統が、5月最終日曜、日本ダービーと同じ日に日本一を決める。<br>
+   勝った1つだけが商品になり、翌年の交配親になる。<br>あなたは1つを選んで、そのオーナーになる。</p>
+  <div class="hero-strip" id="strip"></div>
+</header>
+</div>
+<hr class="thick">
+
+<div class="wrap">
+<section id="cand">
+  <div class="sec-num">01 — CANDIDATES</div>
+  <h2>今年の6粒</h2>
+  <p class="lead">並んでいるのは、まだ商品になっていない系統です。名前はなく、系統番号で呼ばれています。
+   市販品は1つも出ていないので、順位がついて誰かの売上が落ちることは起きません。
+   触ると、3代血統表と、ここまでの選抜が開きます。</p>
+  <div class="grid" id="grid"></div>
+  <div id="detail"></div>
+</section>
+</div>
+<hr class="thick">
+
+<div class="wrap">
+<section id="read">
+  <div class="sec-num">02 — HOW TO READ</div>
+  <h2>数字の読み方</h2>
+  <p class="lead">競馬の出馬表と同じ形式で並べています。単位と区分は、実在の試験研究報告と品種登録審査基準に合わせました。</p>
+  <div class="rules">
+    <div>
+      <div class="rule-box">
+        <div class="tag">RULE 1 — 枠の色</div>
+        <h3>番号の色は、競馬の帽色と同じ</h3>
+        <p>1白・2黒・3赤・4青・5黄・6緑。7枠は橙、8枠は桃。JRAの表記では「オレンジ」「ピンク」とは書きません。</p>
+        <div class="wkrow" id="wkrow"></div>
+      </div>
+      <div class="rule-box" style="margin-bottom:0">
+        <div class="tag">RULE 2 — 糖酸比</div>
+        <h3>甘さは、糖度だけでは決まらない</h3>
+        <p>糖度（Brix）を酸度（%）で割った値。福岡県農業総合試験場の報告では、良食味の目安は <b>12</b>。
+         同じ糖度でも酸が高ければ甘く感じません。高温期ほど酸が上がることが、3品種で確認されています。</p>
+      </div>
+    </div>
+    <div>
+      <div class="rule-box">
+        <div class="tag">RULE 3 — 3代血統表</div>
+        <h3>上半分が父系、下半分が母系</h3>
+        <p>母の父を、JRAでは<b>ブルードメアサイヤー</b>と呼びます。いちごでも同じように父母をさかのぼると、
+         日本の品種はほぼ全部が <b>福羽・Haward17・ダナー</b> の3つにたどり着きます。</p>
+      </div>
+      <div class="rule-box" style="margin-bottom:0">
+        <div class="tag">RULE 4 — 近交係数</div>
+        <h3>いちごの育種は、競馬と同じ指標で管理されている</h3>
+        <p>血統がどれだけ近いかを表す数。やよいひめ0.346、とちおとめ0.261、あまおう0.213。
+         <b>0.3を超えると収量が落ちる</b>と報告されています。日本のいちごは、もう血統が近すぎる。
+         CULTAが2年で品種を作れる意味は、<b>遠い親どうしを掛けられる</b>ことにあります。</p>
+        <div class="cibar"><i style="width:68%"></i><u style="left:68%"></u></div>
+        <div class="cilbl"><span>0</span><span>0.30 ／ 収量が落ちはじめる</span><span>0.44</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+<hr class="thick">
+
+<div class="wrap">
+<section id="own">
+  <div class="sec-num">03 — OWNERSHIP</div>
+  <h2>オーナーになる</h2>
+  <p class="lead">競馬には<b>一口馬主</b>という仕組みがあります。1頭を大勢で分けて持ち、近況を受け取り、
+   勝てば口取り式に立てる。苺優駿でも、6系統から1つだけを選んで出資します。<br>
+   選べるのは1つ。あとから変えられません。ダービーに出られるのは3歳の一年だけで、
+   どの馬も一生に一度しか走らないからです。</p>
+  <div id="ownPick"></div>
+  <button class="btn br wide" id="goJudge" disabled>系統を選んでください</button>
+</section>
+</div>
+
+<hr class="thick" id="jhr" class="hide">
+<div class="wrap"><section id="judge" class="hide">
+  <div class="sec-num">04 — JUDGING</div>
+  <h2>審査</h2>
+  <p class="lead">系統番号を伏せて、専門家が食べます。同時にオーナーズクラブの投票が開きます。</p>
+  <div class="phase" id="phase"></div>
+  <div id="jlist"></div>
+  <div id="result"></div>
+</section></div>
+
+<hr class="thick">
+<div class="wrap"><section id="cal">
+  <div class="sec-num">05 — CALENDAR</div>
+  <h2>2月に始まって、5月末に終わる</h2>
+  <p class="lead">決勝の日だけの企画ではありません。冬いちごが並んでいる2月に、その隣で春の出走表が公開されます。
+   スーパーで、サイトで、競馬場で。同じ6粒を、4か月かけて追いかけてもらいます。</p>
+  <div class="cal">
+    <div><div class="m">2月</div><div class="w">出走表 公開</div>
+      <div class="t">冬いちごの売り場の隣に、春に走る6系統の出走表が並ぶ。まだ食べられない。名前もない。</div></div>
+    <div><div class="m">3月</div><div class="w">投票 開始</div>
+      <div class="t">サイトで血統と数値を見て、1つを選ぶ。オーナーズクラブに入る。</div></div>
+    <div><div class="m">4月</div><div class="w">パドック</div>
+      <div class="t">6品種の食べ比べパックが店頭と競馬場に並ぶ。ここで初めて味が分かる。</div></div>
+    <div class="hi"><div class="m">5月</div><div class="w">決勝・最終日曜</div>
+      <div class="t">日本ダービーと同じ日。専門家の審査とオーナーズクラブの票で、日本一が決まる。</div></div>
+    <div><div class="m">6月</div><div class="w">商品化</div>
+      <div class="t">優勝系統に商品名が付く。翌年から全国のスーパーに並ぶ。日本初の夏いちご。</div></div>
+    <div><div class="m">翌2月</div><div class="w">次の出走表</div>
+      <div class="t">優勝品種が父として、翌年の出走表に載る。自分が選んだ系統の子を、また応援する。</div></div>
+  </div>
+</section></div>
+
+<hr class="thick">
+<div class="wrap"><section id="acts">
+  <div class="sec-num">06 — ACTIONS</div>
+  <h2>4つの場所でやる</h2>
+  <p class="lead">競馬場だけでやると、競馬を見る人しか食べないいちごになります。
+   スーパーだけでやると、ただの人気投票で終わります。4つを同時に動かして、初めて「日本で愛される」に届きます。</p>
+  <div class="acts">
+    <div><div class="no">ACTION 01</div><h3>サイト｜苺優駿</h3>
+      <p>いまあなたが見ているこれ。出走表、3代血統表、糖度と硬度、断面。触って選んで、オーナーになる。
+       いちごが走る映像が流れ、決勝の日に結果が出る。</p>
+      <div class="who">担当：CULTA ／ 通年</div></div>
+    <div><div class="no">ACTION 02</div><h3>スーパー｜春の出走表</h3>
+      <p>2月、冬いちごの売り場の隣に出走表を掲出。4月には6品種の食べ比べパックを販売。
+       この売り場には<b>日本ダービーの告知も並ぶ</b>。</p>
+      <div class="who">担当：CULTA × 量販店 × JRA ／ 2〜5月</div></div>
+    <div><div class="no">ACTION 03</div><h3>競馬場｜決勝ブース</h3>
+      <p>5月最終日曜、東京競馬場に出店。6品種の食べ比べパックをその場で販売し、
+       食べた人がその場で投票してオーナーズクラブに入る。来場者は5〜60代が中心。</p>
+      <div class="who">担当：CULTA × JRA ／ 5月最終日曜</div></div>
+    <div><div class="no">ACTION 04</div><h3>オーナーズクラブ</h3>
+      <p>一口馬主と同じ構造。選んだ系統の近況が届き、勝てば口取り式に立てる。
+       翌年は、自分が選んだ系統の子が出走表に載る。だから来年もまた見に来る。</p>
+      <div class="who">担当：CULTA ／ 通年・継続</div></div>
+  </div>
+</section></div>
+
+<hr class="thick">
+<div class="wrap"><section id="ww">
+  <div class="sec-num">07 — WHY DERBY</div>
+  <h2>いちごが乗っかるのではなく、両方が得をする</h2>
+  <p class="lead">日本ダービーの名前を借りるだけの企画は、借りた側しか得をしません。
+   この企画は、いちごが全国のスーパーという売り場を持っていて、日本ダービーがそこを持っていない、というところから始まります。</p>
+  <div class="ww">
+    <div><h3>CULTA が日本ダービーに渡すもの</h3><ul>
+      <li>全国のスーパーの青果売り場。2月から5月まで、いちごの隣にダービーの告知が並ぶ</li>
+      <li>競馬を見ない層への接点。買い物客は毎週そこを通る</li>
+      <li>「品種改良の頂点を決めるレース」という、ダービー本来の意味を説明する場</li>
+    </ul></div>
+    <div class="mid">⇄</div>
+    <div><h3>日本ダービーが CULTA に渡すもの</h3><ul>
+      <li>5月最終日曜という、いちごが終わる日に立てる旗</li>
+      <li>東京競馬場という、いちごが一度も並んだことのない売り場</li>
+      <li>血統・出走・オーナーという、100年かけて磨かれた仕組みそのもの</li>
+    </ul></div>
+  </div>
+  <p class="lead" style="margin-top:26px;margin-bottom:0">
+   共通点は品種改良です。サラブレッドは300年、いちごは120年、どちらも掛け合わせで頂点を決めてきました。
+   日本ダービーは1930年の趣意書に「競走馬の資質向上を図る」と書いてあります。人気投票ではありません。
+   <b>勝った1頭が次の世代の親になる。</b>苺優駿も同じです。</p>
+</section></div>
+
+<hr class="thick">
+<div class="wrap"><section id="qa">
+  <div class="sec-num">08 — QUESTIONS</div>
+  <h2>言われそうなこと</h2>
+  <p class="lead">この企画に対して出てくる質問と、その答えです。</p>
+  <div class="qa">
+    <div><div class="q">ダービーをやって、どうなるのか。</div>
+      <div class="a">優勝した1系統だけが商品化されて、翌年から全国のスーパーに並びます。
+       買う側には「自分が選んだいちごが勝った」という理由ができ、CULTAには「日本一になった品種」という売り方ができます。
+       ダービーはゴールではなく、商品化の入口です。</div></div>
+    <div><div class="q">競馬を見る人にしか届かないのでは。</div>
+      <div class="a">競馬場は4つの場所のうちの1つです。出走表は2月から全国のスーパーに並び、投票はサイトで誰でもできます。
+       競馬場は「いちごが一度も並んだことのない売り場」として足すものであって、そこだけでやるわけではありません。</div></div>
+    <div><div class="q">なぜ市販品ではなく、未発売の系統なのか。</div>
+      <div class="a">市販品を競わせると、4位になった商品の売上が落ちます。他社の品種が勝っても困ります。
+       まだ商品になっていないCULTAの系統だけで競えば、順位がついて損をする人が誰もいません。</div></div>
+    <div><div class="q">日本ダービー側に何の得があるのか。</div>
+      <div class="a">全国のスーパーの青果売り場に、2月から5月まで告知が出ます。競馬を見ない買い物客が毎週そこを通ります。
+       いちご側が売り場を持っていて、ダービー側が持っていない。そこが交換になります。</div></div>
+    <div><div class="q">春のいちごは、そもそもおいしくないのでは。</div>
+      <div class="a">その通りです。一般的な品種は気温が上がると果皮硬度が下がり、成熟日数が縮んで糖の蓄積が減ります。
+       だからこの競走は「5月末まで走れるか」を競います。走り切れた系統だけが商品になるので、
+       おいしくない春いちごは最初から出てきません。</div></div>
+    <div><div class="q">2月に出走表を出しても、まだ食べられない。</div>
+      <div class="a">食べられないから見に来ます。競馬も同じで、出走表が出てから走るまでに時間があり、その間に人は調べて選びます。
+       4月の食べ比べパックで初めて味が分かる。この待つ時間そのものが、いちごを覚える時間になります。</div></div>
+  </div>
+</section></div>
+
+<hr class="thick" id="chr" class="hide">
+<div class="wrap"><section id="cross" class="hide">
+  <div class="sec-num">09 — CROSSING</div>
+  <h2>自分で交配してみる</h2>
+  <p class="lead">いちごの品種は、2つを掛け合わせて作ります。何が生まれるかは、交配した本人にも分かりません。
+   1万株の実生から選び抜いて、系統番号が付くまで4〜5年。<br>
+   親を2つ選んでください。<b>生まれるものは選べません。</b></p>
+  <div class="gen">
+    <div>
+      <div class="parent" id="pA"><span class="tag" style="margin:0">SIRE 父</span><b>未選択</b></div>
+      <div class="parent" id="pB"><span class="tag" style="margin:0">DAM 母</span><b>未選択</b></div>
+      <div class="pool" id="pool"></div>
+      <div class="ciout" id="ciout"><div class="v mono" id="ciV"></div><div class="t" id="ciT"></div></div>
+      <button class="btn br wide" id="doCross" disabled>交配する</button>
+    </div>
+    <div class="genout" id="genout"><p style="color:var(--sub);font-size:13px">親を2つ選ぶと、ここに生まれた系統が出ます。</p></div>
+  </div>
+</section></div>
+
+<hr class="thick">
+<div class="wrap"><footer>
+  第1回 苺優駿 ／ CULTA　　制作：東京藝術大学 デザイン科 桑田航希　電通「アイデアの学校」2026 提出企画<br>
+  品種名・系統番号は架空です。単位と数値の幅は一次資料に準拠しています。<br>
+  近交係数＝稲葉幸雄・吉田智彦『園芸学研究』5(3):219-225, 2006 ／ 選抜の実数＝栃木県農業総合研究センターいちご研究所 ／
+  果実の形＝品種登録審査基準 形質37の9区分 ／ 糖酸比の目安＝福岡県農業総合試験場研究報告26 ／ 競馬の用語＝JRA公式
+</footer></div>
+
+<script>
+const WK=['','var(--w1)','var(--w2)','var(--w3)','var(--w4)','var(--w5)','var(--w6)'];
+const FG=['','#111','#fff','#fff','#fff','#111','#fff'];
+const H=[
+ {id:0,w:1,img:'img/berry1.png',ln:'CULTA i-2025-14',seed:'25-14-208',brix:10.4,acid:0.71,firm:64,wt:24.6,days:34,shape:'じん臓形',ci:0.164,from:'静岡',
+  sire:'Snow Veil',ss:'North Bell',sss:'Haward17',ssd:'Pale Moon',sd:'Silk Dawn',sds:'ダナー',sdd:'Early Snow',
+  dam:'Pale Aurora',ds:'Winter Bell',dss:'North Bell',dsd:'福羽',dd:'Aurora Mist',dds:'Snow Veil',ddd:'Quiet Dawn',
+  bms:'母の父は Winter Bell。父と母の父に North Bell が重なっている。',name:'WHITE CROWN',exp:88.4,vote:14,
+  sel:[['2025.02','交配（70組合せのうちの1つ）'],['2025.04','採種 412粒'],['2026.01','一次選抜 1万株→300'],['2026.11','二次選抜 300→30'],['2027.02','系統番号を付与']],
+  tale:'白い果皮のまま完熟する。見た目で熟度が読めないので、これまで出荷の対象にならなかった。'},
+ {id:1,w:2,img:'img/berry2.png',ln:'CULTA i-2025-22',seed:'25-22-061',brix:10.8,acid:0.79,firm:86,wt:22.9,days:38,shape:'円錐形',ci:0.241,from:'栃木',
+  sire:'Night Run',ss:'Dark Field',sss:'ダナー',ssd:'Low Light',sd:'Velvet One',sds:'Deep Red',sdd:'Still Water',
+  dam:'Quiet Dawn',ds:'Grey Stone',dss:'ダナー',dsd:'Long Shade',dd:'Morning Ash',dds:'Night Run',ddd:'Pale Moon',
+  bms:'母の父は Grey Stone。父系と母系の両方にダナーが入っている。',name:'MIDNIGHT',exp:90.1,vote:11,
+  sel:[['2025.02','交配'],['2025.04','採種 338粒'],['2026.01','一次選抜 1万株→300'],['2026.11','二次選抜 300→30'],['2027.02','系統番号を付与']],
+  tale:'果皮硬度86は6系統で最も高い。3月以降も軟化が遅く、遠くまで運べる。'},
+ {id:2,w:3,img:'img/berry3.png',ln:'CULTA i-2025-03',seed:'25-03-117',brix:11.6,acid:0.68,firm:78,wt:23.8,days:31,shape:'円錐形',ci:0.071,from:'福岡',
+  sire:'Velvet One',ss:'Deep Red',sss:'Crimson Root',ssd:'Soft Ember',sd:'Still Water',sds:'アイベリー',sdd:'Quiet Dawn',
+  dam:'Ruby Grace',ds:'Crimson Root',dss:'Old Flame',dsd:'Red Sand',dd:'Grace Note',dds:'福羽',ddd:'Silk Dawn',
+  bms:'母の父は Crimson Root。祖母の父に来歴不詳のアイベリーが入り、そこで血統が途切れている。',name:'RED CROWN',exp:94.6,vote:31,
+  sel:[['2025.02','交配'],['2025.04','採種 489粒'],['2026.01','一次選抜 1万株→300'],['2026.11','二次選抜 300→30'],['2027.02','系統番号を付与']],
+  tale:'近交係数0.071は6系統で最も低い。遠い親どうしを掛けた個体で、糖酸比17.1と果皮硬度78を同時に持つ。'},
+ {id:3,w:4,img:'img/berry4.png',ln:'CULTA i-2025-31',seed:'25-31-024',brix:10.1,acid:0.84,firm:59,wt:21.4,days:36,shape:'楔形',ci:0.198,from:'長野',
+  sire:'Blue Hour',ss:'Cold Spring',sss:'North Bell',ssd:'Sea Glass',sd:'Marine',sds:'Deep Blue',sdd:'Tide Line',
+  dam:'Sea Glass',ds:'Deep Blue',dss:'Cold Spring',dsd:'Salt Wind',dd:'Tide Line',dds:'Blue Hour',ddd:'Morning Ash',
+  bms:'母の父は Deep Blue。父と母が近く、係数が上がっている。',name:'AZURE',exp:89.2,vote:9,
+  sel:[['2025.02','交配'],['2025.04','採種 301粒'],['2026.01','一次選抜 1万株→300'],['2026.11','二次選抜 300→30'],['2027.02','系統番号を付与']],
+  tale:'酸度0.84%は6系統で最も高い。そのまま食べるより、加工で評価されてきた。'},
+ {id:4,w:5,img:'img/berry5.png',ln:'CULTA i-2025-08',seed:'25-08-155',brix:10.6,acid:0.62,firm:54,wt:25.1,days:29,shape:'心臓形',ci:0.287,from:'熊本',
+  sire:'Sun Drop',ss:'Amber Field',sss:'Gold Vein',ssd:'Warm Sand',sd:'Honey Line',sds:'Sun Drop',sdd:'Soft Ember',
+  dam:'Warm Sand',ds:'Gold Vein',dss:'Old Flame',dsd:'Dry Light',dd:'Soft Ember',dds:'Amber Field',ddd:'Grace Note',
+  bms:'母の父は Gold Vein。父の父と母の父が同じで、近交係数0.287は限界に近い。',name:'GOLDEN',exp:86.7,vote:19,
+  sel:[['2025.02','交配'],['2025.04','採種 455粒'],['2026.01','一次選抜 1万株→300'],['2026.11','二次選抜 300→30'],['2027.02','系統番号を付与']],
+  tale:'一果重25.1gは6系統で最大。ただし近交係数0.287は、収量が落ちはじめる0.3のすぐ手前にある。'},
+ {id:5,w:6,img:'img/berry6.png',ln:'CULTA i-2025-19',seed:'25-19-072',brix:10.3,acid:0.76,firm:73,wt:22.2,days:37,shape:'卵円形',ci:0.132,from:'佐賀',
+  sire:'Green Note',ss:'Leaf Song',sss:'ダナー',ssd:'Fern Line',sd:'Dew Point',sds:'Cold Spring',sdd:'Long Shade',
+  dam:'Fern Line',ds:'Leaf Song',dss:'Grey Stone',dsd:'Moss Bell',dd:'Long Shade',dds:'Green Note',ddd:'Still Water',
+  bms:'母の父は Leaf Song。父と母の父が同じ。',name:'EMERALD',exp:87.9,vote:16,
+  sel:[['2025.02','交配'],['2025.04','採種 367粒'],['2026.01','一次選抜 1万株→300'],['2026.11','二次選抜 300→30'],['2027.02','系統番号を付与']],
+  tale:'炭そ病と萎黄病の両方に耐病性を持つ。味では目立たないが、畑では最も安定している。'}
+];
+const WIN=2;
+H.forEach(h=>h.ratio=+(h.brix/h.acid).toFixed(1));
+const $=id=>document.getElementById(id), sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let open_=null, pick=null, pa=null, pb=null, slot='A', judged=false;
+
+/* 画像が無いときは形だけのプレースホルダ */
+const vis=h=>`<img src="${h.img}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph'}))">`;
+
+/* ヒーローの帯 */
+$('strip').innerHTML=H.map(h=>`<div>${vis(h)}</div>`).join('');
+
+/* 枠色の見本 */
+$('wkrow').innerHTML=[1,2,3,4,5,6].map(n=>
+  `<span style="background:${WK[n]};color:${FG[n]}">${n}</span>`).join('');
+
+/* 01 候補グリッド */
+function grid(){
+  $('grid').innerHTML=H.map(h=>`<div class="cell${open_===h.id?' on':''}" data-i="${h.id}">
+    <div class="idx mono">${String(h.id+1).padStart(2,'0')}</div>
+    <div class="wk" style="background:${WK[h.w]};color:${FG[h.w]}">${h.w}</div>
+    <div class="float">${vis(h)}</div>
+    <div class="nm">${h.ln}</div><div class="sh">${h.shape}・${h.wt}g・糖酸比 ${h.ratio}</div></div>`).join('');
+  document.querySelectorAll('#grid .cell').forEach(c=>c.onclick=()=>{
+    const i=+c.dataset.i; open_=(open_===i?null:i); grid(); detail();
+  });
+}
+function detail(){
+  const box=$('detail');
+  if(open_===null){box.innerHTML='';return}
+  const h=H[open_];
+  box.innerHTML=`<div class="detail">
+   <div class="d-head">
+     <div class="d-img">${vis(h)}</div>
+     <div style="flex:1;min-width:240px">
+       <span class="tag">枠${h.w} ／ 未商品化系統 ／ 実生個体番号 ${h.seed}</span>
+       <div class="d-ttl">${h.ln}</div>
+       <div class="d-sub">3歳・${h.from}・${h.shape}</div>
+     </div>
+   </div>
+   <div class="spec">
+     <div><dt>糖度</dt><dd>${h.brix}<i>Brix</i></dd></div>
+     <div><dt>酸度</dt><dd>${h.acid}<i>%</i></dd></div>
+     <div><dt>糖酸比</dt><dd>${h.ratio}<i>目安12</i></dd></div>
+     <div><dt>果皮硬度</dt><dd>${h.firm}<i>g/φ2mm</i></dd></div>
+     <div><dt>一果重</dt><dd>${h.wt}<i>g</i></dd></div>
+     <div><dt>成熟日数</dt><dd>${h.days}<i>日</i></dd></div>
+     <div><dt>果実の形</dt><dd style="font-size:15px">${h.shape}</dd></div>
+     <div><dt>近交係数</dt><dd style="color:${h.ci<0.15?'var(--brand)':h.ci>=0.28?'#B8860B':'var(--ink)'}">${h.ci.toFixed(3)}</dd></div>
+   </div>
+   <div class="ped"><span class="tag">3代血統表</span><table><tbody>
+     <tr><td class="g1" rowspan="4">${h.sire}</td><td class="g2" rowspan="2">${h.ss}</td><td class="g3">${h.sss}</td></tr>
+     <tr><td class="g3">${h.ssd}</td></tr><tr><td class="g2" rowspan="2">${h.sd}</td><td class="g3">${h.sds}</td></tr>
+     <tr><td class="g3">${h.sdd}</td></tr>
+     <tr><td class="g1" rowspan="4">${h.dam}</td><td class="g2" rowspan="2">${h.ds}</td><td class="g3">${h.dss}</td></tr>
+     <tr><td class="g3">${h.dsd}</td></tr><tr><td class="g2" rowspan="2">${h.dd}</td><td class="g3">${h.dds}</td></tr>
+     <tr><td class="g3">${h.ddd}</td></tr></tbody></table>
+     <div class="cap">${h.bms}<br>福羽・Haward17・ダナーは、日本のいちご品種のほぼ全部がさかのぼれる3つの始祖です。
+      福羽の父は不詳、アイベリーは来歴不詳。血統表はそこで途切れています。</div></div>
+   <div class="steps">${h.sel.map(s=>`<div><b>${s[0]}</b>${s[1]}</div>`).join('')}</div>
+   <div class="tale">${h.tale}</div></div>`;
+}
+
+/* 03 オーナー */
+function ownPick(){
+  $('ownPick').innerHTML=`<div class="grid">${H.map(h=>`<div class="cell${pick===h.id?' on':''}" data-i="${h.id}">
+    <div class="idx mono">${String(h.id+1).padStart(2,'0')}</div>
+    <div class="wk" style="background:${WK[h.w]};color:${FG[h.w]}">${h.w}</div>
+    <div class="float">${vis(h)}</div>
+    <div class="nm">${h.ln}</div><div class="sh">糖酸比 ${h.ratio}・近交 ${h.ci.toFixed(3)}</div></div>`).join('')}</div>`;
+  document.querySelectorAll('#ownPick .cell').forEach(c=>c.onclick=()=>{
+    if(judged) return;
+    pick=+c.dataset.i; ownPick();
+    const b=$('goJudge'); b.disabled=false; b.textContent=`${H[pick].ln} のオーナーになる`;
+  });
+}
+
+/* 04 審査 */
+$('goJudge').onclick=async()=>{
+  if(judged) return; judged=true;
+  $('goJudge').disabled=true; $('goJudge').textContent='審査中';
+  $('judge').classList.remove('hide'); $('jhr').classList.remove('hide');
+  $('judge').scrollIntoView({behavior:'smooth'});
+  await sleep(600);
+  $('jlist').innerHTML=H.map(h=>`<div class="jd" data-i="${h.id}">
+    <div class="wk" style="background:${WK[h.w]};color:${FG[h.w]}">${h.w}</div>
+    <div class="n">${h.ln}</div><div class="jv mono">－－</div><div class="jw mono">－－</div></div>`).join('');
+  const rows=[...document.querySelectorAll('.jd')];
+  $('phase').textContent='系統番号を伏せて審査'; await sleep(1400);
+  for(const h of [...H].sort((a,b)=>(a.exp+a.vote)-(b.exp+b.vote))){
+    const el=rows.find(r=>+r.dataset.i===h.id); el.classList.add('lit');
+    const jv=el.querySelector('.jv'), jw=el.querySelector('.jw');
+    let v=0; const t=setInterval(()=>{v+=Math.random()*9;jv.textContent=Math.min(v,h.exp).toFixed(1)},40);
+    await sleep(660); clearInterval(t); jv.textContent=h.exp.toFixed(1); jw.textContent=h.vote+'%';
+    if(h.id===WIN){jv.style.color='var(--brand)';jw.style.color='var(--brand)'}
+    await sleep(230);
+  }
+  $('phase').textContent='専門家の点 ＋ オーナーズクラブの票'; await sleep(1100);
+  const w=H[WIN], me=H[pick], hit=pick===WIN;
+  $('result').innerHTML=`<div class="result">
+    <svg class="crown" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4v10H3z"/></svg>
+    <div class="rimg">${vis(w)}</div>
+    <div class="born">日本初の夏いちご、誕生</div>
+    <div class="nn">${w.name}</div>
+    <div class="fr">${w.ln} に商品名が与えられた</div>
+    <div class="verdict${hit?' hit':''}">${hit?'的中 ／ 口取り式に立てます':'不的中'}</div>
+    <div class="rtext">${hit
+      ? `あなたが出資した <b>${me.ln}</b> が勝ちました。${me.tale}`
+      : `あなたが出資したのは <b>${me.ln}</b>。${me.tale}<br><br>勝ったのは ${w.ln}。${w.tale}`}
+      <br><br>5月末まで糖度と硬度を保てる系統が日本一になりました。つまり <b>夏に食べられるいちごが生まれた</b> ということです。
+      商品化されるのはこの1系統だけ。残る5つは、翌年の交配親として畑に残ります。</div>
+    <button class="btn g" id="toCross" style="margin-top:24px">自分で交配してみる</button>
+  </div>`;
+  $('toCross').onclick=()=>{$('cross').classList.remove('hide');$('chr').classList.remove('hide');
+    pool();$('cross').scrollIntoView({behavior:'smooth'})};
+  $('goJudge').textContent='審査は終わりました';
+};
+
+/* 05 交配 */
+const POOL=()=>[...H.map(h=>({id:h.id,ln:h.ln,brix:h.brix,acid:h.acid,firm:h.firm,wt:h.wt,days:h.days,shape:h.shape,ci:h.ci,
+  anc:[h.ss,h.sd,h.ds,h.dd,h.sss,h.ssd,h.sds,h.sdd,h.dss,h.dsd,h.dds,h.ddd]})),
+  (x=>({id:99,ln:x.name,brix:x.brix,acid:x.acid,firm:x.firm,wt:x.wt,days:x.days,shape:x.shape,ci:x.ci,
+   anc:[x.ss,x.sd,x.ds,x.dd,x.sss,x.ssd,x.sds,x.sdd,x.dss,x.dsd,x.dds,x.ddd]}))(H[WIN])];
+function ciOf(A,B){if(!A||!B)return null;const s=new Set(A.anc);
+  const u=new Set(B.anc.filter(x=>s.has(x))).size;
+  return Math.min(.44,Math.max(.02,+(.030+u*.058+(A.ci+B.ci)/9).toFixed(3)))}
+function pool(){
+  $('pool').innerHTML=POOL().map(p=>`<button data-i="${p.id}" class="${(slot==='A'?pa:pb)===p.id?'on':''}">${p.ln}</button>`).join('');
+  document.querySelectorAll('#pool button').forEach(b=>b.onclick=()=>{
+    const v=+b.dataset.i;
+    if(slot==='A'){pa=v;slot='B'}else{pb=v;slot='A'}
+    const A=POOL().find(p=>p.id===pa), B=POOL().find(p=>p.id===pb);
+    $('pA').querySelector('b').textContent=A?A.ln:'未選択';
+    $('pB').querySelector('b').textContent=B?B.ln:'未選択';
+    const ci=(pa!==null&&pb!==null&&pa!==pb)?ciOf(A,B):null;
+    if(ci!=null){$('ciout').style.display='block';$('ciV').textContent=ci.toFixed(3);
+      $('ciV').style.color=ci<.15?'var(--brand)':ci>.30?'#B8860B':'var(--ink)';
+      $('ciT').textContent=ci<.15?'遠い血統どうし。良い個体が出やすい。'
+        :ci>.30?'近すぎる。0.3を超えると収量が落ちる。':'標準的な範囲。総当たりの平均は0.210。'}
+    else $('ciout').style.display='none';
+    $('doCross').disabled=!(pa!==null&&pb!==null&&pa!==pb);
+    pool();
+  });
+}
+$('doCross').onclick=async()=>{
+  const A=POOL().find(p=>p.id===pa), B=POOL().find(p=>p.id===pb), ci=ciOf(A,B);
+  const g=ci<.15?1:ci>.30?-1:0, mid=(x,y)=>(x+y)/2, jit=r=>(Math.random()*2-1)*r;
+  const brix=+(mid(A.brix,B.brix)+jit(.55)+g*.42).toFixed(1);
+  const acid=+(mid(A.acid,B.acid)+jit(.06)).toFixed(2);
+  const firm=Math.round(Math.max(A.firm,B.firm)*.62+Math.min(A.firm,B.firm)*.38+jit(5)+g*4);
+  const wt=+(mid(A.wt,B.wt)+jit(1.4)+g*.9).toFixed(1);
+  const days=Math.round(mid(A.days,B.days)+jit(3));
+  const shape=Math.random()<.5?A.shape:B.shape, ratio=+(brix/acid).toFixed(1);
+  const no=String(Math.floor(Math.random()*89)+10), seeds=300+Math.floor(Math.random()*201);
+  const out=$('genout'); out.innerHTML='<span class="tag">交配から系統番号まで、実際には4〜5年</span>';
+  for(const s of [`採種 ${seeds}粒`,'実生 1万株 → 一次選抜 300','二次選抜 300 → 30','三次選抜 30 → 5','系統番号を付与']){
+    out.innerHTML+=`<div class="growing">${s}</div>`; await sleep(560);
+  }
+  out.innerHTML=`<span class="tag">生まれた系統</span>
+   <div class="ln">CULTA i-2028-${no}</div>
+   <div class="d-sub">${A.ln} × ${B.ln} ／ 近交係数 ${ci.toFixed(3)}</div>
+   <div class="spec">
+     <div><dt>糖度</dt><dd>${brix}<i>Brix</i></dd></div>
+     <div><dt>酸度</dt><dd>${acid}<i>%</i></dd></div>
+     <div><dt>糖酸比</dt><dd style="color:${ratio>=16?'var(--brand)':'var(--ink)'}">${ratio}</dd></div>
+     <div><dt>果皮硬度</dt><dd>${firm}<i>g/φ2mm</i></dd></div>
+     <div><dt>一果重</dt><dd>${wt}<i>g</i></dd></div>
+     <div><dt>成熟日数</dt><dd>${days}<i>日</i></dd></div>
+     <div><dt>果実の形</dt><dd style="font-size:15px">${shape}</dd></div>
+     <div><dt>近交係数</dt><dd style="color:${ci<.15?'var(--brand)':ci>.30?'#B8860B':'var(--ink)'}">${ci.toFixed(3)}</dd></div>
+   </div>
+   <div class="tale">${ratio>=16&&firm>=75?'糖酸比と果皮硬度を両立しました。5月末まで走れる可能性があります。'
+     :ratio>=16?'糖酸比は高い。ただし果皮が柔らかく、遠くへは運べません。'
+     :firm>=80?'硬さは十分。ただし糖酸比が伸びませんでした。'
+     :'親を超えませんでした。1万株のうち、系統番号まで残るのは5つだけです。'}</div>
+   <div class="cap">果皮硬度は硬い親に寄りやすく、糖度は両親の中間に出やすい。同じ組合せでも、生まれるものは毎回ちがいます。</div>`;
+};
+
+grid(); ownPick();
+</script>
+</body>
+</html>
