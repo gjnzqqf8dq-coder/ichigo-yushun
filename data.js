@@ -9,7 +9,7 @@ const LINES = [
     w: 1, wc: '#FFFFFF', wt: '#111', ln: 'i-26-07', img: 'img/berry1.png', shape: 'berry1',
     from: '福岡県久留米市', breeder: 'CULTA 育種第2圃場',
     brix: 13.1, acid: 0.78, firm: 84, wt: 24.6, form: '円錐形', heat: 71,
-    sire: 'SNOW LILY', dam: 'DEEP RED', bms: 'CRIMSON ROOT', ci: 0.043,
+    sire: 'SNOW LILY', ss: 'WHITE PEARL', sd: 'ECHIGO 3', dam: 'DEEP RED', bms: 'CRIMSON ROOT', dd: 'AKANE 7', ci: 0.000, cross: '共通祖先なし',
     note: '果皮がほとんど白いまま熟す。棚持ちは長いが、日持ちの検査でだけ数字が出る。',
     steps: ['実生 12,400', '一次選抜 318', '二次選抜 41', '系統試験 9', '出走 1']
   },
@@ -17,7 +17,7 @@ const LINES = [
     w: 2, wc: '#111111', wt: '#fff', ln: 'i-26-12', img: 'img/berry2.png', shape: 'berry2',
     from: '佐賀県白石町', breeder: 'CULTA 育種第1圃場',
     brix: 13.4, acid: 0.72, firm: 95, wt: 26.4, form: '心臓形', heat: 78,
-    sire: 'DEEP RED', dam: 'VELVET ONE', bms: 'KURO NO 3', ci: 0.112,
+    sire: 'DEEP RED', ss: 'CRIMSON ROOT', sd: 'AKANE 7', dam: 'VELVET ONE', bms: 'CRIMSON ROOT', dd: 'SILK 12', ci: 0.031, cross: 'CRIMSON ROOT 3×3',
     note: '硬度95は6系統で最も高い。常温で四日、角が落ちない。色は黒に近い。',
     steps: ['実生 12,400', '一次選抜 318', '二次選抜 41', '系統試験 9', '出走 1']
   },
@@ -25,7 +25,7 @@ const LINES = [
     w: 3, wc: '#E4002B', wt: '#fff', ln: 'i-26-03', img: 'img/berry3.png', shape: 'berry3',
     from: '福岡県八女市', breeder: 'CULTA 育種第1圃場',
     brix: 14.2, acid: 0.68, firm: 92, wt: 28.1, form: '円錐形', heat: 86,
-    sire: 'VELVET ONE', dam: 'RUBY GRACE', bms: 'CRIMSON ROOT', ci: 0.071,
+    sire: 'VELVET ONE', ss: 'CRIMSON ROOT', sd: 'SILK 12', dam: 'RUBY GRACE', bms: 'CRIMSON ROOT', dd: 'HANA 5', ci: 0.031, cross: 'CRIMSON ROOT 3×3',
     note: '糖酸比20.9。三十度の圃場で糖度が落ちなかったのはこの系統だけだった。',
     steps: ['実生 12,400', '一次選抜 318', '二次選抜 41', '系統試験 9', '出走 1']
   },
@@ -33,7 +33,7 @@ const LINES = [
     w: 4, wc: '#1B4FD8', wt: '#fff', ln: 'i-26-18', img: 'img/berry4.png', shape: 'berry4',
     from: '静岡県久能', breeder: 'CULTA 育種第3圃場',
     brix: 12.9, acid: 0.81, firm: 88, wt: 22.9, form: '楔形', heat: 64,
-    sire: 'AZURE SEED', dam: 'SNOW LILY', bms: 'DEEP RED', ci: 0.038,
+    sire: 'AZURE SEED', ss: 'BLUE NOTE', sd: 'SHIZU 2', dam: 'SNOW LILY', bms: 'WHITE PEARL', dd: 'ECHIGO 3', ci: 0.000, cross: '共通祖先なし',
     note: '酸が高い。生食よりも加工の評価が先に立った。香りの成分量は6系統で最多。',
     steps: ['実生 12,400', '一次選抜 318', '二次選抜 41', '系統試験 9', '出走 1']
   },
@@ -41,7 +41,7 @@ const LINES = [
     w: 5, wc: '#E8B800', wt: '#111', ln: 'i-26-22', img: 'img/berry5.png', shape: 'berry5',
     from: '栃木県真岡市', breeder: 'CULTA 育種第2圃場',
     brix: 13.9, acid: 0.74, firm: 74, wt: 25.1, form: '心臓形', heat: 69,
-    sire: 'GOLD VEIN', dam: 'RUBY GRACE', bms: 'VELVET ONE', ci: 0.094,
+    sire: 'GOLD VEIN', ss: 'AMBER 4', sd: 'KOGANE 9', dam: 'RUBY GRACE', bms: 'CRIMSON ROOT', dd: 'HANA 5', ci: 0.000, cross: '共通祖先なし',
     note: '甘さは上位。ただし柔らかく、収穫の翌日までしか形が保たない。',
     steps: ['実生 12,400', '一次選抜 318', '二次選抜 41', '系統試験 9', '出走 1']
   },
@@ -49,7 +49,7 @@ const LINES = [
     w: 6, wc: '#0F8A4C', wt: '#fff', ln: 'i-26-14', img: 'img/berry6.png', shape: 'berry6',
     from: '奈良県橿原市', breeder: 'CULTA 育種第3圃場',
     brix: 13.6, acid: 0.70, firm: 81, wt: 22.2, form: '卵形', heat: 74,
-    sire: 'CRIMSON ROOT', dam: 'GREEN NOTE', bms: 'SNOW LILY', ci: 0.056,
+    sire: 'CRIMSON ROOT', ss: 'OGURA 2', sd: 'MOMO 1', dam: 'GREEN NOTE', bms: 'CRIMSON ROOT', dd: '来歴不詳', ci: 0.063, cross: 'CRIMSON ROOT 2×3',
     note: '小さいが揃いがいい。一果重の分散が最も小さく、箱に詰めたときの見栄えが立つ。',
     steps: ['実生 12,400', '一次選抜 318', '二次選抜 41', '系統試験 9', '出走 1']
   }

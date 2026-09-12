@@ -85,6 +85,7 @@ function back() { var p = hist.pop() || 'paddock'; go(p, false); }
 function stageNow() {
   var v = $('#v-' + cur), st = $('.stage', v);
   if (!st) { Field.hide(); return; }
+  if (st.dataset.ring) return;            // 輪の画面は自分で粒子を持っている
   Field.apply(st.dataset.shape || 'dust', st, {
     dir: st.dataset.dir || 'radial',
     spread: st.dataset.spread ? +st.dataset.spread : undefined,
@@ -115,7 +116,7 @@ VIEWS.intro = function () {
   var v = $('#v-intro');
   if (v._done) return; v._done = 1;
   v.innerHTML =
-    '<div class="stage" data-shape="berry3" data-dir="radial" data-spread="46"></div>' +
+    '<div class="stage" data-shape="berry3" data-dir="right" data-spread="78"></div>' +
     '<div class="pad fade">' +
       '<div class="en xl">ICHIGO<br>YUSHUN</div>' +
       '<div class="en xs" style="margin-top:18px;letter-spacing:.34em">苺　優　駿</div>' +
@@ -140,32 +141,64 @@ function tickCD() {
 
 /* ---------------- 02 PADDOCK ---------------- */
 var pIdx = 0;
+try { var _q = new URLSearchParams(location.search); if (_q.get('line')) pIdx = Math.max(0, Math.min(5, +_q.get('line'))); } catch (e) {}
 VIEWS.paddock = function () {
   var v = $('#v-paddock');
   if (!v._done) {
     v._done = 1;
     v.innerHTML =
-      '<div class="stage" data-shape="berry3" data-dir="radial" data-spread="30"></div>' +
-      '<div class="dots" id="dots">' + LINES.map(function () { return '<i></i>'; }).join('') + '</div>' +
-      '<div class="pad" style="margin-top:16px">' +
-        '<div class="sec"><b>PADDOCK / 出走表</b><span>第1回 苺優駿</span></div>' +
-        '<p class="b" style="margin-top:12px">走るのは、まだ商品化されていない系統だけ。' +
-        'この6つは系統番号でしか呼ばれていない。</p>' +
+      '<div class="ringwrap">' +
+        '<div class="stage ringstage" id="ringstage" data-ring="1"></div>' +
+        '<svg class="ringpath" viewBox="0 0 340 120" preserveAspectRatio="none">' +
+          '<ellipse cx="170" cy="60" rx="150" ry="34"/></svg>' +
+        '<div class="ghost" id="ghost"></div>' +
+        '<div class="ringtouch" id="ringtouch"></div>' +
       '</div>' +
-      '<div class="deck" id="deck">' + LINES.map(cardHTML).join('') + '</div>' +
-      '<div class="pad"><button class="btn k" style="margin-top:18px" id="pickbtn"></button>' +
-      '<div class="hint">SWIPE　←　→</div></div>';
-    var deck = $('#deck');
-    deck.addEventListener('scroll', function () {
-      var i = Math.round(deck.scrollLeft / (deck.firstElementChild.offsetWidth + 14));
-      if (i !== pIdx && LINES[i]) { pIdx = i; syncPaddock(); }
-    }, { passive: true });
-    $('#pickbtn').onclick = function () { go('owner'); };
+      '<div class="dots" id="dots">' + LINES.map(function (l, i) {
+        return '<i data-i="' + i + '"></i>'; }).join('') + '</div>' +
+      '<div class="pad"><div id="detail"></div></div>';
+
+    Field.ring(LINES.map(function (l) { return l.shape; }), $('#ringstage'), {
+      index: pIdx, onIndex: function (i) { pIdx = i; paintDetail(); }
+    });
+
+    var tt = $('#ringtouch'), down = false, lx = 0, moved = 0;
+    tt.addEventListener('pointerdown', function (e) {
+      down = true; moved = 0; lx = e.clientX; tt.setPointerCapture(e.pointerId);
+    });
+    tt.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      var d = e.clientX - lx; lx = e.clientX; moved += Math.abs(d);
+      Field.spin(-d);
+    });
+    var up = function () { if (!down) return; down = false; Field.release(); };
+    tt.addEventListener('pointerup', up);
+    tt.addEventListener('pointercancel', up);
+    tt.addEventListener('wheel', function (e) {
+      e.preventDefault(); Field.spin(e.deltaY > 0 ? 26 : -26);
+      clearTimeout(tt._w); tt._w = setTimeout(function () { Field.release(); }, 140);
+    }, { passive: false });
+
+    $$('#dots i').forEach(function (d) {
+      d.onclick = function () { Field.ringTo(+d.dataset.i); };
+    });
+  } else {
+    Field.ring(LINES.map(function (l) { return l.shape; }), $('#ringstage'), {
+      index: pIdx, onIndex: function (i) { pIdx = i; paintDetail(); }
+    });
   }
-  syncPaddock();
-  meters(v);
+  paintDetail();
 };
-function cardHTML(l) {
+
+function paintDetail() {
+  var l = LINES[pIdx], d = $('#detail');
+  if (!d) return;
+  $$('#dots i').forEach(function (x, i) {
+    x.classList.toggle('on', i === pIdx);
+    x.style.background = i === pIdx ? l.wc : '';
+    x.style.borderColor = i === pIdx ? '#111' : '';
+  });
+  var gh = $('#ghost'); if (gh) gh.textContent = l.ln.replace('i-26-', '');
   var bars = [
     ['糖度', 'BRIX', l.brix, '', (l.brix - 12.4) / 2.2 * 100],
     ['糖酸比', 'SUGAR / ACID', (l.brix / l.acid).toFixed(1), '', ((l.brix / l.acid) - 15) / 6.5 * 100],
@@ -173,34 +206,47 @@ function cardHTML(l) {
     ['一果重', 'FRUIT WEIGHT', l.wt, 'g', (l.wt - 20) / 10 * 100],
     ['耐暑性', 'HEAT TOLERANCE', l.heat, '', (l.heat - 58) / 34 * 100]
   ];
-  return '<article class="card">' +
-    '<div class="top"><span class="wk" style="background:' + l.wc + '"></span>' +
-      '<span class="ln">' + l.ln + '</span>' +
-      '<span class="fr">枠' + l.w + '　' + l.from + '</span></div>' +
-    '<div class="note">' + l.note + '</div>' +
+  d.innerHTML =
+    '<div class="dhead">' +
+      '<span class="wk" style="background:' + l.wc + '"></span>' +
+      '<span class="en dln">' + l.ln + '</span>' +
+      '<span class="en xs dfr">枠' + l.w + '</span></div>' +
+    '<div class="en xs" style="margin-top:8px">' + l.from + '　' + l.breeder + '</div>' +
+    '<p class="b" style="margin-top:14px">' + l.note + '</p>' +
+    '<div class="sec"><b>MEASURED</b><span>果形 ' + l.form + '</span></div>' +
     bars.map(function (b) {
-      return '<div style="margin-top:16px"><div class="row" style="border:0;padding:0">' +
+      return '<div style="margin-top:15px"><div class="row" style="border:0;padding:0">' +
         '<span class="k">' + b[0] + '<span class="en xs" style="margin-left:8px">' + b[1] + '</span></span>' +
         '<span class="v">' + b[2] + (b[3] ? '<em>' + b[3] + '</em>' : '') + '</span></div>' +
         '<div class="meter"><i data-w="' + Math.max(4, Math.min(100, b[4])).toFixed(0) + '"></i></div></div>';
     }).join('') +
-    '<div class="sec" style="margin-top:22px"><b>PEDIGREE</b><span>近交係数 ' + l.ci.toFixed(3) + '</span></div>' +
-    '<div class="ped" style="margin-top:12px">' +
-      '<span class="k">父</span><span class="v">' + l.sire + '</span>' +
-      '<span class="k">母</span><span class="v">' + l.dam + '</span>' +
-      '<span class="k">母の父</span><span class="v">' + l.bms + '</span>' +
-    '</div>' +
-    '<div class="sec" style="margin-top:22px"><b>SELECTION</b><span>果形 ' + l.form + '</span></div>' +
-    '<div class="steps">' + l.steps.map(function (s) { return '<span>' + s + '</span>'; }).join('') + '</div>' +
-  '</article>';
+    '<div class="sec"><b>PEDIGREE</b><span>3代血統表</span></div>' +
+    pedHTML(l) +
+    '<div class="sec"><b>SELECTION</b><span>選抜過程</span></div>' +
+    '<div class="steps">' + l.steps.map(function (x, i) {
+      return '<span' + (i === l.steps.length - 1 ? ' class="last"' : '') + '>' + x + '</span>'; }).join('') + '</div>' +
+    '<button class="btn k" style="margin-top:26px" id="pickbtn"><span class="ja">' +
+      l.ln + ' のオーナーになる</span></button>' +
+    '<div class="hint">DRAG TO ROTATE　←　→</div>';
+  $('#pickbtn').onclick = function () { go('owner'); };
+  meters(d);
 }
-function syncPaddock() {
-  var l = LINES[pIdx], st = $('#v-paddock .stage');
-  st.dataset.shape = l.shape;
-  if (cur === 'paddock') stageNow();
-  $$('#dots i').forEach(function (d, i) { d.classList.toggle('on', i === pIdx); });
-  var b = $('#pickbtn');
-  b.innerHTML = '<span class="ja">' + l.ln + ' のオーナーになる</span>';
+
+/* 3代血統表。母の父（ブルードメアサイアー）と共通祖先に印をつける */
+function pedHTML(l) {
+  var common = l.cross.indexOf('なし') < 0 ? l.cross.split(' ')[0] + ' ' + (l.cross.split(' ')[1] || '') : '';
+  var key = common ? common.replace(/ \d+×\d+$/, '').trim() : '';
+  var mark = function (n) { return key && n === key ? ' dup' : ''; };
+  return '<div class="ped2">' +
+    '<div class="pc big' + mark(l.sire) + '" style="grid-area:s"><b class="en xs">父</b><span class="en">' + l.sire + '</span></div>' +
+    '<div class="pc' + mark(l.ss) + '" style="grid-area:ss"><b class="en xs">父の父</b><span class="en">' + l.ss + '</span></div>' +
+    '<div class="pc' + mark(l.sd) + '" style="grid-area:sd"><b class="en xs">父の母</b><span class="en">' + l.sd + '</span></div>' +
+    '<div class="pc big' + mark(l.dam) + '" style="grid-area:d"><b class="en xs">母</b><span class="en">' + l.dam + '</span></div>' +
+    '<div class="pc bms' + mark(l.bms) + '" style="grid-area:ds"><b class="en xs">母の父</b><span class="en">' + l.bms + '</span></div>' +
+    '<div class="pc' + mark(l.dd) + '" style="grid-area:dd"><b class="en xs">母の母</b><span class="en">' + l.dd + '</span></div>' +
+  '</div>' +
+  '<div class="pedfoot"><span class="en xs">' + l.cross + '</span>' +
+   '<span class="en xs">近交係数 ' + l.ci.toFixed(3) + '</span></div>';
 }
 
 /* ---------------- 03 OWNER ---------------- */
@@ -348,7 +394,7 @@ VIEWS.result = function () {
   var rank = ranking(), mine = S.owner ? rank.findIndex(function (r) { return LINES[r.i].ln === S.owner; }) + 1 : 0;
   var hit = S.owner === w.ln;
   v.innerHTML =
-    '<div class="stage" data-shape="' + w.shape + '" data-dir="radial" data-spread="58"></div>' +
+    '<div class="stage" data-shape="' + w.shape + '" data-dir="right" data-spread="84"></div>' +
     '<div class="pad fade">' +
       '<div class="en xs" style="letter-spacing:.34em">WINNER　枠' + w.w + '　' + w.ln + '</div>' +
       '<div class="reveal" id="rv" style="margin-top:14px"></div>' +
