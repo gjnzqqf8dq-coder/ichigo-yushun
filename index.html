@@ -4,21 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
 <meta name="theme-color" content="#ffffff">
-<meta name="description" content="苺優駿 JAPAN STRAWBERRY DERBY — 東京優駿と同じ日に、いちごの日本一を決める。">
-<title>苺優駿 JAPAN STRAWBERRY DERBY</title>
+<title>日本いちごダービー ｜ 苺優駿</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="img/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="苺優駿">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=LINE+Seed+JP:wght@400;600;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="ui.css?v=33">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@600;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ui.css?v=47">
 </head>
 <body>
 <script>if(new URLSearchParams(location.search).get("still")==="1")document.documentElement.className="still";</script>
 <div id="shell">
-  <div id="fieldwrap"><canvas id="field"></canvas></div>
+  <div id="grid"></div>
+  <div id="deco"></div>
+  <canvas id="photo"></canvas>
+  <canvas id="field"></canvas>
   <div id="sb"><span>9:41</span><span class="ic"><i class="s"></i><i class="w"></i><i class="b"></i></span></div>
 
   <main id="views">
@@ -29,15 +31,14 @@
   </main>
 
   <nav id="tabs">
-    <button data-go="club"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.1"/><circle cx="17" cy="9" r="2.5"/><path d="M3.2 19c.7-3.2 3-5 5.8-5s5.1 1.8 5.8 5"/><path d="M15.6 19c.4-2.2 1.9-3.5 3.8-3.5 1.6 0 2.9.9 3.4 2.4"/></svg><span>CLUB</span></button>
-    <button data-go="home"><svg viewBox="0 0 24 24"><path d="M3.6 10 12 3.4 20.4 10V20a1 1 0 0 1-1 1h-4.6v-6.2H9.2V21H4.6a1 1 0 0 1-1-1z"/></svg><span>HOME</span></button>
-    <button data-go="about"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><path d="M12 7.4v.2"/></svg><span>READ</span></button>
+    <button data-go="club"><svg viewBox="0 0 28 22"><circle cx="10" cy="7" r="3.4"/><circle cx="19" cy="8.2" r="2.8"/><path d="M2.6 20c.8-3.6 3.6-5.6 7.4-5.6s6.6 2 7.4 5.6"/><path d="M16.8 20c.5-2.5 2.2-4 4.6-4 2 0 3.5 1 4 2.8"/></svg><span>クラブ</span><i></i></button>
+    <button data-go="home"><svg viewBox="0 0 28 22"><path d="M4 10.5 14 2.5l10 8V20a1 1 0 0 1-1 1h-5.4v-6.6h-7.2V21H5a1 1 0 0 1-1-1z"/></svg><span>ホーム</span><i></i></button>
+    <button data-go="about"><svg viewBox="0 0 28 22"><path d="M5 20V9"/><path d="M11.3 20V3"/><path d="M17.6 20v-9"/><path d="M24 20V6"/></svg><span>READ</span><i></i></button>
   </nav>
-
   <div id="toast"></div>
 </div>
-<script src="data.js?v=30"></script>
-<script src="field.js?v=31"></script>
-<script src="app.js?v=30"></script>
+<script src="data.js?v=40"></script>
+<script src="field.js?v=43"></script>
+<script src="app.js?v=45"></script>
 </body>
 </html>

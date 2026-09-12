@@ -1,0 +1,303 @@
+/* =========================================================================
+   苺優駿 / JAPAN STRAWBERRY DERBY — 白地・単一書体・赤一色
+   書体は日本語サンセリフ1系統に統一。明朝は使わない。
+   選択状態は黒ベタにせず、赤の文字＋赤の細い下線で示す。
+   ========================================================================= */
+:root{
+  --w:#fff; --ink:#272727; --g1:#5c5c5c; --g2:#8f8f8f; --g3:#b2b2b2;
+  --line:#e6e6e6; --line2:#f5f5f5; --rd:#e4002b; --rd2:#ff2e4d; --rdl:#fff1f3;
+  --jp:"LINE Seed JP","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+  --en:"LINE Seed JP","Helvetica Neue",Inter,-apple-system,Arial,sans-serif;
+  --e-out:cubic-bezier(.16,1,.3,1); --e-in:cubic-bezier(.5,0,.75,0);
+  --e-io:cubic-bezier(.87,0,.13,1); --e-mic:cubic-bezier(.33,1,.68,1);
+  --e-line:cubic-bezier(0,0,.25,1);
+  --d-en:320ms; --d-ex:180ms; --d-mic:150ms; --d-exp:400ms; --d-line:480ms;
+  --tab:78px; --safeb:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:#fff;color:var(--ink);font-family:var(--jp);font-size:14px;line-height:1.75;
+  font-weight:400;-webkit-font-smoothing:antialiased;overscroll-behavior:none;
+  font-feature-settings:"palt" 1}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:var(--rd);color:#fff}
+
+#shell{position:relative;width:100%;max-width:440px;margin:0 auto;height:100dvh;
+  background:#fff;overflow:hidden}
+@media(min-width:900px){
+  body{display:flex;align-items:center;justify-content:center;background:#F4F5F6;padding:22px 0}
+  #shell{height:min(940px,calc(100dvh - 44px));border-radius:44px;
+    box-shadow:0 0 0 1px #E7E9EB,0 30px 80px rgba(20,26,34,.12)}
+}
+#fieldwrap{position:absolute;inset:0;z-index:2;pointer-events:none}
+#field{width:100%;height:100%;display:block}
+
+/* 端末のステータスバー */
+#sb{position:absolute;top:0;left:0;right:0;height:48px;z-index:26;display:flex;
+  align-items:center;justify-content:space-between;padding:0 26px;
+  font-family:var(--en);font-size:15px;font-weight:600;letter-spacing:.01em}
+#sb .ic{display:flex;gap:6px;align-items:center}
+#sb .ic i{display:block;background:var(--ink)}
+#sb .ic .s{width:17px;height:11px;background:
+  linear-gradient(var(--ink),var(--ink)) 0 72%/3px 28% no-repeat,
+  linear-gradient(var(--ink),var(--ink)) 4.6px 45%/3px 55% no-repeat,
+  linear-gradient(var(--ink),var(--ink)) 9.2px 22%/3px 78% no-repeat,
+  linear-gradient(var(--ink),var(--ink)) 13.8px 0/3px 100% no-repeat}
+#sb .ic .w{width:0;height:0;border:6px solid transparent;border-top-color:var(--ink);
+  background:none;margin-top:4px}
+#sb .ic .b{width:25px;height:12px;border-radius:3.5px}
+
+/* 画面 */
+#views{position:absolute;inset:0;z-index:10}
+.view{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+  opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity var(--d-en) var(--e-out),transform var(--d-en) var(--e-out),visibility var(--d-en)}
+.view.on{opacity:1;visibility:visible;transform:none}
+.view.out{opacity:0;transform:translateY(-8px);transition-duration:var(--d-ex);transition-timing-function:var(--e-in)}
+.view.noscroll{overflow:hidden}
+.pad{padding:0 24px}
+.stage{position:relative;pointer-events:none}
+
+/* Liquid Glass のタブバー */
+#tabs{position:absolute;left:14px;right:14px;bottom:calc(12px + var(--safeb));z-index:24;
+  height:64px;border-radius:32px;display:flex;align-items:center;
+  background:rgba(255,255,255,.62);
+  backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 0 0 .5px rgba(20,26,34,.09),
+             0 10px 30px rgba(20,26,34,.10),0 2px 6px rgba(20,26,34,.05);
+  transition:transform var(--d-exp) var(--e-out),opacity var(--d-exp) var(--e-out)}
+#tabs::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0) 42%)}
+body.nofoot #tabs{transform:translateY(140%);opacity:0}
+#tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;
+  color:var(--g2);position:relative;z-index:1;transition:color var(--d-mic) var(--e-mic)}
+#tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;transition:transform var(--d-en) var(--e-out)}
+#tabs span{font-family:var(--en);font-size:9px;letter-spacing:.2em;font-weight:500}
+#tabs .on{color:var(--rd)}
+#tabs .on svg{transform:translateY(-1px) scale(1.06)}
+
+/* 文字 */
+.en{font-family:var(--en);letter-spacing:.22em;font-weight:400;font-variant-numeric:tabular-nums}
+.num{font-family:var(--en);font-variant-numeric:tabular-nums;letter-spacing:0}
+.lbl{font-family:var(--en);font-size:9px;letter-spacing:.26em;color:var(--g2);font-weight:400}
+h1.big{font-size:30px;letter-spacing:0;line-height:1.3;font-weight:800}
+h1.big em{font-style:normal;color:var(--rd)}
+h2.copy{font-size:21px;line-height:1.56;letter-spacing:.01em;font-weight:600}
+h3.copy{font-size:16px;line-height:1.62;font-weight:600}
+p.b{font-size:12.5px;line-height:2;letter-spacing:.01em;color:var(--g1)}
+.rd{color:var(--rd)}
+.sec{display:flex;align-items:baseline;justify-content:space-between;margin:22px 0 2px;
+  padding-bottom:8px;border-bottom:1px solid var(--line)}
+.sec b{font-family:var(--en);font-size:9px;letter-spacing:.26em;font-weight:500}
+.sec span{font-size:10px;color:var(--g2)}
+
+/* ボタン */
+.btn{display:flex;width:100%;align-items:center;justify-content:center;gap:12px;height:56px;
+  border-radius:999px;font-size:15px;letter-spacing:.06em;font-weight:600;
+  background:var(--rd);color:#fff;transition:transform 90ms linear,box-shadow var(--d-en) var(--e-out);
+  box-shadow:0 8px 22px rgba(232,0,45,.22)}
+.btn:active{transform:scale(.978)}
+.btn .ar{font-family:var(--en);font-size:16px;letter-spacing:0}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line);font-size:14px}
+.btn.ghost:active{box-shadow:inset 0 0 0 1px var(--ink)}
+.btn[disabled]{opacity:.32;pointer-events:none}
+.fav{width:56px;height:56px;flex:none;border-radius:50%;background:#fff;color:var(--rd);
+  box-shadow:inset 0 0 0 1px var(--line);display:flex;align-items:center;justify-content:center;
+  font-size:18px;transition:var(--d-mic) var(--e-mic)}
+.fav.on{background:var(--rdl);box-shadow:inset 0 0 0 1px var(--rd)}
+.cta{display:flex;gap:10px;align-items:center}
+
+.row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+.row .k{font-size:12px;color:var(--g1)}
+.row .v{margin-left:auto;font-family:var(--en);font-size:13px;font-variant-numeric:tabular-nums}
+.row .v em{font-style:normal;font-size:9.5px;color:var(--g2);margin-left:3px}
+.wk{width:13px;height:13px;flex:none;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(20,26,34,.14)}
+
+/* ================= HOME ================= */
+#v-home{display:flex;flex-direction:column}
+.hhead{padding:62px 24px 0;text-align:center;position:relative;z-index:12}
+.hhead .cr{width:40px;height:22px;margin:0 auto;fill:none;stroke:var(--rd);stroke-width:1.5}
+.hhead h1{margin-top:10px}
+.hhead .sub{font-size:12.5px;color:var(--g1);margin-top:8px;letter-spacing:.08em}
+.rowstage{position:relative;flex:1;min-height:300px;margin-top:4px}
+.rowstage .stage{position:absolute;inset:6px 0 66px}
+.rings{position:absolute;left:50%;top:50%;transform:translate(-50%,-58%);
+  width:238px;height:238px;pointer-events:none;z-index:3}
+.rings i{position:absolute;border-radius:50%;border:1px solid rgba(232,0,45,.26)}
+.rings i:nth-child(1){inset:0}
+.rings i:nth-child(2){inset:26px;border-color:rgba(232,0,45,.13)}
+.rings i:nth-child(3){inset:58px;border-style:dashed;border-color:rgba(232,0,45,.12)}
+.caro{position:absolute;inset:0;z-index:16;cursor:grab;touch-action:pan-y}
+.caro:active{cursor:grabbing}
+.labels{position:absolute;left:0;right:0;bottom:26px;height:30px;z-index:14;pointer-events:none}
+.labels span{position:absolute;transform:translateX(-50%);white-space:nowrap;
+  font-size:12px;color:var(--g2);transition:color var(--d-en) var(--e-out)}
+.labels span.on{color:var(--rd);font-size:17px;font-weight:600}
+.labels span.on::after{content:"";position:absolute;left:10%;right:10%;bottom:-9px;height:2px;
+  background:var(--rd);border-radius:1px}
+.arw{position:absolute;top:44%;z-index:18;width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:var(--g2);
+  background:rgba(255,255,255,.7);backdrop-filter:blur(8px);
+  box-shadow:inset 0 0 0 .5px rgba(20,26,34,.08)}
+.arw.l{left:6px}.arw.r{right:6px}
+.arw svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.dots{position:absolute;left:0;right:0;bottom:6px;display:flex;justify-content:center;gap:5px;z-index:14}
+.dots i{width:5px;height:5px;border-radius:50%;background:var(--g3);cursor:pointer;
+  transition:var(--d-en) var(--e-out)}
+.dots i.on{background:var(--rd);width:18px;border-radius:3px}
+.hfoot{padding:0 24px calc(var(--tab) + var(--safeb) + 14px);position:relative;z-index:12}
+.hstat{display:flex;gap:18px;justify-content:center;margin-bottom:16px}
+.hstat div{text-align:center}
+.hstat .k{font-family:var(--en);font-size:8.5px;letter-spacing:.2em;color:var(--g2)}
+.hstat .v{font-family:var(--en);font-size:22px;margin-top:3px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.hstat .v em{font-style:normal;font-size:10px;color:var(--g2);margin-left:2px}
+
+/* ================= 図鑑（詳細） ================= */
+#v-dex{display:flex;flex-direction:column}
+.dexhero{position:relative;height:262px;flex:none}
+.dexhero .stage{position:absolute;inset:46px 0 4px}
+.dexhero .rings{transform:translate(-50%,-46%);width:196px;height:196px}
+.dexhero .no{position:absolute;left:24px;bottom:6px}
+.dexcard{flex:1;display:flex;flex-direction:column;background:#fff;position:relative;z-index:12;
+  border-radius:28px 28px 0 0;box-shadow:0 -12px 34px rgba(20,26,34,.07);padding:20px 24px 0;min-height:0}
+.dexhead{display:flex;align-items:flex-end;gap:14px}
+.dexhead .nm{font-size:28px;font-weight:800;color:var(--rd);letter-spacing:0;line-height:1}
+.dexhead .sp{width:1px;height:26px;background:var(--line);margin-bottom:4px}
+.dexhead .cd{font-family:var(--en);font-size:9px;letter-spacing:.2em;color:var(--g2);line-height:1.8;margin-bottom:2px}
+.dexcopy{font-size:16px;font-weight:600;line-height:1.6;margin-top:10px;letter-spacing:.01em}
+
+.seg{display:flex;gap:6px;margin-top:14px;padding:4px;border-radius:999px;background:var(--line2)}
+.seg button{flex:1;height:38px;border-radius:999px;font-size:13px;font-weight:600;color:var(--g2);
+  transition:color var(--d-mic) var(--e-mic),background var(--d-en) var(--e-out),box-shadow var(--d-en) var(--e-out)}
+.seg button.on{color:var(--rd);background:#fff;box-shadow:0 1px 3px rgba(20,26,34,.09);font-weight:800}
+.dexbody{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-top:6px;min-height:0}
+.dexfoot{flex:none;padding:12px 0 calc(14px + var(--safeb))}
+.dexclose{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:44px;
+  font-size:13px;color:var(--g1)}
+.dexclose i{font-family:var(--en);font-size:15px;font-style:normal}
+
+/* 能力 */
+.abil{display:grid;grid-template-columns:1.05fr .95fr;gap:8px;align-items:center;margin-top:8px}
+.radar{width:100%;height:auto;overflow:visible}
+.radar .web{fill:none;stroke:var(--line);stroke-width:1}
+.radar .ax{stroke:var(--line);stroke-width:1}
+.radar .area{fill:rgba(232,0,45,.11);stroke:var(--rd);stroke-width:1.5;stroke-linejoin:round}
+.radar .dot{fill:#fff;stroke:var(--rd);stroke-width:1.6}
+.radar .rn{font-family:var(--jp);font-size:10px;fill:var(--g1)}
+.radar .rv{font-family:var(--en);font-size:15px;fill:var(--rd);font-weight:800}
+.mrow{display:grid;grid-template-columns:38px 1fr 28px;align-items:center;gap:8px;padding:6px 0}
+.mrow .k{font-size:12px}
+.mrow .bar{height:8px;border-radius:999px;background:var(--line2);position:relative;overflow:hidden}
+.mrow .bar i{position:absolute;inset:0 auto 0 0;width:0;border-radius:999px;background:var(--rd);
+  transition:width 900ms var(--e-out)}
+.mrow .v{font-family:var(--en);font-size:13px;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* 血統図 */
+.tree{position:relative;margin-top:10px}
+.tree .gen,.gen2,.gen3{display:flex;justify-content:space-between;gap:6px}
+.gen2{justify-content:space-around;margin-top:22px}
+.gen3{justify-content:center;margin-top:22px}
+.node{text-align:center;background:none;padding:0}
+.node .cap{font-size:9px;color:var(--g2);margin-bottom:5px;position:relative;z-index:2;
+  background:#fff;display:inline-block;padding:0 5px}
+.node .ph{width:56px;height:56px;border-radius:50%;margin:0 auto;position:relative;
+  background:#fff center/78% no-repeat;box-shadow:inset 0 0 0 1px var(--line);
+  transition:box-shadow var(--d-en) var(--e-out),transform var(--d-en) var(--e-out)}
+.node.p .ph{width:72px;height:72px}
+.node.me .ph{width:96px;height:96px;box-shadow:inset 0 0 0 1.5px var(--rd),0 0 0 7px rgba(232,0,45,.05)}
+.node:active .ph{transform:scale(.94)}
+.node.sel .ph{transition:transform .3s cubic-bezier(.2,.9,.3,1.2)}
+.node.sel .ph{box-shadow:inset 0 0 0 1.5px var(--rd),0 0 0 7px rgba(232,0,45,.08)}
+.node .nm{font-family:var(--en);font-size:8px;letter-spacing:.12em;color:var(--g2);margin-top:5px;
+  position:relative;z-index:2;background:#fff;display:inline-block;padding:0 3px}
+.node.me .nm{font-size:15px;color:var(--rd);letter-spacing:.03em;font-family:var(--jp);font-weight:600}
+.tree svg.link{position:absolute;left:0;top:0;width:100%;pointer-events:none;overflow:visible}
+.tree svg.link path{fill:none;stroke:var(--g3);stroke-width:1;
+  stroke-dasharray:var(--len,400);stroke-dashoffset:var(--len,400);
+  transition:stroke-dashoffset 760ms var(--e-line)}
+.tree svg.link path.r{stroke:var(--rd)}
+.tree.on svg.link path{stroke-dashoffset:0}
+.geneinfo{margin-top:16px;border-radius:16px;background:var(--line2);padding:14px 16px;min-height:78px}
+.geneinfo .t{font-size:13px;font-weight:600}
+.geneinfo .d{font-size:11.5px;color:var(--g1);line-height:1.9;margin-top:5px}
+.traits{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.traits h5{font-size:9.5px;color:var(--g2);font-weight:400;margin-bottom:8px}
+.traits li{list-style:none;display:flex;align-items:center;gap:9px;padding:4px 0;font-size:12.5px}
+.traits.r{text-align:right}
+.traits.r h5{text-align:right}
+.traits.r li{flex-direction:row-reverse}
+.traits .ic{width:18px;flex:none;display:flex;align-items:center;justify-content:center}
+
+/* 育種者 */
+.brd{display:grid;grid-template-columns:110px 1fr;gap:14px;margin-top:10px}
+.brd .ph{width:110px;height:164px;border-radius:14px;background:#F2F3F4 center/cover no-repeat;position:relative;overflow:hidden}
+.brd .nm{font-size:20px;font-weight:600;letter-spacing:.03em}
+.brd .ro{font-family:var(--en);font-size:8.5px;letter-spacing:.2em;color:var(--g2);margin-top:3px}
+.brd .qt{font-size:14px;margin-top:10px;line-height:1.65;font-weight:600}
+.bstat{display:grid;grid-template-columns:1fr 1fr 1fr;border-radius:14px;background:var(--line2);margin-top:14px}
+.bstat div{padding:11px 6px;text-align:center;position:relative}
+.bstat div+div::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:1px;background:var(--line)}
+.bstat .k{font-size:9px;color:var(--g2)}
+.bstat .v{font-family:var(--en);font-size:21px;margin-top:2px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.bstat .v em{font-style:normal;font-size:10px;margin-left:2px;color:var(--g2)}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.chips span{border-radius:999px;padding:6px 12px;font-size:11px;color:var(--rd);background:var(--rdl)}
+.gal{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px}
+.gal .im{height:72px;border-radius:9px;background:#F2F3F4 center/cover no-repeat}
+.gal figcaption{font-size:9px;color:var(--g1);margin-top:6px;line-height:1.55}
+
+/* ================= CLUB / ABOUT ================= */
+.ctop{padding:62px 24px 0}
+.clubcard{border-radius:20px;box-shadow:inset 0 0 0 1px var(--line);padding:18px;margin-top:12px}
+.clubcard .hd{display:flex;align-items:center;gap:12px}
+.clubcard .av{width:44px;height:44px;border-radius:50%;background:#F2F3F4 center/cover no-repeat;flex:none}
+.clubcard .nm{font-size:15px;font-weight:600}
+.clubcard .rl{font-size:10px;color:var(--g2);margin-top:2px}
+.clubcard .mem{margin-left:auto;text-align:right}
+.clubcard .mem b{font-family:var(--en);font-size:18px;font-weight:800;font-variant-numeric:tabular-nums}
+.clubcard .mem span{display:block;font-family:var(--en);font-size:8px;letter-spacing:.2em;color:var(--g2)}
+.clubcard p{font-size:11.5px;line-height:1.95;color:var(--g1);margin-top:12px}
+.qa{border-bottom:1px solid var(--line)}
+.qa>button{width:100%;display:flex;align-items:flex-start;gap:12px;padding:16px 0;text-align:left}
+.qa>button .q{font-size:13px;line-height:1.7;font-weight:600}
+.qa>button .pm{margin-left:auto;flex:none;width:11px;height:11px;position:relative;margin-top:6px}
+.qa>button .pm::before,.qa>button .pm::after{content:"";position:absolute;background:var(--ink);transition:.32s var(--e-out)}
+.qa>button .pm::before{left:0;right:0;top:5px;height:1px}
+.qa>button .pm::after{top:0;bottom:0;left:5px;width:1px}
+.qa.open>button .pm{background:none}
+.qa.open>button .pm::after{transform:scaleY(0)}
+.qa .a{max-height:0;overflow:hidden;transition:max-height var(--d-exp) var(--e-out)}
+.qa .a p{font-size:11.5px;line-height:1.95;color:var(--g1);padding:0 0 16px}
+.pick{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
+.pick button{border-radius:14px;padding:11px 6px;text-align:center;
+  box-shadow:inset 0 0 0 1px var(--line);transition:var(--d-mic) var(--e-mic)}
+.pick button .sw{display:block;width:15px;height:15px;margin:0 auto;border-radius:4px;
+  box-shadow:inset 0 0 0 1px rgba(20,26,34,.14)}
+.pick button .nm2{display:block;margin-top:7px;font-size:11px}
+.pick button.on{box-shadow:inset 0 0 0 1.5px var(--rd);background:var(--rdl)}
+.pick button.on .nm2{color:var(--rd);font-weight:600}
+
+#toast{position:absolute;left:50%;bottom:calc(var(--tab) + 30px);transform:translate(-50%,12px);
+  z-index:40;background:var(--ink);color:#fff;border-radius:999px;padding:12px 22px;
+  font-family:var(--en);font-size:9.5px;letter-spacing:.18em;opacity:0;pointer-events:none;
+  transition:var(--d-en) var(--e-out)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* 出だしの動き */
+.rc{display:inline-block;overflow:hidden;vertical-align:bottom;line-height:inherit}
+.rc>i{display:inline-block;font-style:inherit;transform:translateY(112%);
+  transition:transform 620ms var(--e-out)}
+.rc.on>i{transform:none}
+.rise{opacity:0;transform:translateY(12px);
+  transition:opacity var(--d-en) var(--e-out),transform var(--d-en) var(--e-out)}
+.rise.on{opacity:1;transform:none}
+.fade{animation:fi .6s var(--e-out) both}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hint{font-family:var(--en);font-size:8.5px;letter-spacing:.2em;color:var(--g3);text-align:center;padding-top:10px}
+
+html.still *,html.still *::before,html.still *::after{
+  animation-duration:.01ms!important;transition-duration:.01ms!important;transition-delay:0ms!important}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}

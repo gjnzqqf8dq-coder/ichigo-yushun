@@ -1,110 +1,64 @@
 /* =========================================================================
-   field.js — 粒子フィールド v2
-   いちごは「実体＋まわりの粒」ではなく、実体そのものが数万の粒でできている。
-   描画は ImageData への直接書き込み。文字列のfillStyleを毎フレーム作らないので
-   3〜4万点でも落ちない。座標も色も TypedArray（SoA）で持つ。
+   field.js v3 — 写真そのものが粒に崩れる
+   2枚のキャンバスで描く。
+     #photo … いちごの写真。右側ほど画素を落として粒に変える（毎フレーム抜け方が変わる＝チリチリ）
+     #field … 飛んでいく粒と、周囲に散る粒。ImageData 直書き
+   単体（single）と、横一列の手持ち（strip）の2モード。
    ========================================================================= */
 (function (g) {
 'use strict';
 
-var RED = [228, 0, 43], DRED = [196, 18, 46], GREY = [150, 150, 150];
-var ACC = [[186,186,186],[26,26,26],[228,0,43],[27,79,216],[232,184,0],[15,138,76]];
+var RED = [228, 20, 46], GREY = [150, 150, 150];
+var ACC = [[186,186,186],[40,40,40],[228,20,46],[27,79,216],[232,184,0],[15,138,76]];
 
-var cv, ctx, W = 0, H = 0, DPR = 1, CW = 0, CH = 0;
+var pc, px2, fc, fx, W = 0, H = 0, DPR = 1, CW = 0, CH = 0;
 var img = null, buf = null, N = 0, NH = 0, raf = 0;
 var cache = {}, t0 = performance.now();
 var ptr = { x: -9999, y: -9999, on: false };
 var slow = g.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* --- 粒（SoA） --- */
 var px, py, vx, vy, tx, ty, cr, cg, cb, Tr, Tg, Tb, lag, ph, sp, sz, al, Ta, jit, seed, hx, hy, hz, hn;
 
 var mode = 'none', single = null;
-var ring = { shapes: [], el: null, box: null, rot: 0, target: 0, drag: false, idx: 0, cb: null, frame: null };
+var strip = { names: [], el: null, box: null, off: 0, target: 0, drag: false, idx: 0, cb: null, frame: null, vel: 0, last: 0 };
 
-/* ---------------- かたち ---------------- */
-function scan(im, tint) {
-  var S = 340, aw, ah;
+/* ---------------- 写真の読み込みと、崩れる側の点 ---------------- */
+function scan(im) {
+  var S = 320, aw, ah;
   if (im.naturalWidth >= im.naturalHeight) { aw = S; ah = Math.round(S * im.naturalHeight / im.naturalWidth); }
   else { ah = S; aw = Math.round(S * im.naturalWidth / im.naturalHeight); }
   var c = document.createElement('canvas'); c.width = aw; c.height = ah;
   var x = c.getContext('2d', { willReadFrequently: true });
   x.drawImage(im, 0, 0, aw, ah);
   var d = x.getImageData(0, 0, aw, ah).data;
-  var xs = [], ys = [], rs = [], gs = [], bs = [], ts = [], cs = [], ss = [];
-  for (var y = 0; y < ah; y++) {
-    for (var q = 0; q < aw; q++) {
-      var i = (y * aw + q) * 4;
-      if (d[i + 3] < 24) continue;
-      var r = d[i], gg = d[i + 1], b = d[i + 2];
-      if (r > 249 && gg > 247 && b > 244) continue;
-      var L = r * .299 + gg * .587 + b * .114;
-      if (!tint && L > 188) { var f = 188 / L; r *= f; gg *= f; b *= f; }
-      var u = q / aw, v = y / ah;
-      var t = Math.min(1, Math.hypot(u - .5, v - .5) * 2);
-      var a = Math.atan2(v - .5, u - .5);
-      xs.push(q); ys.push(y);
-      rs.push(tint ? tint[0] : r | 0); gs.push(tint ? tint[1] : gg | 0); bs.push(tint ? tint[2] : b | 0);
-      ts.push(Math.pow(t, 2.6)); cs.push(Math.cos(a)); ss.push(Math.sin(a));
-    }
+  var xs = [], ys = [], rs = [], gs = [], bs = [], pal = [];
+  for (var y = 0; y < ah; y += 2) for (var q = 0; q < aw; q += 2) {
+    var i = (y * aw + q) * 4;
+    if (d[i + 3] < 24) continue;
+    var r = d[i], gg = d[i + 1], b = d[i + 2];
+    if (r > 248 && gg > 246 && b > 243) continue;
+    xs.push(q); ys.push(y); rs.push(r); gs.push(gg); bs.push(b);
   }
   var n = xs.length;
-  var o = {
-    n: n, w: aw, h: ah,
-    x: Float32Array.from(xs), y: Float32Array.from(ys),
-    r: Uint8Array.from(rs), g: Uint8Array.from(gs), b: Uint8Array.from(bs),
-    t: Float32Array.from(ts), ca: Float32Array.from(cs), sa: Float32Array.from(ss),
-    pal: []
-  };
-  for (var k = 0; k < 40; k++) { var j = (k * 3571) % n; o.pal.push([o.r[j], o.g[j], o.b[j]]); }
-  return o;
-}
-function fromPts(w, h, arr) {   // arr: [x,y,r,g,b]
-  var n = arr.length, o = {
-    n: n, w: w, h: h,
-    x: new Float32Array(n), y: new Float32Array(n),
-    r: new Uint8Array(n), g: new Uint8Array(n), b: new Uint8Array(n),
-    t: new Float32Array(n), ca: new Float32Array(n), sa: new Float32Array(n), pal: []
-  };
-  for (var i = 0; i < n; i++) {
-    var p = arr[i], u = p[0] / w, v = p[1] / h;
-    var t = Math.min(1, Math.hypot(u - .5, v - .5) * 2), a = Math.atan2(v - .5, u - .5);
-    o.x[i] = p[0]; o.y[i] = p[1]; o.r[i] = p[2]; o.g[i] = p[3]; o.b[i] = p[4];
-    o.t[i] = Math.pow(t, 2.6); o.ca[i] = Math.cos(a); o.sa[i] = Math.sin(a);
+  for (var k = 0; k < 40; k++) { var j = (k * 3571) % n; pal.push([rs[j], gs[j], bs[j]]); }
+  // 白抜き画像：写真描画用。白を透明にしておく
+  var full = x.getImageData(0, 0, aw, ah), fd = full.data;
+  for (var p = 0; p < fd.length; p += 4) {
+    if (fd[p] > 248 && fd[p + 1] > 246 && fd[p + 2] > 243) fd[p + 3] = 0;
   }
-  for (var k = 0; k < 12; k++) { var j = (k * 97) % n; o.pal.push([o.r[j], o.g[j], o.b[j]]); }
-  return o;
+  var cut = document.createElement('canvas'); cut.width = aw; cut.height = ah;
+  cut.getContext('2d').putImageData(full, 0, 0);
+  return { im: cut, w: aw, h: ah, n: n, x: Float32Array.from(xs), y: Float32Array.from(ys),
+           r: Uint8Array.from(rs), g: Uint8Array.from(gs), b: Uint8Array.from(bs), pal: pal };
 }
-function dnaShape() {
-  var w = 200, h = 320, a = [], turns = 3.0, n = 900;
-  for (var i = 0; i < n; i++) {
-    var t = i / n, y = t * h, q = t * Math.PI * 2 * turns, amp = w * .30;
-    a.push([w / 2 + Math.sin(q) * amp, y, RED[0], RED[1], RED[2]]);
-    a.push([w / 2 + Math.sin(q + Math.PI) * amp, y, GREY[0], GREY[1], GREY[2]]);
-    if (i % 16 === 0) {
-      var x1 = w / 2 + Math.sin(q) * amp, x2 = w / 2 + Math.sin(q + Math.PI) * amp;
-      for (var k = 0; k <= 10; k++) a.push([x1 + (x2 - x1) * k / 10, y, GREY[0], GREY[1], GREY[2]]);
-    }
-  }
-  return fromPts(w, h, a);
-}
-function dustShape() {
-  var w = 300, h = 300, a = [];
-  for (var i = 0; i < 2400; i++) a.push([Math.random() * w, Math.random() * h, GREY[0], GREY[1], GREY[2]]);
-  return fromPts(w, h, a);
-}
-var SRC = { dna: { fn: dnaShape }, dust: { fn: dustShape } };
-for (var bi = 1; bi <= 6; bi++) SRC['berry' + bi] = { url: 'img/berry' + bi + '.png' };
-
+var SRC = {};
+for (var bi = 1; bi <= 6; bi++) SRC['berry' + bi] = 'img/berry' + bi + '.png';
 function shape(name, cb) {
   if (cache[name]) return cb(cache[name]);
-  var s = SRC[name];
-  if (!s) { cache[name] = dustShape(); return cb(cache[name]); }
-  if (s.fn) { cache[name] = s.fn(); return cb(cache[name]); }
   var im = new Image();
-  im.onload = function () { cache[name] = scan(im, s.tint); cb(cache[name]); };
-  im.onerror = function () { cache[name] = dustShape(); cb(cache[name]); };
-  im.src = s.url;
+  im.onload = function () { cache[name] = scan(im); cb(cache[name]); };
+  im.onerror = function () { cb(null); };
+  im.src = SRC[name] || name;
 }
 function preload(names, done) {
   var left = names.length; if (!left) return done && done();
@@ -112,89 +66,89 @@ function preload(names, done) {
 }
 
 /* ---------------- 初期化 ---------------- */
-function count() {
-  var a = g.innerWidth * g.innerHeight;
-  return a < 380000 ? 22000 : a < 900000 ? 30000 : 38000;
-}
+function count() { var a = g.innerWidth * g.innerHeight; return a < 380000 ? 9000 : a < 900000 ? 12000 : 15000; }
 function alloc(n) {
-  px = new Float32Array(n); py = new Float32Array(n);
-  vx = new Float32Array(n); vy = new Float32Array(n);
+  px = new Float32Array(n); py = new Float32Array(n); vx = new Float32Array(n); vy = new Float32Array(n);
   tx = new Float32Array(n); ty = new Float32Array(n);
   cr = new Float32Array(n); cg = new Float32Array(n); cb = new Float32Array(n);
   Tr = new Uint8Array(n); Tg = new Uint8Array(n); Tb = new Uint8Array(n);
-  lag = new Float32Array(n); ph = new Float32Array(n); sp = new Float32Array(n);
-  sz = new Uint8Array(n); al = new Float32Array(n); Ta = new Float32Array(n);
-  jit = new Float32Array(n); seed = new Uint32Array(n);
+  lag = new Float32Array(n); ph = new Float32Array(n); sp = new Float32Array(n); sz = new Uint8Array(n);
+  al = new Float32Array(n); Ta = new Float32Array(n); jit = new Float32Array(n); seed = new Uint32Array(n);
   hx = new Float32Array(n); hy = new Float32Array(n); hz = new Float32Array(n); hn = new Float32Array(n);
   for (var i = 0; i < n; i++) {
-    px[i] = W / 2 + (Math.random() - .5) * W * 1.6;
-    py[i] = H / 2 + (Math.random() - .5) * H * 1.6;
-    cr[i] = cg[i] = cb[i] = 236;
-    lag[i] = Math.random(); ph[i] = Math.random() * 6.283; sp[i] = .45 + Math.random() * .95;
-    sz[i] = Math.random() < .34 ? 2 : 1;
-    seed[i] = (Math.random() * 4294967295) >>> 0;
+    px[i] = W / 2 + (Math.random() - .5) * W * 1.4; py[i] = H / 2 + (Math.random() - .5) * H * 1.4;
+    cr[i] = cg[i] = cb[i] = 236; lag[i] = Math.random(); ph[i] = Math.random() * 6.283; sp[i] = .45 + Math.random() * .95;
+    sz[i] = Math.random() < .3 ? 2 : 1; seed[i] = (Math.random() * 4294967295) >>> 0;
     hx[i] = Math.random(); hy[i] = Math.random(); hz[i] = Math.random(); hn[i] = Math.random() * 4000;
   }
 }
 function resize() {
   DPR = Math.min(2, g.devicePixelRatio || 1);
-  W = cv.clientWidth; H = cv.clientHeight;
-  CW = Math.round(W * DPR); CH = Math.round(H * DPR);
-  cv.width = CW; cv.height = CH;
-  img = ctx.createImageData(CW, CH);
-  buf = new Uint32Array(img.data.buffer);
+  W = fc.clientWidth; H = fc.clientHeight; CW = Math.round(W * DPR); CH = Math.round(H * DPR);
+  fc.width = CW; fc.height = CH; pc.width = CW; pc.height = CH;
+  px2.setTransform(DPR, 0, 0, DPR, 0, 0);
+  img = fx.createImageData(CW, CH); buf = new Uint32Array(img.data.buffer);
 }
-function init(canvas) {
-  cv = canvas; ctx = cv.getContext('2d');
-  resize();
-  N = count(); NH = Math.round(N * .16);
-  alloc(N);
-  g.addEventListener('resize', function () {
-    resize();
-    if (mode === 'single' && single) apply(single.name, single.el, single.opt);
-    if (mode === 'ring') ring.box = rect(ring.el);
-  });
-  g.addEventListener('pointermove', function (e) {
-    var b = cv.getBoundingClientRect(); ptr.x = e.clientX - b.left; ptr.y = e.clientY - b.top; ptr.on = true;
-  });
+function init(photoCanvas, fieldCanvas) {
+  pc = photoCanvas; px2 = pc.getContext('2d'); fc = fieldCanvas; fx = fc.getContext('2d');
+  resize(); N = count(); NH = Math.round(N * .34); alloc(N);
+  g.addEventListener('resize', function () { resize(); if (mode === 'single' && single) apply(single.name, single.el, single.opt); if (mode === 'strip') strip.box = rect(strip.el); });
+  g.addEventListener('pointermove', function (e) { var b = fc.getBoundingClientRect(); ptr.x = e.clientX - b.left; ptr.y = e.clientY - b.top; ptr.on = true; });
   g.addEventListener('pointerleave', function () { ptr.on = false; });
-  document.addEventListener('visibilitychange', function () {
-    if (document.hidden) { cancelAnimationFrame(raf); raf = 0; } else if (!raf) loop(performance.now());
-  });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) { cancelAnimationFrame(raf); raf = 0; } else if (!raf) loop(performance.now()); });
   loop(performance.now());
 }
 function rect(el) {
-  var cbx = cv.getBoundingClientRect(), r = el && el.getBoundingClientRect ? el.getBoundingClientRect() : null;
-  if (r && (r.width > 2 || r.height > 2))
-    return { left: r.left - cbx.left, top: r.top - cbx.top, width: r.width, height: r.height };
+  var cbx = fc.getBoundingClientRect(), r = el && el.getBoundingClientRect ? el.getBoundingClientRect() : null;
+  if (r && (r.width > 2 || r.height > 2)) return { left: r.left - cbx.left, top: r.top - cbx.top, width: r.width, height: r.height };
   return { left: 0, top: 0, width: W, height: H };
+}
+
+/* ---------------- 写真を粒に崩しながら描く ---------------- */
+/* dir: 崩れる向き。'right' なら右端ほど画素が抜ける。k: 崩れ強さ 0..1 */
+function drawBerry(S, cx, cy, sc, alpha, dir, k) {
+  var w = S.w * sc, h = S.h * sc;
+  px2.globalAlpha = alpha;
+  px2.drawImage(S.im, cx - w / 2, cy - h / 2, w, h);
+  px2.globalAlpha = 1;
+  if (k <= 0 || slow) return;
+  // 崩れ：右側に白い抜けを打つ（＝粒に変わったように見える）。毎フレーム位置が変わる
+  var x0 = Math.round(cx - w / 2), y0 = Math.round(cy - h / 2);
+  var holes = Math.round(w * h * .22 * k);
+  px2.fillStyle = '#fff';
+  for (var i = 0; i < holes; i++) {
+    var u = Math.random(), v = Math.random();
+    if (dir === 'right') { u = 1 - Math.pow(1 - u, .45); if (u < .38) continue; }
+    else if (dir === 'left') { u = Math.pow(u, .45); if (u > .62) continue; }
+    else { var dd = Math.hypot(u - .5, v - .5) * 2; if (dd < .55) continue; }
+    var s = Math.random() < .3 ? 2 : 1;
+    px2.fillRect(x0 + u * w, y0 + v * h, s, s);
+  }
 }
 
 /* ---------------- single ---------------- */
 function apply(name, el, opt) {
   opt = opt || {}; mode = 'single';
   shape(name, function (S) {
-    single = { name: name, el: el, opt: opt, S: S };
+    if (!S) return;
     var box = rect(el);
-    var s = Math.min(box.width / S.w, box.height / S.h) * (opt.pad == null ? .96 : opt.pad);
-    var cx = box.left + box.width / 2, cy = box.top + box.height / 2;
-    var dir = opt.dir || 'radial';
-    var spread = opt.spread == null ? Math.min(box.width, box.height) * .16 : opt.spread;
+    var sc = Math.min(box.width / S.w, box.height / S.h) * (opt.pad == null ? .96 : opt.pad);
+    var cx = box.left + box.width / 2, cy = box.top + box.height / 2, dir = opt.dir || 'right';
+    single = { name: name, el: el, opt: opt, S: S, cx: cx, cy: cy, sc: sc, dir: dir };
+    var spread = opt.spread == null ? Math.min(box.width, box.height) * .5 : opt.spread;
     var CN = N - NH, M = S.n;
     for (var i = 0; i < CN; i++) {
-      var q = seed[i] % M;
-      var u = S.x[q] / S.w, v = S.y[q] / S.h, t;
-      if (dir === 'left') t = Math.pow(1 - u, 2.6); else if (dir === 'right') t = Math.pow(u, 2.6);
-      else if (dir === 'up') t = Math.pow(1 - v, 2.6); else if (dir === 'down') t = Math.pow(v, 2.6);
-      else t = S.t[q];
-      var fly = t * (.18 + lag[i] * .82);
-      var ca = dir === 'left' ? -1 : dir === 'right' ? 1 : dir === 'up' ? 0 : dir === 'down' ? 0 : S.ca[q];
-      var sa = dir === 'up' ? -1 : dir === 'down' ? 1 : (dir === 'left' || dir === 'right') ? (ph[i] - 3.14) * .18 : S.sa[q];
-      tx[i] = cx + (S.x[q] - S.w / 2) * s + ca * fly * spread;
-      ty[i] = cy + (S.y[q] - S.h / 2) * s + sa * fly * spread;
+      var q = seed[i] % M, u = S.x[q] / S.w, v = S.y[q] / S.h, t;
+      if (dir === 'right') t = Math.max(0, (u - .45) / .55); else if (dir === 'left') t = Math.max(0, (.55 - u) / .55);
+      else t = Math.max(0, Math.hypot(u - .5, v - .5) * 2 - .5) * 2;
+      t = Math.pow(t, 1.4);
+      var fly = t * (.15 + lag[i] * .85);
+      var ca = dir === 'left' ? -1 : dir === 'right' ? 1 : (u - .5) * 2, sa = dir === 'left' || dir === 'right' ? (ph[i] - 3.14) * .28 : (v - .5) * 2;
+      tx[i] = cx + (S.x[q] - S.w / 2) * sc + ca * fly * spread;
+      ty[i] = cy + (S.y[q] - S.h / 2) * sc + sa * fly * spread;
       Tr[i] = S.r[q]; Tg[i] = S.g[q]; Tb[i] = S.b[q];
-      jit[i] = .28 + fly * 2.0;
-      Ta[i] = fly > .03 ? .34 + (1 - fly) * .64 : 1;
+      jit[i] = .3 + fly * 1.6;
+      Ta[i] = t < .02 ? 0 : (.35 + (1 - fly) * .6);   // 崩れていない側は写真に任せて粒を出さない
     }
     halo(box, S.pal, opt.halo == null ? 1 : opt.halo);
   });
@@ -203,129 +157,117 @@ var hBox = null, hPal = null, hK = 1, hT = 0;
 function halo(box, pal, k) {
   hBox = box; hPal = pal; hK = k;
   var cx = box.left + box.width / 2, cy = box.top + box.height / 2;
-  var rw = Math.max(box.width, W * .9), rh = Math.max(box.height * 1.4, box.height + 120);
+  var rw = Math.max(box.width, W * .98), rh = Math.max(box.height * 1.6, box.height + 160);
   for (var i = N - NH; i < N; i++) {
-    var c = (seed[i] % 4 === 0) ? ACC[seed[i] % 6] : pal[seed[i] % pal.length];
-    var a = hx[i] * 6.283, d = Math.pow(hy[i], .55);
-    tx[i] = cx + Math.cos(a) * d * rw * .56;
-    ty[i] = cy + Math.sin(a) * d * rh * .56;
+    var c = (seed[i] % 3 === 0) ? RED : (seed[i] % 7 === 0 ? ACC[seed[i] % 6] : pal[seed[i] % pal.length]);
+    var a = hx[i] * 6.283, d = Math.pow(hy[i], .5);
+    tx[i] = cx + Math.cos(a) * d * rw * .6; ty[i] = cy + Math.sin(a) * d * rh * .6;
     Tr[i] = c[0]; Tg[i] = c[1]; Tb[i] = c[2];
-    jit[i] = 1.2 + hz[i] * 2.0;
-    Ta[i] = k * (.14 + (1 - d) * .5) * (.45 + hz[i]);
+    jit[i] = .9 + hz[i] * 1.6;
+    Ta[i] = k * (.18 + (1 - d) * .55) * (.4 + hz[i]);
   }
 }
 
-/* ---------------- ring ---------------- */
-function makeRing(names, el, opt) {
+/* ---------------- strip（手持ちの横一列） ---------------- */
+function makeStrip(names, el, opt) {
   opt = opt || {};
   preload(names, function () {
-    mode = 'ring';
-    ring.shapes = names.map(function (n) { return cache[n]; });
-    ring.el = el; ring.box = rect(el);
-    ring.cb = opt.onIndex || null; ring.frame = opt.onFrame || null;
-    ring.idx = opt.index || 0;
-    ring.rot = ring.target = -ring.idx * (6.283 / names.length);
+    mode = 'strip';
+    strip.names = names; strip.el = el; strip.box = rect(el);
+    strip.cb = opt.onIndex || null; strip.frame = opt.onFrame || null;
+    strip.idx = opt.index || 0; strip.off = strip.target = strip.idx;
   });
 }
-function spin(dx) { if (mode !== 'ring') return; ring.drag = true; ring.rot += dx * .0072; }
-function release() { if (mode !== 'ring') return; ring.drag = false; snap(); }
-function snap() {
-  var n = ring.shapes.length, st = 6.283 / n, k = Math.round(-ring.rot / st);
-  ring.target = -k * st;
-  var i = ((k % n) + n) % n;
-  if (i !== ring.idx) { ring.idx = i; if (ring.cb) ring.cb(i); }
+function spin(dx) { if (mode !== 'strip') return; strip.drag = true; strip.off -= dx / 150; strip.vel = -dx / 150; }
+function release() {
+  if (mode !== 'strip') return; strip.drag = false;
+  var land = strip.off + strip.vel * 6;                // 慣性で着地点を投影
+  strip.target = Math.round(land); snapTo(strip.target);
+}
+function snapTo(t) {
+  var n = strip.names.length, i = ((Math.round(t) % n) + n) % n;
+  if (i !== strip.idx) { strip.idx = i; if (strip.cb) strip.cb(i); }
 }
 function ringTo(i) {
-  if (mode !== 'ring') return;
-  var n = ring.shapes.length, st = 6.283 / n, k = Math.round(-ring.rot / st);
-  var d = i - (((k % n) + n) % n);
+  if (mode !== 'strip') return;
+  var n = strip.names.length, cur = ((Math.round(strip.off) % n) + n) % n, d = i - cur;
   if (d > n / 2) d -= n; if (d < -n / 2) d += n;
-  ring.target = -(k + d) * st; ring.idx = i; if (ring.cb) ring.cb(i);
+  strip.target = Math.round(strip.off) + d; snapTo(strip.target);
 }
-function ringTargets() {
-  var n = ring.shapes.length, box = ring.box; if (!n || !box) return;
-  if (!ring.drag) ring.rot += (ring.target - ring.rot) * .105;
-  var cx = box.left + box.width / 2, cy = box.top + box.height / 2, R = box.width * .46;
-  var slot = [], tot = 0;
-  for (var s = 0; s < n; s++) {
-    var a = ring.rot + s * 6.283 / n, z = Math.cos(a), k = (z + 1) / 2, S = ring.shapes[s];
-    var base = Math.min(box.width * .66 / S.w, box.height * .82 / S.h);
-    var sc = base * (.24 + .76 * k * k), av = .07 + .93 * Math.pow(k, 2.6);
-    var w = sc * sc * Math.pow(av, 1.5);
-    slot.push({ S: S, x: cx + Math.sin(a) * R, y: cy + (1 - k) * box.height * .05, sc: sc, al: av, k: k, w: w, i: s });
-    tot += w;
+function stripFrame(now) {
+  var n = strip.names.length, box = strip.box; if (!n || !box) return;
+  var dt = Math.min(.05, (now - (strip.last || now)) / 1000); strip.last = now;
+  if (!strip.drag) strip.off += (strip.target - strip.off) * (1 - Math.exp(-6 * dt));   // λ=6
+  var cx = box.left + box.width / 2, base = box.top + box.height * .78;  // 底を揃える
+  var slots = [], sum = 0;
+  for (var k = -3; k <= 3; k++) {
+    var rel = k - (strip.off - Math.round(strip.off));           // 中央からの距離（連続）
+    var item = (((Math.round(strip.off) + k) % n) + n) % n;
+    var S = cache[strip.names[item]]; if (!S) continue;
+    var ad = Math.abs(rel);
+    var scl = ad < 1 ? 1 - .60 * ad : ad < 2 ? .40 - .08 * (ad - 1) : .32 - .06 * (ad - 2);
+    var spacing = box.width * .125;
+    var x = cx + Math.sign(rel) * (Math.min(ad, 1) * box.width * .30 + Math.max(0, ad - 1) * spacing);
+    var big = Math.min(box.width * .56 / S.w, box.height * .66 / S.h);
+    var sc = big * scl, h = S.h * sc;
+    var a = ad < 1 ? 1 : ad < 1.5 ? .95 : ad < 2.5 ? .85 : .5;
+    slots.push({ S: S, x: x, y: base - h / 2, sc: sc, al: a, k: Math.max(0, 1 - ad), i: item, ad: ad });
   }
-  var acc = 0;
-  for (var s2 = 0; s2 < n; s2++) { slot[s2].lo = acc / tot; acc += slot[s2].w; slot[s2].hi = acc / tot; }
-  var front = slot[0]; for (var s3 = 1; s3 < n; s3++) if (slot[s3].k > front.k) front = slot[s3];
-  var CN = N - NH;
+  // 写真：奥から手前へ
+  px2.clearRect(0, 0, W, H);
+  slots.slice().sort(function (a, b) { return b.ad - a.ad; }).forEach(function (s) {
+    drawBerry(s.S, s.x, s.y, s.sc, s.al, 'right', s.k * .9);
+  });
+  // 粒：手前の一粒だけ右へ崩れる
+  var front = slots[0]; for (var j = 1; j < slots.length; j++) if (slots[j].k > front.k) front = slots[j];
+  var S2 = front.S, CN = N - NH, M = S2.n, spread = box.width * .34;
   for (var i = 0; i < CN; i++) {
-    var u = (seed[i] % 100003) / 100003, sl = front;
-    for (var s4 = 0; s4 < n; s4++) if (u >= slot[s4].lo && u < slot[s4].hi) { sl = slot[s4]; break; }
-    var S2 = sl.S, q = seed[i] % S2.n;
-    var fly = S2.t[q] * (.18 + lag[i] * .82), spr = box.height * .085 * (.3 + sl.k);
-    tx[i] = sl.x + (S2.x[q] - S2.w / 2) * sl.sc + S2.ca[q] * fly * spr;
-    ty[i] = sl.y + (S2.y[q] - S2.h / 2) * sl.sc + S2.sa[q] * fly * spr;
-    Tr[i] = S2.r[q]; Tg[i] = S2.g[q]; Tb[i] = S2.b[q];
-    jit[i] = (.24 + fly * 1.9) * (.55 + sl.k * .65);
-    Ta[i] = sl.al * (fly > .03 ? .36 + (1 - fly) * .62 : 1);
+    var q = seed[i] % M, u = S2.x[q] / S2.w;
+    var t = Math.pow(Math.max(0, (u - .45) / .55), 1.4), fly = t * (.15 + lag[i] * .85);
+    tx[i] = front.x + (S2.x[q] - S2.w / 2) * front.sc + fly * spread;
+    ty[i] = front.y + (S2.y[q] - S2.h / 2) * front.sc + (ph[i] - 3.14) * .28 * fly * spread;
+    Tr[i] = S2.r[q]; Tg[i] = S2.g[q]; Tb[i] = S2.b[q]; jit[i] = .3 + fly * 1.6;
+    Ta[i] = t < .02 ? 0 : front.k * (.35 + (1 - fly) * .6);
   }
-  halo({ left: front.x - box.height * .42, top: front.y - box.height * .42,
-         width: box.height * .84, height: box.height * .84 }, front.S.pal, .55);
-  if (ring.frame) ring.frame(slot);
+  if (now - hT > 320) { hT = now; halo({ left: front.x - box.height * .4, top: front.y - box.height * .4, width: box.height * .8, height: box.height * .8 }, S2.pal, .7); }
+  if (strip.frame) strip.frame(slots.map(function (s) { return { x: s.x, k: s.k, i: s.i, ad: s.ad }; }));
 }
 
-function hide() { mode = 'none'; for (var i = 0; i < N; i++) Ta[i] = 0; }
+function hide() { mode = 'none'; single = null; px2.clearRect(0, 0, W, H); for (var i = 0; i < N; i++) Ta[i] = 0; }
 
-/* ---------------- 描画 ---------------- */
+/* ---------------- 描画ループ ---------------- */
 function loop(now) {
   raf = requestAnimationFrame(loop);
   if (!buf) return;
   var tt = now - t0;
-  if (mode === 'ring') ringTargets();
-  else if (mode === 'single' && hBox && now - hT > 320) { hT = now; halo(hBox, hPal, hK); }
-
+  if (mode === 'strip') stripFrame(now);
+  else if (mode === 'single' && single) {
+    px2.clearRect(0, 0, W, H);
+    drawBerry(single.S, single.cx, single.cy, single.sc, 1, single.dir, .9);
+    if (hBox && now - hT > 320) { hT = now; halo(hBox, hPal, hK); }
+  }
   buf.fill(0);
-  var k = slow ? .2 : .066, damp = slow ? .55 : .845;
-  var rnd = Math.random, D = DPR;
+  var k = slow ? .2 : .066, damp = slow ? .55 : .845, rnd = Math.random, D = DPR;
   for (var i = 0; i < N; i++) {
     var kk = k * (.55 + lag[i] * .9);
-    vx[i] = (vx[i] + (tx[i] - px[i]) * kk) * damp;
-    vy[i] = (vy[i] + (ty[i] - py[i]) * kk) * damp;
+    vx[i] = (vx[i] + (tx[i] - px[i]) * kk) * damp; vy[i] = (vy[i] + (ty[i] - py[i]) * kk) * damp;
     px[i] += vx[i]; py[i] += vy[i];
-
-    if (ptr.on) {
-      var dx = px[i] - ptr.x, dy = py[i] - ptr.y, d2 = dx * dx + dy * dy;
-      if (d2 < 7000 && d2 > .5) { var f = (1 - d2 / 7000) * 3.2 / Math.sqrt(d2); px[i] += dx * f; py[i] += dy * f; }
-    }
+    if (ptr.on) { var dx = px[i] - ptr.x, dy = py[i] - ptr.y, d2 = dx * dx + dy * dy;
+      if (d2 < 7000 && d2 > .5) { var f = (1 - d2 / 7000) * 3 / Math.sqrt(d2); px[i] += dx * f; py[i] += dy * f; } }
     cr[i] += (Tr[i] - cr[i]) * .09; cg[i] += (Tg[i] - cg[i]) * .09; cb[i] += (Tb[i] - cb[i]) * .09;
     al[i] += (Ta[i] - al[i]) * .075;
     if (al[i] < .015) continue;
-
-    if (i >= N - NH) {
-      hn[i] -= 16.7;
-      if (hn[i] < 0) { hx[i] = rnd(); hy[i] = rnd(); hn[i] = 2200 + rnd() * 5200; }
-    }
-
-    var fl = slow ? 1 : (.60 + .40 * Math.sin(tt * .0136 * sp[i] + ph[i] * 3.1));
-    var j = jit[i];
-    var X = (px[i] + (slow ? 0 : (rnd() - .5) * j * 2.2)) * D;
-    var Y = (py[i] + (slow ? 0 : (rnd() - .5) * j * 2.2)) * D;
-    var xi = X | 0, yi = Y | 0;
-    if (xi < 0 || yi < 0 || xi >= CW - 1 || yi >= CH - 1) continue;
-
+    if (i >= N - NH) { hn[i] -= 16.7; if (hn[i] < 0) { hx[i] = rnd(); hy[i] = rnd(); hn[i] = 2200 + rnd() * 5200; } }
+    var fl = slow ? 1 : (.6 + .4 * Math.sin(tt * .0136 * sp[i] + ph[i] * 3.1)), j = jit[i];
+    var X = (px[i] + (slow ? 0 : (rnd() - .5) * j * 2.2)) * D, Y = (py[i] + (slow ? 0 : (rnd() - .5) * j * 2.2)) * D;
+    var xi = X | 0, yi = Y | 0; if (xi < 0 || yi < 0 || xi >= CW - 1 || yi >= CH - 1) continue;
     var A = (al[i] * fl * 255) | 0; if (A > 255) A = 255;
-    var col = (A << 24) | ((cb[i] | 0) << 16) | ((cg[i] | 0) << 8) | (cr[i] | 0);
-    var o = yi * CW + xi;
-    buf[o] = col;
-    if (sz[i] === 2) { buf[o + 1] = col; buf[o + CW] = col; buf[o + CW + 1] = col; }
+    var col = (A << 24) | ((cb[i] | 0) << 16) | ((cg[i] | 0) << 8) | (cr[i] | 0), o = yi * CW + xi;
+    buf[o] = col; if (sz[i] === 2) { buf[o + 1] = col; buf[o + CW] = col; buf[o + CW + 1] = col; }
   }
-  ctx.putImageData(img, 0, 0);
+  fx.putImageData(img, 0, 0);
 }
 
-g.Field = {
-  init: init, apply: apply, hide: hide, preload: preload,
-  ring: makeRing, spin: spin, release: release, ringTo: ringTo,
-  ringIndex: function () { return ring.idx; }, RED: RED
-};
+g.Field = { init: init, apply: apply, hide: hide, preload: preload, strip: makeStrip, spin: spin, release: release, ringTo: ringTo,
+  index: function () { return strip.idx; } };
 })(window);
