@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ICHIGO YUSHUN 2027 — UI</title>
-<link rel="stylesheet" href="app.css?v=5">
+<link rel="stylesheet" href="app.css?v=6">
 </head>
 <body>
 
@@ -27,7 +27,7 @@
 </div>
 
 <script src="particles.js?v=5"></script>
-<script src="screens.js?v=5"></script>
+<script src="screens.js?v=6"></script>
 <script>
 /* ---------- 粒子の起動 ---------- */
 function initParticles(root, anim){
@@ -60,7 +60,7 @@ function buildPhone(s){
 }
 
 /* ---------- ボード ---------- */
-var SCALE = parseFloat(new URLSearchParams(location.search).get('s')) || 0.42;
+var SCALE = parseFloat(new URLSearchParams(location.search).get('s')) || 0.52;
 var groups = document.getElementById('groups');
 var curRow = null;
 SCREENS.forEach(function(s, i){

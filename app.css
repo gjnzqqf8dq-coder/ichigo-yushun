@@ -14,7 +14,7 @@ body{background:#F2F2F2;font-family:var(--jp);color:var(--ink)}
 canvas{display:block}
 
 /* ---------- ボード ---------- */
-.board{padding:56px 40px 96px;max-width:1720px;margin:0 auto}
+.board{padding:56px 40px 96px;max-width:1036px;margin:0 auto}
 .bhead{margin-bottom:46px}
 .bhead h1{font-family:var(--en);font-size:34px;letter-spacing:.34em;font-weight:400}
 .bhead p{font-family:var(--en);font-size:11px;letter-spacing:.3em;color:var(--g1);margin-top:12px}
