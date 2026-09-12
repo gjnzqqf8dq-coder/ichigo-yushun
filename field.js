@@ -242,7 +242,7 @@ function makeRing(names, el, opt) {
     mode = 'ring';
     ring.shapes = names.map(function (n) { return cache[n]; });
     ring.el = el; ring.box = rect(el); ring.opt = opt;
-    ring.cb = opt.onIndex || null;
+    ring.cb = opt.onIndex || null; ring.frame = opt.onFrame || null;
     ring.rot = -(ring.idx = opt.index || 0) * (6.283 / names.length);
     ring.target = ring.rot;
   });
@@ -277,15 +277,15 @@ function ringTo(i) {
 function ringTargets() {
   var n = ring.shapes.length, box = ring.box;
   if (!n || !box) return;
-  if (!ring.drag) ring.rot += (ring.target - ring.rot) * 0.12;
+  if (!ring.drag) ring.rot += (ring.target - ring.rot) * 0.105;
   var cx = box.left + box.width / 2, cy = box.top + box.height / 2;
-  var R = box.width * .50;
+  var R = box.width * .46;
   var slot = [], tot = 0;
   for (var s = 0; s < n; s++) {
     var a = ring.rot + s * 6.283 / n;
     var z = Math.cos(a), k = (z + 1) / 2;
     var S = ring.shapes[s];
-    var base = Math.min(box.width * .62 / S.w, box.height * .82 / S.h);
+    var base = Math.min(box.width * .66 / S.w, box.height * .80 / S.h);
     var sc = base * (.22 + .78 * k * k);
     var al = .06 + .94 * Math.pow(k, 2.6);
     var w = sc * sc * Math.pow(al, 1.6);
@@ -318,6 +318,7 @@ function ringTargets() {
   }
   halo({ left: front.x - box.height * .42, top: front.y - box.height * .42,
          width: box.height * .84, height: box.height * .84 }, front.S.pal, .62);
+  if (ring.frame) ring.frame(slot);
 }
 
 function hide() { mode = 'none'; glow = null; solids = []; for (var i = 0; i < N; i++) P[i].Ta = 0; }
