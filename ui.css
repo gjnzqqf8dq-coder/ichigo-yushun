@@ -432,3 +432,58 @@ button.club:active{background:var(--pale);transform:scale(.985)}
 .lg{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
 .lg .d{flex:none;width:42px;font-size:11.5px;color:var(--rd);font-weight:700;font-variant-numeric:tabular-nums}
 .lg .t{font-size:12.5px;line-height:1.8;color:var(--g1)}
+
+/* =========================================================================
+   オーナーズクラブ 会員証（ID-1 85.6×54mm）— 券と同じ地紋の紙で作る
+   ========================================================================= */
+.cd{--u:calc(var(--tw,320px) / 856);position:relative;width:var(--tw,320px);
+  aspect-ratio:856 / 540;border-radius:calc(var(--u)*28);overflow:hidden;background:#e9f4ee;
+  box-shadow:0 0 0 1px rgba(0,0,0,.10),0 calc(var(--u)*36) calc(var(--u)*90) rgba(0,0,0,.16)}
+.cd .cbg{position:absolute;inset:0;background:url(img/plate.jpg) center/cover no-repeat;opacity:.62}
+.cd .cbg::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(118deg,rgba(255,255,255,.72) 12%,rgba(255,255,255,0) 42%,rgba(255,255,255,.5) 78%)}
+.cd .cbar{position:absolute;left:0;right:0;bottom:0;height:calc(var(--u)*14);background:var(--ac,#c8102e)}
+.cd .cin{position:absolute;inset:0;display:flex;flex-direction:column;
+  padding:calc(var(--u)*46) calc(var(--u)*48) calc(var(--u)*44);color:#0d0d0d}
+.cd .ch b{display:block;font-family:var(--serif);font-size:calc(var(--u)*26);font-weight:900;letter-spacing:.08em}
+.cd .ch span{display:block;font-size:calc(var(--u)*17);letter-spacing:.34em;color:#4a6357;margin-top:calc(var(--u)*7);font-weight:700}
+.cd .cnm{font-family:var(--serif);font-size:calc(var(--u)*62);font-weight:900;letter-spacing:.04em;
+  line-height:1.1;margin-top:calc(var(--u)*30)}
+.cd .cln{display:flex;align-items:center;gap:calc(var(--u)*14);margin-top:calc(var(--u)*16);
+  font-size:calc(var(--u)*24);font-weight:700}
+.cd .cln .wk{width:calc(var(--u)*20);height:calc(var(--u)*20);border-radius:calc(var(--u)*5);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
+.cd .cft{display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto}
+.cd .cft span{display:block;font-size:calc(var(--u)*15);letter-spacing:.2em;color:#4a6357;font-weight:700}
+.cd .cft b{display:block;font-family:var(--sans);font-size:calc(var(--u)*26);font-weight:700;
+  margin-top:calc(var(--u)*5);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.cd .cft div+div{text-align:right}
+.mycd{margin-top:14px}
+
+/* 記事へ飛べる行 */
+button.act,button.lg{display:block;width:100%;text-align:left;
+  transition:background var(--t-m) var(--ez),transform var(--t-s) var(--ez)}
+button.act:active,button.lg:active{background:var(--pale);transform:scale(.99)}
+button.lg{display:flex;align-items:center}
+.act .t{display:flex;align-items:center;gap:8px}
+.act .t svg{width:11px;height:11px;flex:none;fill:none;stroke:var(--g3);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lg .cv{margin-left:auto;flex:none;display:flex;align-items:center;color:var(--g3)}
+.lg .cv svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* 記事 */
+#v-post{padding-top:calc(8px + env(safe-area-inset-top,0px))}
+.phd{display:flex;align-items:baseline;gap:12px;padding-top:4px}
+.phd .k{font-size:10px;letter-spacing:.24em;color:var(--rd);font-weight:700}
+.phd .dt{font-size:11px;letter-spacing:.14em;color:var(--g3)}
+.pby{font-size:11px;letter-spacing:.1em;color:var(--g2);margin-top:12px;
+  padding-bottom:14px;border-bottom:1px solid var(--line)}
+.ptxt{font-size:13.5px;line-height:2;color:var(--g1);margin-top:16px}
+.pnum{display:grid;grid-template-columns:repeat(3,1fr);margin-top:20px;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pnum div{padding:12px 4px;text-align:center;position:relative}
+.pnum div+div::before{content:"";position:absolute;left:0;top:13px;bottom:13px;width:1px;background:var(--line)}
+.pnum span{display:block;font-size:9.5px;letter-spacing:.12em;color:var(--g2)}
+.pnum b{display:block;font-family:var(--serif);font-size:17px;font-weight:700;margin-top:3px;
+  line-height:1.25;font-variant-numeric:tabular-nums}
+.psig{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);
+  font-size:11.5px;color:var(--g2);text-align:right}

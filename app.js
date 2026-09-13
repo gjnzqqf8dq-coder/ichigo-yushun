@@ -160,7 +160,8 @@ V.dex = function () {
         return '<button data-t="' + i + '"' + (i === dTab ? ' class="on"' : '') + '>' + t + '</button>'; }).join('') + '</div>' +
     '<div class="dbody" id="dbody"></div>' +
     '<div class="dfoot"><button class="btn" id="own">' +
-      (S.owner === l.no ? 'いちご券を見る' : 'この系統にいちご券を出す') + '<span class="ar">→</span></button></div>';
+      (S.owner === l.no ? 'いちご券を見る' : 'このいちご券を購入する') +
+      '<span class="ar">' + (S.owner === l.no ? '→' : TICKET.yen) + '</span></button></div>';
   $('#cls').onclick = function () { go('home'); };
   $('#fav2').onclick = function () { S.fav = S.fav === l.no ? 0 : l.no; save();
     $('#fav2').style.color = S.fav === l.no ? 'var(--rd)' : 'var(--g2)'; };
@@ -339,51 +340,86 @@ function fitTicket(el, max) {
   var sh = $('#shell'), w = Math.min(max, (sh ? sh.clientWidth : 375) - 48);
   if (el) el.style.setProperty('--tw', w + 'px');
 }
-/* 押した瞬間に弾けて、券がふわっと出てくる */
-function issue(l) {
-  var first = S.owner !== l.no;
-  S.owner = l.no; S.no = S.no || ('ICY-' + RACE.year + '-' + (1000 + Math.floor(Math.random() * 8999))); save();
+/* ---- 会員証 ---- */
+function cardNo(c) {
+  S.cno = S.cno || {};
+  if (!S.cno[c.id]) S.cno[c.id] = c.code + '-' + RACE.year + '-' + (1000 + Math.floor(Math.random() * 8999));
+  return S.cno[c.id];
+}
+function myClub() { for (var i = 0; i < CLUBS.length; i++) if (CLUBS[i].id === S.club) return CLUBS[i]; return null; }
+function card(c) {
+  var l = LINES[c.line - 1];
+  return '<div class="cd" style="--ac:' + c.wc + '"><div class="cbg"></div><div class="cin">' +
+    '<div class="ch"><b>CULTA　ICHIGO YUSHUN</b><span>OWNERS CLUB</span></div>' +
+    '<div class="cnm">' + c.name + '</div>' +
+    '<div class="cln"><span class="wk" style="background:' + l.wc + '"></span>' + l.no + '号　' + l.name + '</div>' +
+    '<div class="cft"><div><span>MEMBER No.</span><b>' + cardNo(c) + '</b></div>' +
+    '<div><span>ISSUED</span><b>' + RACE.year + '.05.25</b></div></div>' +
+    '</div><div class="cbar"></div></div>';
+}
+
+/* 押した瞬間に弾けて、券や会員証がふわっと出てくる */
+function pop(o) {
   var sh = $('#shell'), old = $('#tkw'); if (old) old.parentNode.removeChild(old);
-  var dots = '', col = (l.wc === '#FFFFFF' ? '#a8a8a8' : l.wc);
+  var dots = '', col = (!o.color || o.color === '#FFFFFF') ? '#a8a8a8' : o.color;
   for (var i = 0; i < 44; i++) {
     var a = Math.random() * 6.283, rr = 64 + Math.random() * 190;
     dots += '<i style="--x:' + Math.round(Math.cos(a) * rr) + 'px;--y:' + Math.round(Math.sin(a) * rr) +
       'px;animation-delay:' + (Math.random() * 90 | 0) + 'ms;background:' + (i % 4 ? 'var(--rd)' : col) + '"></i>';
   }
   var d = document.createElement('div'); d.id = 'tkw';
-  var bt = $('#own'), sr = sh.getBoundingClientRect();          /* 押したボタンの位置から弾けさせる */
+  var sr = sh.getBoundingClientRect(), bt = o.from && $(o.from);
   if (bt) { var br = bt.getBoundingClientRect();
     d.style.setProperty('--bx', Math.round(br.left + br.width / 2 - sr.left) + 'px');
     d.style.setProperty('--by', Math.round(br.top + br.height / 2 - sr.top) + 'px'); }
-  d.innerHTML = '<div class="bkd"></div><div class="ring"></div><div class="ring b"></div><div class="burst">' + dots + '</div>' +
-    '<div class="stg">' + ticket(l) + '<div class="shine"></div></div>' +
-    '<div class="msg"><b>' + (first ? 'いちご券を発行しました' : 'あなたのいちご券') + '</b>' +
-      '<span>' + l.no + '号　' + l.name + '　／　最終 ' + rankAt(RACE.now, l.no) + '着</span>' +
-      '<span class="id">' + S.no + '</span></div>' +
-    '<button class="btn go">クラブで見る<span class="ar">→</span></button>';
+  d.innerHTML = '<div class="bkd"></div><div class="ring"></div><div class="ring b"></div>' +
+    '<div class="burst">' + dots + '</div>' +
+    '<div class="stg">' + o.art + '<div class="shine"></div></div>' +
+    '<div class="msg"><b>' + o.title + '</b><span>' + o.sub + '</span>' +
+      '<span class="id">' + o.id + '</span></div>' +
+    '<button class="btn go">' + o.cta + '<span class="ar">→</span></button>';
   sh.appendChild(d);
-  fitTicket($('.tk', d), 330);
-  void d.offsetHeight;            /* rAFが止まっていても演出が始まるように */
+  fitTicket($('.stg > div', d), o.max || 330);
+  void d.offsetHeight;
   d.classList.add('on');
   if (navigator.vibrate) try { navigator.vibrate([6, 40, 14]); } catch (x) {}
   var close = function () { d.classList.remove('on');
-    setTimeout(function () { if (d.parentNode) d.parentNode.removeChild(d); go('club'); }, 240); };
+    setTimeout(function () { if (d.parentNode) d.parentNode.removeChild(d); if (o.then) o.then(); }, 240); };
   $('.go', d).onclick = close;
   $('.bkd', d).onclick = close;
+}
+function issue(l) {
+  var first = S.owner !== l.no;
+  S.owner = l.no; S.no = S.no || ('ICY-' + RACE.year + '-' + (1000 + Math.floor(Math.random() * 8999))); save();
+  pop({ art: ticket(l), color: l.wc, from: '#own', max: 330,
+    title: first ? 'いちご券を購入しました' : 'あなたのいちご券',
+    sub: l.no + '号　' + l.name + '　／　最終 ' + rankAt(RACE.now, l.no) + '着　／　100口 ' + TICKET.yen,
+    id: S.no, cta: 'クラブで見る', then: function () { go('club'); } });
+}
+function joinClub(c) {
+  var first = S.club !== c.id;
+  S.club = c.id; cardNo(c); save();
+  pop({ art: card(c), color: c.wc, from: '#join', max: 320,
+    title: first ? '会員証を発行しました' : 'あなたの会員証',
+    sub: c.name + '　／　' + c.base,
+    id: cardNo(c), cta: 'クラブで見る', then: function () { go('club'); } });
 }
 
 /* =========================================================================
    いちご券 / READ
    ========================================================================= */
 V.club = function () {
-  var v = $('#v-club'), mine = S.owner ? LINES[S.owner - 1] : null;
+  var v = $('#v-club'), mine = S.owner ? LINES[S.owner - 1] : null, mc = myClub();
   v.innerHTML = '<div class="scroll"><div class="ptop">' +
     '<div class="kicker">ICHIGO TICKET</div>' +
     '<h1 class="disp" style="margin-top:10px">いちご券と、<br>応援クラブ。</h1>' +
-    '<p class="body" style="margin-top:14px">いちご券は、6系統のうちどれが5月末まで走り切るかを予想して受け取るカードです。購入も換金もできません。順位は5月25日の計測値だけで決まります。</p>' +
+    '<p class="body" style="margin-top:14px">いちご券は、6系統のうちどれが5月末まで走り切るかを予想して買うカードです。1口' + TICKET.kuchi +
+      '円、100口＝' + TICKET.yen + 'から。当たっても払い戻しはありません。売上はそのまま次の品種改良に回ります。</p>' +
     (mine ? '<div class="mytk"><div class="cap"><b>YOUR TICKET</b><span>' + (S.no || '') + '</span></div>' +
       ticket(mine) + tkline(mine) + '</div>'
-          : '<div class="empt">まだいちご券を持っていません。<br>ホームから系統を選ぶと発行できます。</div>') +
+          : '<div class="empt">まだいちご券を持っていません。<br>ホームから系統を選ぶと購入できます。</div>') +
+    (mc ? '<div class="sec"><b>MEMBERSHIP</b><span>会員証</span></div>' +
+      '<div class="mycd">' + card(mc) + '</div>' : '') +
     '<div class="sec"><b>CLUBS</b><span>応援クラブ ' + CLUBS.length + '団体</span></div>' +
     '<p class="body" style="margin-top:12px">系統ごとに、生活者が自分たちで作った会です。圃場に通い、計測に立ち会っている会もあります。</p>' +
     CLUBS.map(function (c, i) {
@@ -395,6 +431,7 @@ V.club = function () {
     }).join('') +
     '<div style="height:40px"></div></div></div>';
   if (mine) fitTicket($('.mytk .tk', v), 400);
+  if (mc) fitTicket($('.mycd .cd', v), 340);
   $$('.club.tap', v).forEach(function (b) { b.onclick = function () { team = +b.dataset.c; go('team'); }; });
 };
 
@@ -402,7 +439,7 @@ V.club = function () {
 var team = 0;
 V.team = function () {
   var c = CLUBS[team], l = LINES[c.line - 1], v = $('#v-team');
-  var r = rankAt(RACE.now, l.no);
+  var r = rankAt(RACE.now, l.no), joined = S.club === c.id;
   v.innerHTML =
     '<div class="dbar"><button id="tback">' + IC.back + 'クラブへ</button></div>' +
     '<div class="scroll"><div class="tpad">' +
@@ -420,21 +457,47 @@ V.team = function () {
         '<div><div class="n1">' + l.no + '号　' + l.name + '</div>' +
         '<div class="n2">' + l.ln + '　／　最終 ' + r + '着</div></div>' + IC.next + '</button>' +
       '<div class="sec"><b>ACTIVITIES</b><span>していること</span></div>' +
-      c.acts.map(function (a) {
-        return '<div class="act"><div class="t">' + a[0] + '</div><div class="d">' + a[1] + '</div></div>'; }).join('') +
+      c.acts.map(function (a, i) {
+        return '<button class="act tap" data-k="a" data-i="' + i + '">' +
+          '<div class="t">' + a.t + IC.next + '</div><div class="d">' + a.d + '</div></button>'; }).join('') +
       '<div class="sec"><b>VOICE</b><span>代表のことば</span></div>' +
       '<p class="voice">' + c.word + '</p>' +
       '<div class="sec"><b>LOG</b><span>この春の記録</span></div>' +
-      c.log.map(function (g) {
-        return '<div class="lg"><span class="d num">' + g[0] + '</span><span class="t">' + g[1] + '</span></div>'; }).join('') +
+      c.log.map(function (g, i) {
+        return '<button class="lg tap" data-k="l" data-i="' + i + '">' +
+          '<span class="d num">' + g.d + '</span><span class="t">' + g.t + '</span>' +
+          '<span class="cv">' + IC.next + '</span></button>'; }).join('') +
       '<div class="sec"><b>JOIN</b><span>入会</span></div>' +
-      '<p class="body" style="margin-top:12px">入会に費用はかかりません。' + c.base + 'の集まりに一度来てもらうのが、入会の条件です。</p>' +
-      '<button class="btn ghost" id="join" style="margin-top:14px">この会に入る<span class="ar">→</span></button>' +
+      '<p class="body" style="margin-top:12px">入会に費用はかかりません。' + c.base +
+        'の集まりに一度来てもらうのが、条件です。会員証を発行します。</p>' +
+      '<button class="btn' + (joined ? ' ghost' : '') + '" id="join" style="margin-top:14px">' +
+        (joined ? '会員証を見る' : 'この会に入る') + '<span class="ar">→</span></button>' +
       '<div style="height:40px"></div></div></div>';
   $('#tback').onclick = function () { go('club'); };
   $('#toline').onclick = function () { idx = l.no - 1; dTab = 0; go('dex'); };
-  $('#join').onclick = function () {
-    S.club = c.id; save(); toast(c.name + 'に入りました'); };
+  $$('.tap', v).forEach(function (b) { b.onclick = function () {
+    post = { c: team, k: b.dataset.k, i: +b.dataset.i }; go('post'); }; });
+  $('#join').onclick = function () { joinClub(c); };
+  if (Q.get('cd') === '1') setTimeout(function () { joinClub(c); }, 260);   /* 撮影・デモ用 */
+};
+
+/* ---- 記事 ---- */
+var post = { c: 0, k: 'a', i: 0 };
+V.post = function () {
+  var c = CLUBS[post.c], a = (post.k === 'a' ? c.acts : c.log)[post.i], v = $('#v-post');
+  var kind = post.k === 'a' ? ['ACTIVITY', '活動'] : ['LOG', '記録'];
+  v.innerHTML =
+    '<div class="dbar"><button id="pback">' + IC.back + c.name + '</button></div>' +
+    '<div class="scroll"><div class="tpad">' +
+      '<div class="phd"><span class="k">' + kind[0] + '</span><span class="dt num">' + a.date + '</span></div>' +
+      '<h1 class="disp" style="margin-top:10px;font-size:24px;line-height:1.45">' + a.h + '</h1>' +
+      '<div class="pby">' + c.name + '　' + kind[1] + 'の記録</div>' +
+      a.p.map(function (x) { return '<p class="ptxt">' + x + '</p>'; }).join('') +
+      (a.n ? '<div class="pnum">' + a.n.map(function (x) {
+        return '<div><span>' + x[0] + '</span><b>' + x[1] + '</b></div>'; }).join('') + '</div>' : '') +
+      '<div class="psig">' + c.rep + '　' + c.repRole + '</div>' +
+      '<div style="height:40px"></div></div></div>';
+  $('#pback').onclick = function () { go('team'); };
 };
 
 V.about = function () {
@@ -450,6 +513,8 @@ V.about = function () {
     '<div class="sec"><b>RULES</b><span>出走条件</span></div>' +
     [['出走', 'まだ発売されていない品種候補6系統のみ'], ['計測', '3月10日から5月25日まで、隔週で6回'],
      ['項目', RACE.axes], ['優駿', '5月末に最も高い品質を保った系統'],
+     ['いちご券', '1口' + TICKET.kuchi + '円、100口＝' + TICKET.yen + '。払い戻しなし'],
+     ['売上', 'そのまま次の品種改良へ'],
      ['賞', 'なし。優駿だけが正式な品種名を得る'], ['翌年', '走った系統が交配親になり、その子が走る']].map(function (x) {
       return '<div class="row"><span class="k">' + x[0] + '</span><span class="v" style="font-weight:500;font-size:12.5px">' + x[1] + '</span></div>'; }).join('') +
     '<div class="sec"><b>' + RACE.year + ' WINNER</b><span>売り場へ</span></div>' +
