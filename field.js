@@ -1,7 +1,7 @@
 /* =========================================================================
    field.js v3 — 写真そのものが粒に崩れる
    2枚のキャンバスで描く。
-     #photo … いちごの写真。右側ほど画素を落として粒に変える（毎フレーム抜け方が変わる＝チリチリ）
+     #photo … いちごの写真。全面から画素を均一に落として粒に変える（毎フレーム抜け方が変わる＝チリチリ）
      #field … 飛んでいく粒と、周囲に散る粒。ImageData 直書き
    単体（single）と、横一列の手持ち（strip）の2モード。
    ========================================================================= */
@@ -91,7 +91,7 @@ function resize() {
 }
 function init(photoCanvas, fieldCanvas) {
   pc = photoCanvas; px2 = pc.getContext('2d'); fc = fieldCanvas; fx = fc.getContext('2d');
-  resize(); N = count(); NH = Math.round(N * .34); alloc(N);
+  resize(); N = count(); NH = Math.round(N * .17); alloc(N);
   g.addEventListener('resize', function () { resize(); if (mode === 'single' && single) apply(single.name, single.el, single.opt); if (mode === 'strip') strip.box = rect(strip.el); });
   g.addEventListener('pointermove', function (e) { var b = fc.getBoundingClientRect(); ptr.x = e.clientX - b.left; ptr.y = e.clientY - b.top; ptr.on = true; });
   g.addEventListener('pointerleave', function () { ptr.on = false; });
@@ -105,25 +105,17 @@ function rect(el) {
 }
 
 /* ---------------- 写真を粒に崩しながら描く ---------------- */
-/* dir: 崩れる向き。'right' なら右端ほど画素が抜ける。k: 崩れ強さ 0..1 */
-function drawBerry(S, cx, cy, sc, alpha, dir, k) {
+/* k: 崩れ強さ 0..1。全面に均一に抜く（＝画像そのものが粒でできて見える） */
+function drawBerry(S, cx, cy, sc, alpha, k) {
   var w = S.w * sc, h = S.h * sc;
   px2.globalAlpha = alpha;
   px2.drawImage(S.im, cx - w / 2, cy - h / 2, w, h);
   px2.globalAlpha = 1;
   if (k <= 0 || slow) return;
-  // 崩れ：右側に白い抜けを打つ（＝粒に変わったように見える）。毎フレーム位置が変わる
-  var x0 = Math.round(cx - w / 2), y0 = Math.round(cy - h / 2);
-  var holes = Math.round(w * h * .22 * k);
+  var x0 = cx - w / 2, y0 = cy - h / 2;
+  var holes = Math.round(w * h * .34 * k);
   px2.fillStyle = '#fff';
-  for (var i = 0; i < holes; i++) {
-    var u = Math.random(), v = Math.random();
-    if (dir === 'right') { u = 1 - Math.pow(1 - u, .45); if (u < .38) continue; }
-    else if (dir === 'left') { u = Math.pow(u, .45); if (u > .62) continue; }
-    else { var dd = Math.hypot(u - .5, v - .5) * 2; if (dd < .55) continue; }
-    var s = Math.random() < .3 ? 2 : 1;
-    px2.fillRect(x0 + u * w, y0 + v * h, s, s);
-  }
+  for (var i = 0; i < holes; i++) px2.fillRect(x0 + Math.random() * w, y0 + Math.random() * h, 1, 1);
 }
 
 /* ---------------- single ---------------- */
@@ -133,22 +125,20 @@ function apply(name, el, opt) {
     if (!S) return;
     var box = rect(el);
     var sc = Math.min(box.width / S.w, box.height / S.h) * (opt.pad == null ? .96 : opt.pad);
-    var cx = box.left + box.width / 2, cy = box.top + box.height / 2, dir = opt.dir || 'right';
-    single = { name: name, el: el, opt: opt, S: S, cx: cx, cy: cy, sc: sc, dir: dir };
-    var spread = opt.spread == null ? Math.min(box.width, box.height) * .5 : opt.spread;
+    var cx = box.left + box.width / 2, cy = box.top + box.height / 2;
+    single = { name: name, el: el, opt: opt, S: S, cx: cx, cy: cy, sc: sc };
+    var spread = opt.spread == null ? Math.min(box.width, box.height) * .28 : opt.spread;
     var CN = N - NH, M = S.n;
     for (var i = 0; i < CN; i++) {
-      var q = seed[i] % M, u = S.x[q] / S.w, v = S.y[q] / S.h, t;
-      if (dir === 'right') t = Math.max(0, (u - .45) / .55); else if (dir === 'left') t = Math.max(0, (.55 - u) / .55);
-      else t = Math.max(0, Math.hypot(u - .5, v - .5) * 2 - .5) * 2;
-      t = Math.pow(t, 1.4);
-      var fly = t * (.15 + lag[i] * .85);
-      var ca = dir === 'left' ? -1 : dir === 'right' ? 1 : (u - .5) * 2, sa = dir === 'left' || dir === 'right' ? (ph[i] - 3.14) * .28 : (v - .5) * 2;
-      tx[i] = cx + (S.x[q] - S.w / 2) * sc + ca * fly * spread;
-      ty[i] = cy + (S.y[q] - S.h / 2) * sc + sa * fly * spread;
+      var q = seed[i] % M, u = S.x[q] / S.w, v = S.y[q] / S.h;
+      var ed = Math.min(1, Math.hypot(u - .5, v - .5) * 2);        /* 中心0 → 外1 */
+      var fly = Math.pow(ed, 2.4) * lag[i] * .5;                   /* 外周の粒だけ、少しだけ外へ */
+      var a = Math.atan2(v - .5, u - .5);
+      tx[i] = cx + (S.x[q] - S.w / 2) * sc + Math.cos(a) * fly * spread;
+      ty[i] = cy + (S.y[q] - S.h / 2) * sc + Math.sin(a) * fly * spread;
       Tr[i] = S.r[q]; Tg[i] = S.g[q]; Tb[i] = S.b[q];
-      jit[i] = .3 + fly * 1.6;
-      Ta[i] = t < .02 ? 0 : (.35 + (1 - fly) * .6);   // 崩れていない側は写真に任せて粒を出さない
+      jit[i] = .35 + fly * 1.5;
+      Ta[i] = .58 + (1 - fly) * .32;                               /* 全面に粒が乗る */
     }
     halo(box, S.pal, opt.halo == null ? 1 : opt.halo);
   });
@@ -157,14 +147,14 @@ var hBox = null, hPal = null, hK = 1, hT = 0;
 function halo(box, pal, k) {
   hBox = box; hPal = pal; hK = k;
   var cx = box.left + box.width / 2, cy = box.top + box.height / 2;
-  var rw = Math.max(box.width, W * .98), rh = Math.max(box.height * 1.6, box.height + 160);
+  var rw = box.width * 1.25, rh = box.height * 1.25;
   for (var i = N - NH; i < N; i++) {
     var c = (seed[i] % 3 === 0) ? RED : (seed[i] % 7 === 0 ? ACC[seed[i] % 6] : pal[seed[i] % pal.length]);
     var a = hx[i] * 6.283, d = Math.pow(hy[i], .5);
     tx[i] = cx + Math.cos(a) * d * rw * .6; ty[i] = cy + Math.sin(a) * d * rh * .6;
     Tr[i] = c[0]; Tg[i] = c[1]; Tb[i] = c[2];
     jit[i] = .9 + hz[i] * 1.6;
-    Ta[i] = k * (.18 + (1 - d) * .55) * (.4 + hz[i]);
+    Ta[i] = k * (.10 + (1 - d) * .34) * (.4 + hz[i]);
   }
 }
 
@@ -217,20 +207,21 @@ function stripFrame(now) {
   // 写真：奥から手前へ
   px2.clearRect(0, 0, W, H);
   slots.slice().sort(function (a, b) { return b.ad - a.ad; }).forEach(function (s) {
-    drawBerry(s.S, s.x, s.y, s.sc, s.al, 'right', s.k * .9);
+    drawBerry(s.S, s.x, s.y, s.sc, s.al, s.k * .95);
   });
-  // 粒：手前の一粒だけ右へ崩れる
+  // 粒：手前の一粒が、全面の粒になる
   var front = slots[0]; for (var j = 1; j < slots.length; j++) if (slots[j].k > front.k) front = slots[j];
-  var S2 = front.S, CN = N - NH, M = S2.n, spread = box.width * .34;
+  var S2 = front.S, CN = N - NH, M = S2.n, spread = S2.h * front.sc * .30;
   for (var i = 0; i < CN; i++) {
-    var q = seed[i] % M, u = S2.x[q] / S2.w;
-    var t = Math.pow(Math.max(0, (u - .45) / .55), 1.4), fly = t * (.15 + lag[i] * .85);
-    tx[i] = front.x + (S2.x[q] - S2.w / 2) * front.sc + fly * spread;
-    ty[i] = front.y + (S2.y[q] - S2.h / 2) * front.sc + (ph[i] - 3.14) * .28 * fly * spread;
-    Tr[i] = S2.r[q]; Tg[i] = S2.g[q]; Tb[i] = S2.b[q]; jit[i] = .3 + fly * 1.6;
-    Ta[i] = t < .02 ? 0 : front.k * (.35 + (1 - fly) * .6);
+    var q = seed[i] % M, u = S2.x[q] / S2.w, v = S2.y[q] / S2.h;
+    var ed = Math.min(1, Math.hypot(u - .5, v - .5) * 2);
+    var fly = Math.pow(ed, 2.4) * lag[i] * .5, a2 = Math.atan2(v - .5, u - .5);
+    tx[i] = front.x + (S2.x[q] - S2.w / 2) * front.sc + Math.cos(a2) * fly * spread;
+    ty[i] = front.y + (S2.y[q] - S2.h / 2) * front.sc + Math.sin(a2) * fly * spread;
+    Tr[i] = S2.r[q]; Tg[i] = S2.g[q]; Tb[i] = S2.b[q]; jit[i] = .35 + fly * 1.5;
+    Ta[i] = front.k * (.58 + (1 - fly) * .32);
   }
-  if (now - hT > 320) { hT = now; halo({ left: front.x - box.height * .4, top: front.y - box.height * .4, width: box.height * .8, height: box.height * .8 }, S2.pal, .7); }
+  if (now - hT > 320) { hT = now; halo({ left: front.x - box.height * .34, top: front.y - box.height * .34, width: box.height * .68, height: box.height * .68 }, S2.pal, .55); }
   if (strip.frame) strip.frame(slots.map(function (s) { return { x: s.x, k: s.k, i: s.i, ad: s.ad }; }));
 }
 
@@ -244,7 +235,7 @@ function loop(now) {
   if (mode === 'strip') stripFrame(now);
   else if (mode === 'single' && single) {
     px2.clearRect(0, 0, W, H);
-    drawBerry(single.S, single.cx, single.cy, single.sc, 1, single.dir, .9);
+    drawBerry(single.S, single.cx, single.cy, single.sc, 1, .95);
     if (hBox && now - hT > 320) { hT = now; halo(hBox, hPal, hK); }
   }
   buf.fill(0);

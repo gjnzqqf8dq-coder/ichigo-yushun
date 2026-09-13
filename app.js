@@ -159,14 +159,11 @@ V.dex = function () {
         return '<button data-t="' + i + '"' + (i === dTab ? ' class="on"' : '') + '>' + t + '</button>'; }).join('') + '</div>' +
     '<div class="dbody" id="dbody"></div>' +
     '<div class="dfoot"><button class="btn" id="own">' +
-      (S.owner === l.no ? 'いちご券を持っています' : 'この系統にいちご券を出す') + '<span class="ar">→</span></button></div>';
+      (S.owner === l.no ? 'いちご券を見る' : 'この系統にいちご券を出す') + '<span class="ar">→</span></button></div>';
   $('#cls').onclick = function () { go('home'); };
   $('#fav2').onclick = function () { S.fav = S.fav === l.no ? 0 : l.no; save();
     $('#fav2').style.color = S.fav === l.no ? 'var(--rd)' : 'var(--g2)'; };
-  $('#own').onclick = function () {
-    S.owner = l.no; S.no = S.no || ('ICY-2027-' + (1000 + Math.floor(Math.random() * 8999))); save();
-    toast('いちご券を発行しました　' + S.no); setTimeout(function () { go('club'); }, 700);
-  };
+  $('#own').onclick = function () { issue(l); };
   $$('#seg button').forEach(function (b) { b.onclick = function () { dTab = +b.dataset.t; paintTabs(); }; });
   paintTabs();
 };
@@ -179,7 +176,7 @@ function paintTabs() {
   t.innerHTML = dTab === 0 ? runs(l) : dTab === 1 ? abil(l) : dTab === 2 ? tree(l) : brd(l);
   t.scrollTop = 0;
   if (dTab === 0) setTimeout(function () { var e = $('#runs'); if (e) e.classList.add('go'); }, 90);
-  if (dTab === 1) { radar(l); bars(t, 150); }
+  if (dTab === 1) radar(l);
   if (dTab === 2) { wire(); setTimeout(function () { var e = $('.tree'); if (e) e.classList.add('on'); }, 80); }
   rise(t, 60);
 }
@@ -218,7 +215,7 @@ function runs(l) {
       return '<div' + (k === RACE.now ? ' class="on"' : '') + '><span class="dt num">' + x.d + '</span>' +
         '<span class="tt">' + x.t + '</span><span class="sc num">' + l.race[k] + '</span>' +
         '<span class="rr num">' + rankAt(k, l.no) + '位</span></div>'; }).join('') + '</div>' +
-    '<p class="hint">計測は ' + RACE.axes + ' の5項目。順位は数値だけで決まります</p><div style="height:20px"></div>';
+    '<div style="height:20px"></div>';
 }
 
 /* --- 能力 --- */
@@ -237,10 +234,7 @@ function abil(l) {
   return '<div class="ahd rise"><b>最終計測</b><span>5月25日</span></div>' +
     '<div class="radarbox rise"><svg class="radar" viewBox="0 0 192 192">' + web +
       '<polygon class="area" id="rarea" points="' + RAX.map(function () { return RC + ',' + RC; }).join(' ') + '"/>' +
-      RAX.map(function (k, i) { var p = rpt(i, l.radar[k] / 100); return '<circle class="dot" cx="' + p[0] + '" cy="' + p[1] + '" r="3"/>'; }).join('') + labs + '</svg>' +
-    '<div>' + RAX.map(function (k) {
-      return '<div class="vrow"><span class="k">' + k + '</span><span class="bar"><i data-w="' + l.radar[k] + '"></i></span>' +
-        '<span class="v">' + l.radar[k] + '</span></div>'; }).join('') + '</div></div>' +
+      RAX.map(function (k, i) { var p = rpt(i, l.radar[k] / 100); return '<circle class="dot" cx="' + p[0] + '" cy="' + p[1] + '" r="3"/>'; }).join('') + labs + '</svg></div>' +
     '<p class="note rise">' + l.flavor + '</p>' +
     '<div class="dl rise">' + [['糖度 Brix', l.brix], ['酸度', l.acid], ['糖酸比', (l.brix / l.acid).toFixed(1)],
       ['果実硬度', l.firm], ['一果重', l.wt + ' g'], ['果形', l.form], ['耐暑性', l.heat], ['産地', l.from]]
@@ -276,7 +270,7 @@ function tree(l) {
       l.traitR.map(function (x, i) { return '<li><span class="ic">' + (i ? IC.temp : IC.shield) + '</span>' + x + '</li>'; }).join('') + '</div></div>' +
     '<div class="dl rise"><div><span>近交係数 F</span><b>' + l.ci.toFixed(3) + '</b></div>' +
       '<div><span>共通祖先</span><b style="font-family:var(--sans);font-weight:500;font-size:12px">' + l.cross + '</b></div></div>' +
-    '<p class="hint">円をタップすると、その祖先が渡した形質が出ます</p><div style="height:20px"></div>';
+    '<div style="height:20px"></div>';
 }
 function ginfo(nm, l) {
   var g = $('#ginfo'); if (!g) return;
@@ -327,6 +321,80 @@ function brd(l) {
     '</div><div style="height:20px"></div>';
 }
 
+
+/* =========================================================================
+   いちご券 — 印刷した実券をそのまま画面に起こす
+   ========================================================================= */
+function qr(str) {
+  var n = 21, h = 2166136261, i;
+  for (i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = (h * 16777619) >>> 0; }
+  var rnd = function () { h ^= h << 13; h >>>= 0; h ^= h >>> 17; h ^= h << 5; h >>>= 0; return h / 4294967296; };
+  var g = '', x, y;
+  var fin = function (ox, oy) {
+    for (var a = 0; a < 7; a++) for (var b = 0; b < 7; b++) {
+      if (a === 0 || a === 6 || b === 0 || b === 6 || (a > 1 && a < 5 && b > 1 && b < 5))
+        g += '<rect x="' + (ox + a) + '" y="' + (oy + b) + '" width="1" height="1"/>';
+    }
+  };
+  for (y = 0; y < n; y++) for (x = 0; x < n; x++) {
+    if ((x < 8 && y < 8) || (x > n - 9 && y < 8) || (x < 8 && y > n - 9)) continue;
+    if (rnd() < .47) g += '<rect x="' + x + '" y="' + y + '" width="1" height="1"/>';
+  }
+  fin(0, 0); fin(n - 7, 0); fin(0, n - 7);
+  return '<svg viewBox="0 0 ' + n + ' ' + n + '" shape-rendering="crispEdges"><g fill="#0d0d0d">' + g + '</g></svg>';
+}
+function ticket(l, tno) {
+  var r = rankAt(RACE.now, l.no), gap = l.race[RACE.now] - l.race[0];
+  return '<div class="tk"><div class="bg"></div>' +
+    '<div class="wm" style="left:4%">ISD</div><div class="wm" style="right:4%">ISD</div>' +
+    '<div class="in">' +
+      '<div class="lft">' +
+        '<div class="lg">CULTA<i>ICHIGO YUSHUN</i></div>' +
+        '<div class="dt">' + RACE.year + '年2回12日</div>' +
+        '<div class="rc"><b>0' + l.no + '</b><span>レース</span></div>' +
+        '<div class="btm"><div class="qr">' + qr(l.ln + tno) + '</div>' +
+        '<div class="ev">第1回　（GI）<br>新・いちご優駿<br>5月25日' +
+        '<em>いちごの、もっと先へ。</em></div></div>' +
+      '</div>' +
+      '<div class="win"><em>WIN</em><b>単勝</b><em>WIN</em></div>' +
+      '<div class="rgt">' +
+        '<div class="kuchi">1口</div>' +
+        '<div class="nm"><i>' + l.no + '</i><b>' + l.name + '</b></div>' +
+        '<div class="tot"><span>結果</span><b>' + r + '着</b><span>3月比</span><b>' + sign(gap) + '</b></div>' +
+        '<div class="sn">系統番号 ' + l.ln + '　／　券番号 ' + tno + '<br>' + RACE.year + '053001　0001234569　890125</div>' +
+      '</div>' +
+    '</div></div>';
+}
+function fitTicket(el, max) {
+  var sh = $('#shell'), w = Math.min(max, (sh ? sh.clientWidth : 375) - 48);
+  if (el) el.style.setProperty('--tw', w + 'px');
+}
+/* 押した瞬間に弾けて、券がふわっと出てくる */
+function issue(l) {
+  var first = S.owner !== l.no;
+  S.owner = l.no; S.no = S.no || ('ICY-' + RACE.year + '-' + (1000 + Math.floor(Math.random() * 8999))); save();
+  var sh = $('#shell'), old = $('#tkw'); if (old) old.parentNode.removeChild(old);
+  var dots = '', col = (l.wc === '#FFFFFF' ? '#a8a8a8' : l.wc);
+  for (var i = 0; i < 44; i++) {
+    var a = Math.random() * 6.283, rr = 64 + Math.random() * 190;
+    dots += '<i style="--x:' + Math.round(Math.cos(a) * rr) + 'px;--y:' + Math.round(Math.sin(a) * rr) +
+      'px;animation-delay:' + (Math.random() * 90 | 0) + 'ms;background:' + (i % 4 ? 'var(--rd)' : col) + '"></i>';
+  }
+  var d = document.createElement('div'); d.id = 'tkw';
+  d.innerHTML = '<div class="bkd"></div><div class="ring"></div><div class="burst">' + dots + '</div>' +
+    '<div class="stg">' + ticket(l, S.no) + '<div class="shine"></div></div>' +
+    '<div class="msg"><b>' + (first ? 'いちご券を発行しました' : 'あなたのいちご券') + '</b><span>' + S.no + '</span></div>' +
+    '<button class="btn go">クラブで見る<span class="ar">→</span></button>';
+  sh.appendChild(d);
+  fitTicket($('.tk', d), 330);
+  requestAnimationFrame(function () { d.classList.add('on'); });
+  if (navigator.vibrate) try { navigator.vibrate([6, 40, 14]); } catch (x) {}
+  var close = function () { d.classList.remove('on');
+    setTimeout(function () { if (d.parentNode) d.parentNode.removeChild(d); go('club'); }, 240); };
+  $('.go', d).onclick = close;
+  $('.bkd', d).onclick = close;
+}
+
 /* =========================================================================
    いちご券 / READ
    ========================================================================= */
@@ -336,51 +404,17 @@ V.club = function () {
     '<div class="kicker">ICHIGO TICKET</div>' +
     '<h1 class="disp" style="margin-top:10px">予想する、<br>ということ。</h1>' +
     '<p class="body" style="margin-top:14px">決められるのは、どれを応援するかだけ。オッズも馬券も賞金もない。結果は5月末の数値だけで決まる。</p>' +
-    (mine ? '<div class="club"><div class="hd"><span class="wk" style="background:' + mine.wc + '"></span>' +
-      '<div><div class="nm">' + mine.no + '号　' + mine.name + '</div>' +
-      '<div class="rl">あなたが予想した系統　／　最終 ' + rankAt(RACE.now, mine.no) + '位</div></div>' +
-      '<div class="mem"><b>' + (S.no || '') + '</b><span>TICKET No.</span></div></div></div>' : '') +
+    (mine ? '<div class="mytk"><div class="cap"><b>YOUR TICKET</b><span>' + (S.no || '') + '</span></div>' +
+      ticket(mine, S.no || '') + '</div>' : '') +
     '<div class="sec"><b>CLUBS</b><span>応援クラブ ' + CLUBS.length + '団体</span></div>' +
     CLUBS.map(function (c) {
       return '<div class="club"><div class="hd"><span class="av" style="background-image:url(' + c.photo + ')"></span>' +
         '<div><div class="nm">' + c.name + '</div><div class="rl">' + c.rep + '　' + c.repRole + '</div></div>' +
         '<div class="mem"><b>' + c.members.toLocaleString() + '</b><span>MEMBERS</span></div></div><p>' + c.text + '</p></div>';
     }).join('') +
-    '<div class="sec"><b>NEXT SEASON</b><span>今年のゴールが、来年のスタート</span></div>' +
-    '<p class="body" style="margin-top:12px">春を走った系統は、翌年の交配親になる。親を2つ選ぶ。生まれる系統は自分では決められない。形質は確率で受け継がれる。</p>' +
-    '<div class="pick" id="pick">' + LINES.map(function (l, i) {
-      return '<button data-i="' + i + '"><span class="sw" style="background:' + l.wc + '"></span>' +
-        '<span class="n2">' + l.no + '号 ' + l.name + '</span></button>'; }).join('') + '</div>' +
-    '<button class="btn" id="cross" disabled style="margin-top:14px;opacity:.3">交配する<span class="ar">→</span></button>' +
-    '<div id="cout"></div>' + (S.child ? child(S.child) : '') +
     '<div style="height:40px"></div></div></div>';
-  var sel = [];
-  $$('#pick button').forEach(function (b) { b.onclick = function () {
-    var i = +b.dataset.i, at = sel.indexOf(i);
-    if (at >= 0) sel.splice(at, 1); else { if (sel.length === 2) sel.shift(); sel.push(i); }
-    $$('#pick button').forEach(function (x) { x.classList.toggle('on', sel.indexOf(+x.dataset.i) >= 0); });
-    var c = $('#cross'); c.disabled = sel.length !== 2; c.style.opacity = sel.length === 2 ? 1 : .3; }; });
-  $('#cross').onclick = function () {
-    var c = cross(LINES[sel[0]], LINES[sel[1]]); S.child = c; save();
-    $('#cout').innerHTML = child(c); $('#cout').firstElementChild.classList.add('fade');
-    toast((RACE.year + 1) + '年の出走候補　' + c.ln); };
+  if (mine) fitTicket($('.mytk .tk', v), 400);
 };
-function cross(a, b) {
-  var m = function (x, y, s) { return (x + y) / 2 + (Math.random() - .5) * s; };
-  var an = function (l) { return [l.sire, l.dam, l.bms]; };
-  var sh = an(a).filter(function (x) { return an(b).indexOf(x) >= 0; }).length;
-  return { ln: 'i-28-' + String(1 + Math.floor(Math.random() * 40)).padStart(2, '0'), a: a.name, b: b.name,
-    brix: m(a.brix, b.brix, 1.1).toFixed(1), heat: Math.round(m(a.heat, b.heat, 12)),
-    ci: (0.0625 * sh + (a.ci + b.ci) / 4).toFixed(3) };
-}
-function child(c) {
-  return '<div class="club" style="margin-top:16px"><div class="kicker">' + (RACE.year + 1) + ' ENTRY</div>' +
-    '<div class="nm" style="font-family:var(--serif);font-size:20px;margin-top:6px">' + c.ln + '</div>' +
-    '<div class="row" style="margin-top:8px"><span class="k">両親</span><span class="v" style="font-weight:500;font-size:12px">' + c.a + ' × ' + c.b + '</span></div>' +
-    '<div class="row"><span class="k">糖度の見込み</span><span class="v">' + c.brix + '</span></div>' +
-    '<div class="row"><span class="k">耐暑性の見込み</span><span class="v">' + c.heat + '</span></div>' +
-    '<div class="row" style="border:0"><span class="k">近交係数</span><span class="v">' + c.ci + '</span></div></div>';
-}
 V.about = function () {
   var v = $('#v-about'), w = LINES[CROWN.line - 1];
   v.innerHTML = '<div class="scroll"><div class="ptop">' +
@@ -412,6 +446,10 @@ V.about = function () {
 };
 
 /* ---------- 起動 ---------- */
+['gesturestart', 'gesturechange', 'gestureend'].forEach(function (e) {
+  document.addEventListener(e, function (ev) { ev.preventDefault(); }, { passive: false }); });
+document.addEventListener('dblclick', function (e) { e.preventDefault(); }, { passive: false });
+window.addEventListener('resize', function () { var t = $('#tkw'); if (t) fitTicket($('.tk', t), 330); });
 document.addEventListener('click', function (e) { var t = e.target.closest('[data-go]'); if (t) go(t.dataset.go); });
 (function () { var pre = ['img/w1.jpg', 'img/w2.jpg', 'img/w3.jpg'];
   LINES.forEach(function (l) { pre.push(l.breeder.photo); }); CLUBS.forEach(function (c) { pre.push(c.photo); });
