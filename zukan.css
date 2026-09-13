@@ -136,7 +136,10 @@ img{max-width:100%;display:block}
   font-size:calc(var(--u) * 24);color:var(--g1);padding:0 calc(var(--u) * 8)}
 .nav2 svg{width:calc(var(--u) * 18);height:calc(var(--u) * 24);fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .back{position:relative;z-index:6;display:flex;align-items:center;gap:calc(var(--u) * 14);
-  padding:calc(var(--u) * 26) calc(var(--u) * 40) 0;font-size:calc(var(--u) * 24);color:var(--g1)}
+  width:max-content;min-height:calc(var(--u) * 88);
+  padding:calc(var(--u) * 20) calc(var(--u) * 40) 0;font-size:calc(var(--u) * 24);color:var(--g1);
+  -webkit-tap-highlight-color:transparent;transition:opacity .12s var(--ez)}
+.back:active{opacity:.45}
 .back svg{width:calc(var(--u) * 18);height:calc(var(--u) * 24);fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 #toast{position:fixed;left:50%;bottom:calc(var(--u) * 60);transform:translate(-50%,10px);z-index:40;
   background:var(--ink);color:#fff;border-radius:999px;padding:calc(var(--u) * 24) calc(var(--u) * 44);
