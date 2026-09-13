@@ -1,0 +1,145 @@
+/* =========================================================================
+   いちごずかん — ポケモン公式ずかんの実装を読んで、その組み方で作り直したもの
+   写したのは「考え方」と寸法の作り方であって、ファイルではない。
+     ・設計幅750px。全ての寸法を calc(100vw / 750 * N) で書く（本家は294箇所）
+     ・能力値は連続バーではなく15個の角丸セグメント（幅18 / 高44 / 間隔9 / 半径8）
+     ・空きは #f2f2f2、満ちは1色
+     ・見出しラベルは固定幅170、値の帯が残りを埋める
+   ========================================================================= */
+:root{
+  --u:calc(100vw / 750);            /* 設計幅750の1px */
+  --ink:#040000; --g1:#555; --g2:#999; --g3:#ccc; --g4:#d9d9d9;
+  --line:#e6e6e6; --base:#f2f2f2;
+  --rd:#e40b20; --rd-d:#810813; --cream:#fff7e6;
+  --sans:"Zen Kaku Gothic New","Hiragino Sans",sans-serif;
+  --serif:"Zen Old Mincho",serif;
+  --ez:cubic-bezier(.25,.46,.45,.94);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:#fff;color:var(--ink);font-family:var(--sans);line-height:1.8;
+  -webkit-font-smoothing:antialiased;font-feature-settings:"palt" 1;overscroll-behavior:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;touch-action:manipulation}
+img{max-width:100%;display:block}
+
+#shell{position:relative;width:100%;max-width:430px;margin:0 auto;min-height:100dvh;background:#fff;overflow:hidden}
+@media(min-width:900px){
+  body{display:flex;align-items:center;justify-content:center;background:#eee;padding:20px 0}
+  #shell{min-height:0;height:min(900px,calc(100dvh - 40px));border-radius:40px;overflow-y:auto;
+    box-shadow:0 0 0 1px #e0e0e0,0 22px 60px rgba(0,0,0,.12)}
+  #shell::-webkit-scrollbar{display:none}
+  :root{--u:calc(430px / 750)}
+}
+#photo,#field{position:fixed;inset:0;width:100%;height:100%;display:block;pointer-events:none;z-index:2}
+@media(min-width:900px){#photo,#field{position:absolute}}
+
+/* ── ヘッダ：番号と名前（本家は上に -140 引き上げて画像と重ねる） ── */
+.head{position:relative;z-index:5;padding:calc(var(--u) * 44) calc(var(--u) * 40) 0}
+.head .no{font-family:var(--serif);font-size:calc(var(--u) * 30);letter-spacing:.2em;color:var(--rd);font-weight:700}
+.head .nm{font-family:var(--serif);font-size:calc(var(--u) * 66);font-weight:900;letter-spacing:.04em;line-height:1.2;margin-top:calc(var(--u) * 4)}
+.head .kj{font-size:calc(var(--u) * 24);letter-spacing:.16em;color:var(--g2);margin-top:calc(var(--u) * 6)}
+
+/* ── 図版：本家は width 450 を中央に、左右に前後ボタン ── */
+.hero{position:relative;z-index:5;height:calc(var(--u) * 430);margin-top:calc(var(--u) * -10)}
+.hero .stage{position:absolute;left:calc(var(--u) * 150);right:calc(var(--u) * 150);top:calc(var(--u) * 10);bottom:calc(var(--u) * 20)}
+.arw{position:absolute;top:50%;margin-top:calc(var(--u) * -44);z-index:8;
+  width:calc(var(--u) * 88);height:calc(var(--u) * 88);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:var(--g1);
+  transition:background .2s var(--ez),transform .12s var(--ez)}
+.arw:active{background:var(--base);transform:scale(.9)}
+.arw.l{left:calc(var(--u) * 10)}.arw.r{right:calc(var(--u) * 10)}
+.arw svg{width:calc(var(--u) * 26);height:calc(var(--u) * 34);fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.pn{position:absolute;bottom:calc(var(--u) * -4);font-size:calc(var(--u) * 22);color:var(--g2);letter-spacing:.1em}
+.pn.l{left:calc(var(--u) * 24)}.pn.r{right:calc(var(--u) * 24)}
+
+/* ── 枠番チップ（本家のタイプ表記） ── */
+.types{position:relative;z-index:5;display:flex;justify-content:center;gap:calc(var(--u) * 16);margin-top:calc(var(--u) * 6)}
+.types span{display:inline-flex;align-items:center;gap:calc(var(--u) * 10);
+  height:calc(var(--u) * 56);padding:0 calc(var(--u) * 26);border-radius:calc(var(--u) * 28);
+  background:var(--base);font-size:calc(var(--u) * 24);letter-spacing:.06em}
+.types i{width:calc(var(--u) * 22);height:calc(var(--u) * 22);border-radius:calc(var(--u) * 6);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.16)}
+
+/* ── 分類の表（本家：ぶんるい／たかさ／おもさ） ── */
+.spec{position:relative;z-index:5;margin:calc(var(--u) * 44) calc(var(--u) * 40) 0;
+  background:var(--cream);border-radius:calc(var(--u) * 20);padding:calc(var(--u) * 30) calc(var(--u) * 32)}
+.spec dl{display:flex;font-size:calc(var(--u) * 26);padding:calc(var(--u) * 12) 0}
+.spec dl+dl{border-top:1px solid rgba(0,0,0,.06)}
+.spec dt{width:calc(var(--u) * 170);flex:0 0 auto;font-weight:700;color:var(--g1)}
+.spec dd{font-weight:700}
+.desc{position:relative;z-index:5;margin:calc(var(--u) * 34) calc(var(--u) * 40) 0;
+  font-size:calc(var(--u) * 28);line-height:2;color:var(--g1)}
+
+/* ── 能力値：15個の角丸セグメント ── */
+.stats{position:relative;z-index:5;margin:calc(var(--u) * 46) calc(var(--u) * 40) 0}
+.ttl{font-family:var(--serif);font-size:calc(var(--u) * 34);font-weight:900;letter-spacing:.1em;
+  padding-bottom:calc(var(--u) * 18);border-bottom:calc(var(--u) * 4) solid var(--ink);
+  display:flex;align-items:baseline;justify-content:space-between}
+.ttl em{font-style:normal;font-family:var(--sans);font-size:calc(var(--u) * 22);letter-spacing:.2em;color:var(--g2);font-weight:500}
+.srow{display:flex;align-items:center;margin-top:calc(var(--u) * 30);font-size:calc(var(--u) * 32)}
+.srow .k{width:calc(var(--u) * 170);flex:0 0 auto;font-weight:700}
+.srow .cells{display:flex;flex:1}
+.srow .cells i{width:calc(var(--u) * 18);height:calc(var(--u) * 44);border-radius:calc(var(--u) * 8);
+  margin-right:calc(var(--u) * 9);background:var(--base);
+  transform:scaleY(.3);opacity:0;transition:transform .34s var(--ez),opacity .2s var(--ez),background .34s var(--ez)}
+.srow .cells i.on{transform:none;opacity:1}
+.srow .cells i.fill{background:var(--rd)}
+.srow .v{width:calc(var(--u) * 66);text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+
+/* ── 血統（本家の進化系統） ── */
+.evo{position:relative;z-index:5;margin:calc(var(--u) * 56) calc(var(--u) * 40) 0}
+.chain{display:flex;align-items:center;justify-content:space-between;margin-top:calc(var(--u) * 34)}
+.pod{text-align:center;width:calc(var(--u) * 190)}
+.pod .ph{width:calc(var(--u) * 150);height:calc(var(--u) * 150);border-radius:50%;margin:0 auto;
+  background:#fff center/76% no-repeat;box-shadow:inset 0 0 0 1px var(--line)}
+.pod.me .ph{width:calc(var(--u) * 190);height:calc(var(--u) * 190);
+  box-shadow:inset 0 0 0 calc(var(--u) * 5) var(--rd),0 0 0 calc(var(--u) * 14) rgba(228,11,32,.07)}
+.pod .cap{font-size:calc(var(--u) * 22);color:var(--g2);margin-bottom:calc(var(--u) * 10)}
+.pod .nm{font-size:calc(var(--u) * 22);letter-spacing:.08em;color:var(--g1);margin-top:calc(var(--u) * 12);line-height:1.5}
+.pod.me .nm{font-family:var(--serif);font-size:calc(var(--u) * 32);color:var(--rd);font-weight:700}
+.arrow{flex:1;height:calc(var(--u) * 2);background:var(--g4);position:relative;margin:0 calc(var(--u) * 6);
+  margin-bottom:calc(var(--u) * 40)}
+.arrow::after{content:"";position:absolute;right:0;top:calc(var(--u) * -5);
+  border:calc(var(--u) * 6) solid transparent;border-left-color:var(--g4)}
+.arrow.l::after{right:auto;left:0;border-left-color:transparent;border-right-color:var(--g4)}
+.gp{display:flex;justify-content:space-between;margin-top:calc(var(--u) * 26);
+  font-size:calc(var(--u) * 22);color:var(--g2);letter-spacing:.06em}
+.gp div{width:calc(var(--u) * 300)}
+.gp div:last-child{text-align:right}
+.gp b{display:block;color:var(--ink);font-weight:700;font-size:calc(var(--u) * 24);letter-spacing:.1em}
+.inb{margin-top:calc(var(--u) * 30);background:var(--base);border-radius:calc(var(--u) * 16);
+  padding:calc(var(--u) * 24) calc(var(--u) * 28);font-size:calc(var(--u) * 24);
+  display:flex;justify-content:space-between;align-items:baseline}
+.inb b{font-family:var(--serif);font-size:calc(var(--u) * 34);font-weight:700}
+
+/* ── 育種者 ── */
+.brd{position:relative;z-index:5;margin:calc(var(--u) * 56) calc(var(--u) * 40) 0}
+.bwrap{display:flex;gap:calc(var(--u) * 28);margin-top:calc(var(--u) * 32)}
+.bwrap .ph{width:calc(var(--u) * 230);height:calc(var(--u) * 320);flex:0 0 auto;
+  border-radius:calc(var(--u) * 16);background:var(--base) center/cover no-repeat}
+.bwrap .nm{font-family:var(--serif);font-size:calc(var(--u) * 40);font-weight:900;letter-spacing:.06em;line-height:1.2}
+.bwrap .ro{font-size:calc(var(--u) * 18);letter-spacing:.2em;color:var(--g2);margin-top:calc(var(--u) * 6)}
+.bwrap .qt{font-family:var(--serif);font-size:calc(var(--u) * 28);font-weight:700;margin-top:calc(var(--u) * 18);line-height:1.6}
+.bwrap .tx{font-size:calc(var(--u) * 24);line-height:1.9;color:var(--g1);margin-top:calc(var(--u) * 14)}
+
+/* ── 下の操作 ── */
+.foot{position:relative;z-index:5;margin:calc(var(--u) * 56) calc(var(--u) * 40) calc(var(--u) * 60)}
+.own{display:flex;align-items:center;justify-content:center;position:relative;width:100%;
+  height:calc(var(--u) * 116);border-radius:calc(var(--u) * 58);background:var(--rd);color:#fff;
+  font-size:calc(var(--u) * 32);font-weight:700;letter-spacing:.08em;
+  box-shadow:0 calc(var(--u) * 16) calc(var(--u) * 40) rgba(228,11,32,.22);
+  transition:transform .12s var(--ez)}
+.own:active{transform:scale(.975)}
+.own .ar{position:absolute;right:calc(var(--u) * 44);font-weight:400}
+.nav2{display:flex;justify-content:space-between;margin-top:calc(var(--u) * 30)}
+.nav2 button{display:flex;align-items:center;gap:calc(var(--u) * 12);min-height:calc(var(--u) * 88);
+  font-size:calc(var(--u) * 24);color:var(--g1);padding:0 calc(var(--u) * 8)}
+.nav2 svg{width:calc(var(--u) * 18);height:calc(var(--u) * 24);fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.back{position:relative;z-index:6;display:flex;align-items:center;gap:calc(var(--u) * 14);
+  padding:calc(var(--u) * 26) calc(var(--u) * 40) 0;font-size:calc(var(--u) * 24);color:var(--g1)}
+.back svg{width:calc(var(--u) * 18);height:calc(var(--u) * 24);fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+#toast{position:fixed;left:50%;bottom:calc(var(--u) * 60);transform:translate(-50%,10px);z-index:40;
+  background:var(--ink);color:#fff;border-radius:999px;padding:calc(var(--u) * 24) calc(var(--u) * 44);
+  font-size:calc(var(--u) * 24);opacity:0;pointer-events:none;transition:.24s var(--ez)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+@media(min-width:900px){#toast{position:absolute}}
