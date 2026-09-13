@@ -22,7 +22,7 @@ const RACE = {
 
 const LINES = [
   {
-    no: 1, name: 'ダルマ', kanji: '達磨', roma: 'DARUMA', wc: '#FFFFFF', ln: 'i-26-07', img: 'img/berry1.png', shape: 'berry1',
+    no: 1, name: 'ダルマ', kanji: '達磨', roma: 'DARUMA', wc: '#FFFFFF', ln: 'i-26-07', img: 'img/b1.webp', shape: 'berry1',
     from: '福岡県久留米市', farm: 'CULTA 育種第2圃場',
     copy: ['三月は、', '誰よりも早い。'],
     desc: '立ち上がりが6系統で最も早い。果皮が淡いまま大きく実り、3月の糖度は単独首位だった。ただし気温が上がると糖が乗らなくなり、5月には大きく落ちた。',
@@ -36,7 +36,7 @@ const LINES = [
     ci: 0.000, cross: '共通祖先なし',
     traitL: ['早生性', '大玉'], traitR: ['淡い果皮', '低温伸長性'],
     breeder: {
-      name: '佐藤 遥', roma: 'SATO HARUKA', photo: 'img/br1.jpg',
+      name: '佐藤 遥', roma: 'SATO HARUKA', photo: 'img/br1.webp',
       quote: '「三月のいちばんは、いちばんじゃない。」',
       text: '立ち上がりの早さだけなら、この系統が一番です。でも春の終わりまでは持たなかった。どこで落ちるかが分かったので、この早生性は来年の交配に使います。',
       years: 8, seedlings: '1,842', dev: 2,
@@ -44,7 +44,7 @@ const LINES = [
     }
   },
   {
-    no: 2, name: 'クロガネ', kanji: '黒鉄', roma: 'KUROGANE', wc: '#111111', ln: 'i-26-12', img: 'img/berry2.png', shape: 'berry2',
+    no: 2, name: 'クロガネ', kanji: '黒鉄', roma: 'KUROGANE', wc: '#111111', ln: 'i-26-12', img: 'img/b2.webp', shape: 'berry2',
     from: '佐賀県白石町', farm: 'CULTA 育種第1圃場',
     copy: ['四日たっても、', '角が落ちない。'],
     desc: '硬度95。6系統で最も硬い。常温で四日置いても形が崩れず、春を通して数値がほとんど動かなかった系統。',
@@ -58,7 +58,7 @@ const LINES = [
     ci: 0.031, cross: 'CRIMSON ROOT 3×3',
     traitL: ['果実硬度', '濃い果皮色'], traitR: ['日持ち', '輸送耐性'],
     breeder: {
-      name: '大島 悠真', roma: 'OSHIMA YUMA', photo: 'img/br2.jpg',
+      name: '大島 悠真', roma: 'OSHIMA YUMA', photo: 'img/br2.webp',
       quote: '「壊れないいちごを、つくりたかった。」',
       text: 'いちごが売り場で傷むのは、運び方ではなく品種の問題です。硬さを上げると味が痩せる。その両立だけを2年追いかけました。',
       years: 11, seedlings: '2,310', dev: 2,
@@ -66,7 +66,7 @@ const LINES = [
     }
   },
   {
-    no: 3, name: 'サクラ', kanji: '桜', roma: 'SAKURA', wc: '#E4002B', ln: 'i-26-03', img: 'img/berry3.png', shape: 'berry3',
+    no: 3, name: 'サクラ', kanji: '桜', roma: 'SAKURA', wc: '#E4002B', ln: 'i-26-03', img: 'img/b3.webp', shape: 'berry3',
     from: '福岡県八女市', farm: 'CULTA 育種第1圃場',
     copy: ['最後の一週で、', 'いちばん甘くなる。'],
     desc: '糖酸比20.9。三十度の圃場で糖度が落ちなかったのは、6系統でこの系統だけだった。5月に入ってから数値が伸びた唯一の系統。',
@@ -80,7 +80,7 @@ const LINES = [
     ci: 0.031, cross: 'CRIMSON ROOT 3×3',
     traitL: ['甘さ', '香り'], traitR: ['硬さ', '暑さへの強さ'],
     breeder: {
-      name: '三宅 千尋', roma: 'MIYAKE CHIHIRO', photo: 'img/br3.jpg',
+      name: '三宅 千尋', roma: 'MIYAKE CHIHIRO', photo: 'img/br3.webp',
       quote: '「5月にも、摘みたてのおいしさを。」',
       text: 'いちごのシーズンを、もっと長く。その想いから、全国の1,842株の実生の中で、たったひとつ、この3号にたどり着きました。季節を越えて、変わらないおいしさを、これからも。',
       years: 8, seedlings: '1,842', dev: 2,
@@ -88,7 +88,7 @@ const LINES = [
     }
   },
   {
-    no: 4, name: 'カゼカオル', kanji: '風薫', roma: 'KAZEKAORU', wc: '#1B4FD8', ln: 'i-26-18', img: 'img/berry4.png', shape: 'berry4',
+    no: 4, name: 'カゼカオル', kanji: '風薫', roma: 'KAZEKAORU', wc: '#1B4FD8', ln: 'i-26-18', img: 'img/b4.webp', shape: 'berry4',
     from: '静岡県久能', farm: 'CULTA 育種第3圃場',
     copy: ['香りだけで、', '誰のものか分かる。'],
     desc: '香気成分の総量が6系統で最も多い。酸が高く、生食よりも先に加工の評価が立った系統。春のあいだ、静かに順位を上げ続けた。',
@@ -102,7 +102,7 @@ const LINES = [
     ci: 0.000, cross: '共通祖先なし',
     traitL: ['香気成分量', '酸味'], traitR: ['糖酸のバランス', '果肉のきめ'],
     breeder: {
-      name: '岸本 蓮', roma: 'KISHIMOTO REN', photo: 'img/br4.jpg',
+      name: '岸本 蓮', roma: 'KISHIMOTO REN', photo: 'img/br4.webp',
       quote: '「甘いだけの果物は、飽きられる。」',
       text: '甘さの競争からは降りました。香りと酸が立つ系統は、菓子と乳製品の世界で強い。生食で一番になれなくても、使われる場所がある。',
       years: 6, seedlings: '1,504', dev: 2,
@@ -110,7 +110,7 @@ const LINES = [
     }
   },
   {
-    no: 5, name: 'ミツシズク', kanji: '蜜雫', roma: 'MITSUSHIZUKU', wc: '#E8B800', ln: 'i-26-22', img: 'img/berry5.png', shape: 'berry5',
+    no: 5, name: 'ミツシズク', kanji: '蜜雫', roma: 'MITSUSHIZUKU', wc: '#E8B800', ln: 'i-26-22', img: 'img/b5.webp', shape: 'berry5',
     from: '栃木県真岡市', farm: 'CULTA 育種第2圃場',
     copy: ['その日のうちに、', '食べてほしい。'],
     desc: '果汁が多く、3月の甘さは上位。ただし柔らかく、気温が上がるにつれて果実がもたなくなった。',
@@ -124,7 +124,7 @@ const LINES = [
     ci: 0.000, cross: '共通祖先なし',
     traitL: ['果汁量', '甘さ'], traitR: ['早生性', '果皮の艶'],
     breeder: {
-      name: '白井 奈央', roma: 'SHIRAI NAO', photo: 'img/br5.jpg',
+      name: '白井 奈央', roma: 'SHIRAI NAO', photo: 'img/br5.webp',
       quote: '「運べない味を、守りたい。」',
       text: '柔らかいことは欠点として扱われます。でも、産地でしか食べられない味が消えていくほうが損失だと思っています。直売と観光農園だけを見て育てました。',
       years: 9, seedlings: '1,990', dev: 2,
@@ -132,7 +132,7 @@ const LINES = [
     }
   },
   {
-    no: 6, name: 'ナデシコ', kanji: '撫子', roma: 'NADESHIKO', wc: '#0F8A4C', ln: 'i-26-14', img: 'img/berry6.png', shape: 'berry6',
+    no: 6, name: 'ナデシコ', kanji: '撫子', roma: 'NADESHIKO', wc: '#0F8A4C', ln: 'i-26-14', img: 'img/b6.webp', shape: 'berry6',
     from: '奈良県橿原市', farm: 'CULTA 育種第3圃場',
     copy: ['暑くなっても、', '味が痩せない。'],
     desc: '4月以降の落ち幅が6系統で最も小さい。粒は小さいが揃いがよく、気温が上がっても糖と酸のバランスが動かなかった。',
@@ -146,7 +146,7 @@ const LINES = [
     ci: 0.063, cross: 'CRIMSON ROOT 2×3',
     traitL: ['果形の揃い', '糖酸バランス'], traitR: ['秀品率', '暑さでの粘り'],
     breeder: {
-      name: '東 郁弥', roma: 'AZUMA IKUYA', photo: 'img/br6.jpg',
+      name: '東 郁弥', roma: 'AZUMA IKUYA', photo: 'img/br6.webp',
       quote: '「揃っていることが、いちばん難しい。」',
       text: '大きい粒を一つ作るより、同じ粒を千個作るほうが難しい。春の終わりまでばらつきが出なかったのは、この系統だけでした。',
       years: 14, seedlings: '2,760', dev: 2,
@@ -233,7 +233,7 @@ const TICKET = { kuchi: 10, units: 100, price: 1000, yen: '¥1,000' };
 const CLUBS = [
   {
     id: 1, line: 3, name: 'サクラ応援団', rep: '峰岸 和真', repRole: '代表・福岡',
-    photo: 'img/cl1.jpg', members: 3184, wc: '#E4002B',
+    photo: 'img/cl1.webp', members: 3184, wc: '#E4002B',
     born: '2026年3月', base: '福岡県八女市', meets: '月1回', code: 'SKR',
     text: '八女の圃場に月一で通い、隔週の計測に合わせて着色と糖度の推移を自分たちでも記録している。5月の追い上げを3月から言い当てていた数少ない会。',
     word: '「3月に最下位だった系統を、5月まで見続けた人が何人いたか。それが全部です。」',
@@ -284,7 +284,7 @@ const CLUBS = [
   },
   {
     id: 2, line: 6, name: '撫子の会', rep: '小野塚 みずき', repRole: '代表・奈良',
-    photo: 'img/cl2.jpg', members: 1962, wc: '#0F8A4C',
+    photo: 'img/cl2.webp', members: 1962, wc: '#0F8A4C',
     born: '2026年5月', base: '奈良県橿原市', meets: '計測日ごと', code: 'NDS',
     text: '「落ちない」ことだけを見て集まった人たち。計測日には橿原に集合し、前回と同じ味かを全員で確かめるのが恒例になっている。',
     word: '「落ちないことは、記事になりません。だから自分たちで記録しています。」',
@@ -333,7 +333,7 @@ const CLUBS = [
   },
   {
     id: 3, line: 5, name: 'ミツシズク直売部', rep: '嘉手納 千歳', repRole: '代表・栃木',
-    photo: 'img/cl3.jpg', members: 1147, wc: '#E8B800',
+    photo: 'img/cl3.webp', members: 1147, wc: '#E8B800',
     born: '2026年2月', base: '栃木県真岡市', meets: '不定期', code: 'MTS',
     text: '運べない味を守る、が合言葉。真岡の直売所と観光農園を回り、その日のうちに食べる体験を各地でひらいている。',
     word: '「運べない味は、行った人にしか分かりません。だから行きます。」',

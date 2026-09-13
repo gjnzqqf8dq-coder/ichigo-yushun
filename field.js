@@ -52,7 +52,7 @@ function scan(im) {
            r: Uint8Array.from(rs), g: Uint8Array.from(gs), b: Uint8Array.from(bs), pal: pal };
 }
 var SRC = {};
-for (var bi = 1; bi <= 6; bi++) SRC['berry' + bi] = 'img/berry' + bi + '.png';
+for (var bi = 1; bi <= 6; bi++) SRC['berry' + bi] = 'img/berry' + bi + '.webp';
 function shape(name, cb) {
   if (cache[name]) return cb(cache[name]);
   var im = new Image();
@@ -113,7 +113,7 @@ function drawBerry(S, cx, cy, sc, alpha, k) {
   px2.globalAlpha = 1;
   if (k <= 0 || slow) return;
   var x0 = cx - w / 2, y0 = cy - h / 2;
-  var holes = Math.round(w * h * .34 * k);
+  var holes = Math.min(11000, Math.round(w * h * .34 * k));
   px2.fillStyle = '#fff';
   for (var i = 0; i < holes; i++) px2.fillRect(x0 + Math.random() * w, y0 + Math.random() * h, 1, 1);
 }

@@ -439,7 +439,7 @@ button.club:active{background:var(--pale);transform:scale(.985)}
 .cd{--u:calc(var(--tw,320px) / 856);position:relative;width:var(--tw,320px);
   aspect-ratio:856 / 540;border-radius:calc(var(--u)*28);overflow:hidden;background:#e9f4ee;
   box-shadow:0 0 0 1px rgba(0,0,0,.10),0 calc(var(--u)*36) calc(var(--u)*90) rgba(0,0,0,.16)}
-.cd .cbg{position:absolute;inset:0;background:url(img/plate.jpg) center/cover no-repeat;opacity:.62}
+.cd .cbg{position:absolute;inset:0;background:url(img/plate.webp) center/cover no-repeat;opacity:.62}
 .cd .cbg::after{content:"";position:absolute;inset:0;
   background:linear-gradient(118deg,rgba(255,255,255,.72) 12%,rgba(255,255,255,0) 42%,rgba(255,255,255,.5) 78%)}
 .cd .cbar{position:absolute;left:0;right:0;bottom:0;height:calc(var(--u)*14);background:var(--ac,#c8102e)}

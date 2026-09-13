@@ -318,9 +318,9 @@ function brd(l) {
     '<div><div class="k">開発</div><div class="v">' + b.dev + '<em>年</em></div></div></div>' +
     '<div class="chips rise">' + b.keys.map(function (k) { return '<span>' + k + '</span>'; }).join('') + '</div>' +
     '<div class="gal rise">' +
-      '<figure><div class="im" style="background-image:url(img/w1.jpg)"></div><figcaption>実生をひとつひとつ、見つめて。</figcaption></figure>' +
-      '<figure><div class="im" style="background-image:url(img/w2.jpg)"></div><figcaption>隔週で、候補を食べ比べる。</figcaption></figure>' +
-      '<figure><div class="im" style="background-image:url(img/w3.jpg)"></div><figcaption>いちごの、あたらしい季節を。</figcaption></figure>' +
+      '<figure><div class="im" style="background-image:url(img/w1.webp)"></div><figcaption>実生をひとつひとつ、見つめて。</figcaption></figure>' +
+      '<figure><div class="im" style="background-image:url(img/w2.webp)"></div><figcaption>隔週で、候補を食べ比べる。</figcaption></figure>' +
+      '<figure><div class="im" style="background-image:url(img/w3.webp)"></div><figcaption>いちごの、あたらしい季節を。</figcaption></figure>' +
     '</div><div style="height:20px"></div>';
 }
 
@@ -329,7 +329,7 @@ function brd(l) {
    いちご券 — 印刷した実券をそのまま画面に起こす
    ========================================================================= */
 function ticket(l) {
-  return '<div class="tk"><img src="img/tk' + l.no + '.jpg" alt="いちご券　' + l.no + '号 ' + l.name + '"></div>';
+  return '<div class="tk"><img src="img/tk' + l.no + '.webp" decoding="async" alt="いちご券　' + l.no + '号 ' + l.name + '"></div>';
 }
 function tkline(l) {
   var r = rankAt(RACE.now, l.no), gap = l.race[RACE.now] - l.race[0];
@@ -538,13 +538,22 @@ V.about = function () {
 document.addEventListener('dblclick', function (e) { e.preventDefault(); }, { passive: false });
 window.addEventListener('resize', function () { var t = $('#tkw'); if (t) fitTicket($('.tk', t), 330); });
 document.addEventListener('click', function (e) { var t = e.target.closest('[data-go]'); if (t) go(t.dataset.go); });
-(function () { var pre = ['img/w1.jpg', 'img/w2.jpg', 'img/w3.jpg'];
-  LINES.forEach(function (l) { pre.push(l.breeder.photo); }); CLUBS.forEach(function (c) { pre.push(c.photo); });
-  pre.forEach(function (u) { var im = new Image(); im.src = u; }); })();
+/* ホームが出てから、その先で使う写真を裏で読む（最初の表示を遅らせない） */
+function warm() {
+  var pre = ['img/w1.webp', 'img/w2.webp', 'img/w3.webp'];
+  LINES.forEach(function (l) { pre.push(l.breeder.photo); pre.push(l.img); });
+  CLUBS.forEach(function (c) { pre.push(c.photo); });
+  pre.push('img/plate.webp'); pre.push('img/tk' + (idx + 1) + '.webp');
+  var i = 0;
+  (function step() { if (i >= pre.length) return;
+    var im = new Image(); im.onload = im.onerror = function () { setTimeout(step, 60); };
+    im.src = pre[i++]; })();
+}
 Field.init($('#photo'), $('#field'));
 Field.preload(['berry1', 'berry2', 'berry3', 'berry4', 'berry5', 'berry6'], function () {
   var st = (location.hash || '').replace('#', '');
   go(V[st] ? st : 'home');
+  setTimeout(warm, 900);
 });
 window.addEventListener('resize', function () { setTimeout(stage, 80); });
 })();
