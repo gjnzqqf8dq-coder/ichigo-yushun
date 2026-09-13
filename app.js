@@ -20,6 +20,7 @@ var IC = {
   temp:'<svg viewBox="0 0 20 20"><path d="M12.1 11.4V4.1a2.1 2.1 0 1 0-4.2 0v7.3a3.7 3.7 0 1 0 4.2 0z"/><path d="M10 7.2v5.6"/></svg>',
   heart:'<svg viewBox="0 0 22 20"><path d="M11 18.3S2.2 12.7 2.2 6.9A4.3 4.3 0 0 1 11 5a4.3 4.3 0 0 1 8.8 1.9c0 5.8-8.8 11.4-8.8 11.4z"/></svg>',
   back:'<svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>',
+  next:'<svg viewBox="0 0 16 16"><path d="M6 3l5 5-5 5"/></svg>',
   x:'<svg viewBox="0 0 16 16"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>'
 };
 function bars(root, d) {
@@ -326,46 +327,13 @@ function brd(l) {
 /* =========================================================================
    いちご券 — 印刷した実券をそのまま画面に起こす
    ========================================================================= */
-function qr(str) {
-  var n = 21, h = 2166136261, i;
-  for (i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = (h * 16777619) >>> 0; }
-  var rnd = function () { h ^= h << 13; h >>>= 0; h ^= h >>> 17; h ^= h << 5; h >>>= 0; return h / 4294967296; };
-  var g = '', x, y;
-  var fin = function (ox, oy) {
-    for (var a = 0; a < 7; a++) for (var b = 0; b < 7; b++) {
-      if (a === 0 || a === 6 || b === 0 || b === 6 || (a > 1 && a < 5 && b > 1 && b < 5))
-        g += '<rect x="' + (ox + a) + '" y="' + (oy + b) + '" width="1" height="1"/>';
-    }
-  };
-  for (y = 0; y < n; y++) for (x = 0; x < n; x++) {
-    if ((x < 8 && y < 8) || (x > n - 9 && y < 8) || (x < 8 && y > n - 9)) continue;
-    if (rnd() < .47) g += '<rect x="' + x + '" y="' + y + '" width="1" height="1"/>';
-  }
-  fin(0, 0); fin(n - 7, 0); fin(0, n - 7);
-  return '<svg viewBox="0 0 ' + n + ' ' + n + '" shape-rendering="crispEdges"><g fill="#0d0d0d">' + g + '</g></svg>';
+function ticket(l) {
+  return '<div class="tk"><img src="img/tk' + l.no + '.jpg" alt="いちご券　' + l.no + '号 ' + l.name + '"></div>';
 }
-function ticket(l, tno) {
+function tkline(l) {
   var r = rankAt(RACE.now, l.no), gap = l.race[RACE.now] - l.race[0];
-  var nf = l.name.length >= 5 ? 28 : l.name.length === 4 ? 34 : 42;   /* 長い名前でも枠に収める */
-  return '<div class="tk"><div class="bg"></div>' +
-    '<div class="wm" style="left:4%">ISD</div><div class="wm" style="right:4%">ISD</div>' +
-    '<div class="in">' +
-      '<div class="lft">' +
-        '<div class="lg">CULTA<i>ICHIGO YUSHUN</i></div>' +
-        '<div class="dt">' + RACE.year + '年2回12日</div>' +
-        '<div class="rc"><b>0' + l.no + '</b><span>レース</span></div>' +
-        '<div class="btm"><div class="qr">' + qr(l.ln + tno) + '</div>' +
-        '<div class="ev">第1回　（GI）<br>新・いちご優駿<br>5月25日' +
-        '<em>いちごの、もっと先へ。</em></div></div>' +
-      '</div>' +
-      '<div class="win"><em>WIN</em><b>単勝</b><em>WIN</em></div>' +
-      '<div class="rgt">' +
-        '<div class="kuchi">1口</div>' +
-        '<div class="nm"><i>' + l.no + '</i><b style="font-size:calc(var(--u)*' + nf + ')">' + l.name + '</b></div>' +
-        '<div class="tot"><span>結果</span><b>' + r + '着</b><span>3月比</span><b>' + sign(gap) + '</b></div>' +
-        '<div class="sn">系統番号 ' + l.ln + '　／　券番号 ' + tno + '<br>' + RACE.year + '053001　0001234569　890125</div>' +
-      '</div>' +
-    '</div></div>';
+  return '<div class="tkline"><b>' + l.no + '号　' + l.name + '</b>' +
+    '<span>最終 ' + r + '着</span><span>3月比 ' + sign(gap) + '</span></div>';
 }
 function fitTicket(el, max) {
   var sh = $('#shell'), w = Math.min(max, (sh ? sh.clientWidth : 375) - 48);
@@ -388,8 +356,10 @@ function issue(l) {
     d.style.setProperty('--bx', Math.round(br.left + br.width / 2 - sr.left) + 'px');
     d.style.setProperty('--by', Math.round(br.top + br.height / 2 - sr.top) + 'px'); }
   d.innerHTML = '<div class="bkd"></div><div class="ring"></div><div class="ring b"></div><div class="burst">' + dots + '</div>' +
-    '<div class="stg">' + ticket(l, S.no) + '<div class="shine"></div></div>' +
-    '<div class="msg"><b>' + (first ? 'いちご券を発行しました' : 'あなたのいちご券') + '</b><span>' + S.no + '</span></div>' +
+    '<div class="stg">' + ticket(l) + '<div class="shine"></div></div>' +
+    '<div class="msg"><b>' + (first ? 'いちご券を発行しました' : 'あなたのいちご券') + '</b>' +
+      '<span>' + l.no + '号　' + l.name + '　／　最終 ' + rankAt(RACE.now, l.no) + '着</span>' +
+      '<span class="id">' + S.no + '</span></div>' +
     '<button class="btn go">クラブで見る<span class="ar">→</span></button>';
   sh.appendChild(d);
   fitTicket($('.tk', d), 330);
@@ -409,19 +379,64 @@ V.club = function () {
   var v = $('#v-club'), mine = S.owner ? LINES[S.owner - 1] : null;
   v.innerHTML = '<div class="scroll"><div class="ptop">' +
     '<div class="kicker">ICHIGO TICKET</div>' +
-    '<h1 class="disp" style="margin-top:10px">予想する、<br>ということ。</h1>' +
-    '<p class="body" style="margin-top:14px">決められるのは、どれを応援するかだけ。オッズも馬券も賞金もない。結果は5月末の数値だけで決まる。</p>' +
+    '<h1 class="disp" style="margin-top:10px">いちご券と、<br>応援クラブ。</h1>' +
+    '<p class="body" style="margin-top:14px">いちご券は、6系統のうちどれが5月末まで走り切るかを予想して受け取るカードです。購入も換金もできません。順位は5月25日の計測値だけで決まります。</p>' +
     (mine ? '<div class="mytk"><div class="cap"><b>YOUR TICKET</b><span>' + (S.no || '') + '</span></div>' +
-      ticket(mine, S.no || '') + '</div>' : '') +
+      ticket(mine) + tkline(mine) + '</div>'
+          : '<div class="empt">まだいちご券を持っていません。<br>ホームから系統を選ぶと発行できます。</div>') +
     '<div class="sec"><b>CLUBS</b><span>応援クラブ ' + CLUBS.length + '団体</span></div>' +
-    CLUBS.map(function (c) {
-      return '<div class="club"><div class="hd"><span class="av" style="background-image:url(' + c.photo + ')"></span>' +
+    '<p class="body" style="margin-top:12px">系統ごとに、生活者が自分たちで作った会です。圃場に通い、計測に立ち会っている会もあります。</p>' +
+    CLUBS.map(function (c, i) {
+      return '<button class="club tap" data-c="' + i + '"><div class="hd">' +
+        '<span class="av" style="background-image:url(' + c.photo + ')"></span>' +
         '<div><div class="nm">' + c.name + '</div><div class="rl">' + c.rep + '　' + c.repRole + '</div></div>' +
-        '<div class="mem"><b>' + c.members.toLocaleString() + '</b><span>MEMBERS</span></div></div><p>' + c.text + '</p></div>';
+        '<div class="mem"><b>' + c.members.toLocaleString() + '</b><span>MEMBERS</span></div>' +
+        '<span class="cv">' + IC.next + '</span></div><p>' + c.text + '</p></button>';
     }).join('') +
     '<div style="height:40px"></div></div></div>';
   if (mine) fitTicket($('.mytk .tk', v), 400);
+  $$('.club.tap', v).forEach(function (b) { b.onclick = function () { team = +b.dataset.c; go('team'); }; });
 };
+
+/* ---- クラブの中 ---- */
+var team = 0;
+V.team = function () {
+  var c = CLUBS[team], l = LINES[c.line - 1], v = $('#v-team');
+  var r = rankAt(RACE.now, l.no);
+  v.innerHTML =
+    '<div class="dbar"><button id="tback">' + IC.back + 'クラブへ</button></div>' +
+    '<div class="scroll"><div class="tpad">' +
+      '<div class="thero"><span class="av" style="background-image:url(' + c.photo + ')"></span>' +
+        '<div><div class="kicker">SUPPORTERS CLUB</div>' +
+        '<h2 class="head" style="margin-top:5px">' + c.name + '</h2>' +
+        '<div class="rl">' + c.rep + '　' + c.repRole + '</div></div></div>' +
+      '<div class="bstat" style="margin-top:16px">' +
+        '<div><div class="k">会員</div><div class="v">' + c.members.toLocaleString() + '</div></div>' +
+        '<div><div class="k">発足</div><div class="v" style="font-size:15px">' + c.born + '</div></div>' +
+        '<div><div class="k">集まり</div><div class="v" style="font-size:15px">' + c.meets + '</div></div></div>' +
+      '<p class="btext">' + c.text + '</p>' +
+      '<div class="sec"><b>SUPPORTING</b><span>応援している系統</span></div>' +
+      '<button class="lnk" id="toline"><span class="wk" style="background:' + l.wc + '"></span>' +
+        '<div><div class="n1">' + l.no + '号　' + l.name + '</div>' +
+        '<div class="n2">' + l.ln + '　／　最終 ' + r + '着</div></div>' + IC.next + '</button>' +
+      '<div class="sec"><b>ACTIVITIES</b><span>していること</span></div>' +
+      c.acts.map(function (a) {
+        return '<div class="act"><div class="t">' + a[0] + '</div><div class="d">' + a[1] + '</div></div>'; }).join('') +
+      '<div class="sec"><b>VOICE</b><span>代表のことば</span></div>' +
+      '<p class="voice">' + c.word + '</p>' +
+      '<div class="sec"><b>LOG</b><span>この春の記録</span></div>' +
+      c.log.map(function (g) {
+        return '<div class="lg"><span class="d num">' + g[0] + '</span><span class="t">' + g[1] + '</span></div>'; }).join('') +
+      '<div class="sec"><b>JOIN</b><span>入会</span></div>' +
+      '<p class="body" style="margin-top:12px">入会に費用はかかりません。' + c.base + 'の集まりに一度来てもらうのが、入会の条件です。</p>' +
+      '<button class="btn ghost" id="join" style="margin-top:14px">この会に入る<span class="ar">→</span></button>' +
+      '<div style="height:40px"></div></div></div>';
+  $('#tback').onclick = function () { go('club'); };
+  $('#toline').onclick = function () { idx = l.no - 1; dTab = 0; go('dex'); };
+  $('#join').onclick = function () {
+    S.club = c.id; save(); toast(c.name + 'に入りました'); };
+};
+
 V.about = function () {
   var v = $('#v-about'), w = LINES[CROWN.line - 1];
   v.innerHTML = '<div class="scroll"><div class="ptop">' +
