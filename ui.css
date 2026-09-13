@@ -629,3 +629,6 @@ h2.copy{font-size:17px;line-height:1.45;margin-top:6px}
 #v-home .rail{top:150px}
 #v-home .rail.l,#v-home .rail.r{max-width:70px}
 #v-home .rail .jp{font-size:8.2px;line-height:1.75}
+/* 375pxでは左レールの和文を出さない（号ラベルと衝突するため） */
+#v-home .rail.l .jp{display:none}
+#v-home .rail{top:158px}
