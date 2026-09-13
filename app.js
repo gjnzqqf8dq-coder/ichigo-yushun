@@ -58,7 +58,7 @@ function dnaSVG(w, h, op) {
 }
 function railsHTML() {
   return '<div class="rail l">JAPAN<br>STRAWBERRY<br>DERBY<span class="bar"></span>A<br>SWEETER<br>TOMORROW' +
-    '<div class="jp" style="margin-top:26px">いちごの可能性は、<br>まだ始まったばかり。</div>' +
+    '<div class="jp" style="margin-top:20px">いちごの<br>可能性は、<br>まだ始まった<br>ばかり。</div>' +
     '<div class="more" style="margin-top:6px">BORN FROM<br>NATURE<br>DRIVEN BY<br>SCIENCE.</div></div>' +
     '<div class="rail r"><div class="jp k">まだ見ぬ<br>いちごの<br>未来を、<br>いっしょに。</div>' +
     '<div style="margin-top:14px">SEEDING<br>A BRIGHTER<br>TOMORROW</div><span class="bar"></span><span class="more">FUTURE<br>STRAWBERRIES<br>FOR A<br>BRIGHTER<br>TOMORROW</span></div>';

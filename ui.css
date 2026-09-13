@@ -622,3 +622,10 @@ h2.copy{font-size:17px;line-height:1.45;margin-top:6px}
 .tree .gen,.gen2,.gen3{margin-top:3px}
 .traits li{padding:0}
 .gal figcaption{-webkit-line-clamp:1;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ── 見出しとレールがぶつからない位置関係（375px実測） ── */
+.hh h1{font-size:23px;letter-spacing:.01em}
+.hh .sub{font-size:11px;letter-spacing:.2em}
+#v-home .rail{top:150px}
+#v-home .rail.l,#v-home .rail.r{max-width:70px}
+#v-home .rail .jp{font-size:8.2px;line-height:1.75}
