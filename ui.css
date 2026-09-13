@@ -632,3 +632,6 @@ h2.copy{font-size:17px;line-height:1.45;margin-top:6px}
 /* 375pxでは左レールの和文を出さない（号ラベルと衝突するため） */
 #v-home .rail.l .jp{display:none}
 #v-home .rail{top:158px}
+/* ホームのレールは2行まで。いちごに文字を掛けない */
+#v-home .rail{top:150px;max-height:64px;overflow:hidden}
+#v-home .rail.r{max-height:78px}
