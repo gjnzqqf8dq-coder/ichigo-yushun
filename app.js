@@ -106,10 +106,10 @@ V.home = function () {
         '<h1 id="ttl"><em>日</em>本いち<em>ご</em>ダービー</h1><div class="sub">次の夏を代表する一粒を選ぼう</div></div>' +
       '<div class="caro"><div class="stage" id="stripstage" data-strip="1" style="inset:0"></div>' +
         '<div class="circ" id="circ" style="width:176px;height:176px;top:126px"><i></i><i></i><b class="t n"></b><b class="t s"></b><b class="t w"></b><b class="t e"></b></div>' +
-        '<div class="touch" id="touch"></div><div class="labels" id="labels"></div>' +
+        '<div class="touch" id="touch"></div><div class="hits" id="hits"></div><div class="labels" id="labels"></div>' +
         '<button class="chev l" id="cL"><svg viewBox="0 0 14 18"><path d="M10 2 3 9l7 7"/></svg></button>' +
         '<button class="chev r" id="cR"><svg viewBox="0 0 14 18"><path d="M4 2l7 7-7 7"/></svg></button>' +
-        '<div class="dots" id="dots">' + LINES.map(function () { return '<i></i>'; }).join('') + '</div></div>' +
+        '<div class="dots" id="dots">' + LINES.map(function (l, i) { return '<button data-i="' + i + '" aria-label="' + l.no + '号"></button>'; }).join('') + '</div></div>' +
       '<div class="card" id="hcard"></div>';
     buildStrip();
   }
@@ -117,13 +117,26 @@ V.home = function () {
 };
 function stripIdx(i) { idx = i; paintHome(); }
 function stripFrame(slots) {
-      var lb = $('#labels'); if (!lb) return;
-      if (lb.children.length !== slots.length) lb.innerHTML = slots.map(function () { return '<span></span>'; }).join('');
-      for (var i = 0; i < slots.length; i++) {
-        var s = slots[i], e = lb.children[i];
-        e.textContent = LINES[s.i].no + '号'; e.style.left = s.x + 'px';
-        e.style.opacity = s.ad > 3.2 ? 0 : 1; e.classList.toggle('on', s.k > .96);
-      }
+  var lb = $('#labels'), ht = $('#hits'); if (!lb) return;
+  if (lb.children.length !== slots.length) {
+    lb.innerHTML = slots.map(function () { return '<span></span>'; }).join('');
+    if (ht) ht.innerHTML = slots.map(function () { return '<button class="hit"></button>'; }).join('');
+  }
+  for (var i = 0; i < slots.length; i++) {
+    var s = slots[i], e = lb.children[i];
+    e.textContent = LINES[s.i].no + '号'; e.style.left = s.x + 'px';
+    e.dataset.i = s.i;
+    var vis = s.ad <= 3.2;
+    e.style.opacity = vis ? 1 : 0;
+    e.style.pointerEvents = vis ? 'auto' : 'none';
+    e.classList.toggle('on', s.k > .96);
+    if (ht) {
+      var h = ht.children[i], w = s.ad < 1 ? 150 : s.ad < 2 ? 92 : 62;
+      h.dataset.i = s.i;
+      h.style.left = (s.x - w / 2) + 'px'; h.style.width = w + 'px';
+      h.style.display = vis ? 'block' : 'none';
+    }
+  }
 }
 function buildStrip() {
   Field.strip(LINES.map(function (l) { return l.shape; }), $('#stripstage'), { index: idx, onIndex: stripIdx, onFrame: stripFrame });
@@ -132,13 +145,25 @@ function buildStrip() {
   t.addEventListener('pointermove', function (e) { if (!down) return; var d = e.clientX - lx; lx = e.clientX; t._m += Math.abs(d); Field.spin(d); });
   var up = function () { if (!down) return; down = false; Field.release(); };
   t.addEventListener('pointerup', up); t.addEventListener('pointercancel', up);
-  t.addEventListener('click', function () { if (!t._m) go('dex'); });
+  t.addEventListener('click', function () { if (t._m < 8) go('dex'); });
   $('#cL').onclick = function () { Field.ringTo((idx + 5) % 6); };
   $('#cR').onclick = function () { Field.ringTo((idx + 1) % 6); };
+  $$('#dots button').forEach(function (b) { b.onclick = function () { Field.ringTo(+b.dataset.i); }; });
+  $('#labels').addEventListener('click', function (e) {
+    var sp = e.target.closest('span'); if (!sp || sp.dataset.i == null) return;
+    var i = +sp.dataset.i;
+    if (i === idx) go('dex'); else Field.ringTo(i);
+  });
+  var hits = $('#hits');
+  hits.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var i = +b.dataset.i;
+    if (i === idx) go('dex'); else Field.ringTo(i);
+  });
 }
 function paintHome() {
   var l = LINES[idx], c = $('#hcard'); if (!c) return;
-  $$('#dots i').forEach(function (x, i) { x.classList.toggle('on', i === idx); });
+  $$('#dots button').forEach(function (x, i) { x.classList.toggle('on', i === idx); });
   var m = [['sun', '甘さ', l.radar.甘さ], ['wave', '香り', l.radar.香り], ['drop', 'みずみずしさ', l.radar.果汁]];
   c.innerHTML = dnaSVG(120, 170, .6) + '<div class="ctag">A SMALL<br>STRAWBERRY<br>A BIGGER<br>TOMORROW</div>' +
     '<div class="nohead"><div class="n">' + l.no + '<small>号</small></div><div class="sep"></div>' +
@@ -206,7 +231,9 @@ function abilHTML(l) {
       RAX.map(function (k, i) { var p = rpt(i, l.radar[k] / 100); return '<circle class="dot" cx="' + p[0] + '" cy="' + p[1] + '" r="3"/>'; }).join('') + labs + '</svg>' +
     '<div class="r">' + RAX.map(function (k) { return '<div class="mrow2"><span class="k">' + k + '</span><span class="bar"><i data-w="' + l.radar[k] + '"></i></span><span class="v">' + l.radar[k] + '</span></div>'; }).join('') +
       '<p class="b" style="margin-top:12px;font-size:11px">' + l.flavor + '</p>' +
-      '<div class="fpline"><span>FLAVOR PROFILE</span><i></i><span>No.0' + l.no + '</span></div></div></div>';
+      '<div class="fpline"><span>FLAVOR PROFILE</span><i></i><span>No.0' + l.no + '</span></div></div></div>' +
+    '<div class="meas">' + [['糖度 Brix', l.brix], ['酸度', l.acid], ['果実硬度', l.firm], ['一果重', l.wt + ' g'], ['果形', l.form], ['耐暑性', l.heat]]
+      .map(function (x) { return '<div><span>' + x[0] + '</span><b>' + x[1] + '</b></div>'; }).join('') + '</div>';
 }
 function animRadar(l) {
   var area = $('#rarea'); if (!area) return;
