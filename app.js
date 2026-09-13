@@ -346,6 +346,7 @@ function qr(str) {
 }
 function ticket(l, tno) {
   var r = rankAt(RACE.now, l.no), gap = l.race[RACE.now] - l.race[0];
+  var nf = l.name.length >= 5 ? 30 : l.name.length === 4 ? 35 : 42;   /* 長い名前でも枠に収める */
   return '<div class="tk"><div class="bg"></div>' +
     '<div class="wm" style="left:4%">ISD</div><div class="wm" style="right:4%">ISD</div>' +
     '<div class="in">' +
@@ -360,7 +361,7 @@ function ticket(l, tno) {
       '<div class="win"><em>WIN</em><b>単勝</b><em>WIN</em></div>' +
       '<div class="rgt">' +
         '<div class="kuchi">1口</div>' +
-        '<div class="nm"><i>' + l.no + '</i><b>' + l.name + '</b></div>' +
+        '<div class="nm"><i>' + l.no + '</i><b style="font-size:calc(var(--u)*' + nf + ')">' + l.name + '</b></div>' +
         '<div class="tot"><span>結果</span><b>' + r + '着</b><span>3月比</span><b>' + sign(gap) + '</b></div>' +
         '<div class="sn">系統番号 ' + l.ln + '　／　券番号 ' + tno + '<br>' + RACE.year + '053001　0001234569　890125</div>' +
       '</div>' +
