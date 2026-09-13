@@ -408,18 +408,20 @@ html.still *,html.still *::before,html.still *::after{animation-duration:.01ms!i
   transition:opacity var(--t-m) var(--ez)}
 #tkw.on{opacity:1}
 #tkw .bkd{position:absolute;inset:0;background:rgba(255,255,255,.94);backdrop-filter:blur(6px)}
-#tkw .ring{position:absolute;top:50%;left:50%;width:120px;height:120px;margin:-60px 0 0 -60px;
+#tkw .ring{position:absolute;top:var(--by,50%);left:var(--bx,50%);width:120px;height:120px;margin:-60px 0 0 -60px;
   border-radius:50%;border:2px solid var(--rd);transform:scale(.2);opacity:0}
-#tkw.on .ring{animation:ring .62s var(--ez-o) .04s both}
-@keyframes ring{0%{transform:scale(.15);opacity:.9}100%{transform:scale(3.2);opacity:0}}
-#tkw .burst{position:absolute;top:50%;left:50%;width:0;height:0}
+#tkw.on .ring{animation:ring .6s var(--ez-o) both}
+#tkw .ring.b{border-width:8px;opacity:0}
+#tkw.on .ring.b{animation:ring .42s var(--ez-o) both}
+@keyframes ring{0%{transform:scale(.1);opacity:1}100%{transform:scale(3.4);opacity:0}}
+#tkw .burst{position:absolute;top:var(--by,50%);left:var(--bx,50%);width:0;height:0}
 #tkw .burst i{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--rd);
   margin:-2.5px 0 0 -2.5px;opacity:0}
 #tkw.on .burst i{animation:burst .72s var(--ez-o) both}
 @keyframes burst{0%{transform:translate(0,0) scale(1);opacity:1}
   100%{transform:translate(var(--x),var(--y)) scale(0);opacity:0}}
-#tkw .stg{position:relative;z-index:2;transform:scale(.78) translateY(16px) rotate(-3deg);opacity:0;
-  transition:transform .62s var(--ez-o) .08s,opacity var(--t-m) var(--ez) .08s}
+#tkw .stg{position:relative;z-index:2;transform:translateY(150px) scale(.62) rotate(-5deg);opacity:0;
+  transition:transform .72s var(--ez-o) .1s,opacity .3s var(--ez) .1s}
 #tkw.on .stg{transform:none;opacity:1}
 #tkw .shine{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 #tkw .shine::after{content:"";position:absolute;top:-40%;bottom:-40%;width:36%;left:-50%;

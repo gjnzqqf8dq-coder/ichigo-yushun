@@ -166,6 +166,7 @@ V.dex = function () {
   $('#own').onclick = function () { issue(l); };
   $$('#seg button').forEach(function (b) { b.onclick = function () { dTab = +b.dataset.t; paintTabs(); }; });
   paintTabs();
+  if (Q.get('tk') === '1') setTimeout(function () { issue(l); }, 260);   /* 撮影・デモ用 */
 };
 function paintTabs() {
   var l = LINES[idx];
@@ -381,7 +382,11 @@ function issue(l) {
       'px;animation-delay:' + (Math.random() * 90 | 0) + 'ms;background:' + (i % 4 ? 'var(--rd)' : col) + '"></i>';
   }
   var d = document.createElement('div'); d.id = 'tkw';
-  d.innerHTML = '<div class="bkd"></div><div class="ring"></div><div class="burst">' + dots + '</div>' +
+  var bt = $('#own'), sr = sh.getBoundingClientRect();          /* 押したボタンの位置から弾けさせる */
+  if (bt) { var br = bt.getBoundingClientRect();
+    d.style.setProperty('--bx', Math.round(br.left + br.width / 2 - sr.left) + 'px');
+    d.style.setProperty('--by', Math.round(br.top + br.height / 2 - sr.top) + 'px'); }
+  d.innerHTML = '<div class="bkd"></div><div class="ring"></div><div class="ring b"></div><div class="burst">' + dots + '</div>' +
     '<div class="stg">' + ticket(l, S.no) + '<div class="shine"></div></div>' +
     '<div class="msg"><b>' + (first ? 'いちご券を発行しました' : 'あなたのいちご券') + '</b><span>' + S.no + '</span></div>' +
     '<button class="btn go">クラブで見る<span class="ar">→</span></button>';
