@@ -59,9 +59,9 @@ function dnaSVG(w, h, op) {
 function railsHTML() {
   return '<div class="rail l">JAPAN<br>STRAWBERRY<br>DERBY<span class="bar"></span>A<br>SWEETER<br>TOMORROW' +
     '<div class="jp" style="margin-top:26px">いちごの可能性は、<br>まだ始まったばかり。</div>' +
-    '<div style="margin-top:6px">BORN FROM<br>NATURE<br>DRIVEN BY<br>SCIENCE.</div></div>' +
+    '<div class="more" style="margin-top:6px">BORN FROM<br>NATURE<br>DRIVEN BY<br>SCIENCE.</div></div>' +
     '<div class="rail r"><div class="jp k">まだ見ぬ<br>いちごの<br>未来を、<br>いっしょに。</div>' +
-    '<div style="margin-top:14px">SEEDING<br>A BRIGHTER<br>TOMORROW</div><span class="bar"></span>FUTURE<br>STRAWBERRIES<br>FOR A<br>BRIGHTER<br>TOMORROW</div>';
+    '<div style="margin-top:14px">SEEDING<br>A BRIGHTER<br>TOMORROW</div><span class="bar"></span><span class="more">FUTURE<br>STRAWBERRIES<br>FOR A<br>BRIGHTER<br>TOMORROW</span></div>';
 }
 function deco() {
   var d = $('#deco'), h = '';
@@ -89,7 +89,7 @@ function go(name) {
 function stageNow() {
   var v = $('#v-' + cur), st = v && $('.stage', v);
   if (!st) { Field.hide(); return; }
-  if (st.dataset.strip) return;
+  if (st.dataset.strip) { Field.strip(LINES.map(function (l) { return l.shape; }), st, { index: idx, onIndex: stripIdx, onFrame: stripFrame }); return; }
   Field.apply(st.dataset.shape, st, { dir: st.dataset.dir || 'right', spread: st.dataset.spread ? +st.dataset.spread : undefined });
 }
 
@@ -100,26 +100,23 @@ var idx = Math.max(0, Math.min(5, +(Q.get('line') || 0)));
 V.home = function () {
   var v = $('#v-home');
   if (!v._b) {
-    v._b = 1;
+    v._b = 1; v.classList.add('fixed');
     v.innerHTML = railsHTML() +
       '<div class="hh"><svg class="crown" viewBox="0 0 44 24"><path d="M3 22 L10 7 L16 15 L22 3 L28 15 L34 7 L41 22 Z"/></svg>' +
         '<h1 id="ttl"><em>日</em>本いち<em>ご</em>ダービー</h1><div class="sub">次の夏を代表する一粒を選ぼう</div></div>' +
       '<div class="caro"><div class="stage" id="stripstage" data-strip="1" style="inset:0"></div>' +
-        '<div class="circ" id="circ" style="width:200px;height:200px;top:158px"><i></i><i></i><b class="t n"></b><b class="t s"></b><b class="t w"></b><b class="t e"></b></div>' +
+        '<div class="circ" id="circ" style="width:176px;height:176px;top:126px"><i></i><i></i><b class="t n"></b><b class="t s"></b><b class="t w"></b><b class="t e"></b></div>' +
         '<div class="touch" id="touch"></div><div class="labels" id="labels"></div>' +
         '<button class="chev l" id="cL"><svg viewBox="0 0 14 18"><path d="M10 2 3 9l7 7"/></svg></button>' +
         '<button class="chev r" id="cR"><svg viewBox="0 0 14 18"><path d="M4 2l7 7-7 7"/></svg></button>' +
         '<div class="dots" id="dots">' + LINES.map(function () { return '<i></i>'; }).join('') + '</div></div>' +
-      '<div class="card" id="hcard"></div><div style="height:' + 110 + 'px"></div>';
+      '<div class="card" id="hcard"></div>';
     buildStrip();
   }
   paintHome();
 };
-function buildStrip() {
-  Field.strip(LINES.map(function (l) { return l.shape; }), $('#stripstage'), {
-    index: idx,
-    onIndex: function (i) { idx = i; paintHome(); },
-    onFrame: function (slots) {
+function stripIdx(i) { idx = i; paintHome(); }
+function stripFrame(slots) {
       var lb = $('#labels'); if (!lb) return;
       if (lb.children.length !== slots.length) lb.innerHTML = slots.map(function () { return '<span></span>'; }).join('');
       for (var i = 0; i < slots.length; i++) {
@@ -127,8 +124,9 @@ function buildStrip() {
         e.textContent = LINES[s.i].no + '号'; e.style.left = s.x + 'px';
         e.style.opacity = s.ad > 3.2 ? 0 : 1; e.classList.toggle('on', s.k > .96);
       }
-    }
-  });
+}
+function buildStrip() {
+  Field.strip(LINES.map(function (l) { return l.shape; }), $('#stripstage'), { index: idx, onIndex: stripIdx, onFrame: stripFrame });
   var t = $('#touch'), down = false, lx = 0;
   t.addEventListener('pointerdown', function (e) { down = true; t._m = 0; lx = e.clientX; try { t.setPointerCapture(e.pointerId); } catch (x) {} });
   t.addEventListener('pointermove', function (e) { if (!down) return; var d = e.clientX - lx; lx = e.clientX; t._m += Math.abs(d); Field.spin(d); });
@@ -163,22 +161,23 @@ function paintHome() {
 var dTab = Math.max(0, Math.min(2, +(Q.get('tab') || 0)));
 V.dex = function () {
   var l = LINES[idx], v = $('#v-dex');
-  v.innerHTML = railsHTML() + '<button class="close" id="cls">閉じる<i>✕</i></button>' +
-    '<div class="hero" style="height:322px">' +
-      '<div class="stage" data-shape="' + l.shape + '" data-dir="right" data-spread="150" style="left:104px;right:104px;top:92px;bottom:44px"></div>' +
-      '<div class="circ" style="width:214px;height:214px;top:184px"><i></i><i></i><b class="t n"></b><b class="t s"></b><b class="t w"></b><b class="t e"></b></div>' +
-      '<div class="tag" style="left:92px;top:150px">No.0' + l.no + '</div>' +
-      '<div class="tag" style="right:78px;top:236px;line-height:1.75">FRAGARIA<br>×<br>SCIENCE<br>=<br>A SWEETER<br>TOMORROW</div>' +
+  v.classList.add('fixed');
+  v.innerHTML = railsHTML() + '<button class="close" id="cls">閉じる<i>✕</i></button>' + '<div class="dexpage">' +
+    '<div class="hero">' +
+      '<div class="stage" data-shape="' + l.shape + '" data-dir="right" data-spread="120"></div>' +
+      '<div class="circ"><i></i><i></i><b class="t n"></b><b class="t s"></b><b class="t w"></b><b class="t e"></b></div>' +
+      '<div class="tag" style="left:72px;top:60px">No.0' + l.no + '</div>' +
+      '<div class="tag" style="right:22px;top:132px;line-height:1.6;font-size:7.2px;text-align:right">FRAGARIA × SCIENCE<br>= A SWEETER<br>TOMORROW</div>' +
     '</div>' +
-    '<div class="card">' + dnaSVG(120, 170, .6) + '<div class="ctag" style="top:120px">A SMALL<br>STRAWBERRY<br>A BIGGER<br>TOMORROW</div>' +
+    '<div class="card dex">' + dnaSVG(96, 140, .6) + '<div class="ctag">A SMALL<br>STRAWBERRY<br>A BIGGER<br>TOMORROW</div>' +
       '<div class="nohead"><div class="n">' + l.no + '<small>号</small></div><div class="sep"></div>' +
         '<div class="cand">CANDIDATE<br>No.0' + l.no + '<b>' + l.name + '　' + l.kanji + '</b></div></div>' +
       '<h2 class="copy" id="dcopy">' + l.copy[0] + '<br>' + l.copy[1] + '</h2>' +
       '<div class="tabs3" id="t3">' + ['能力', '血統', '育種者'].map(function (t, i) { return '<button data-t="' + i + '"' + (i === dTab ? ' class="on"' : '') + '>' + t + '</button>'; }).join('') + '</div>' +
-      '<div id="tbody"></div>' +
+      '<div class="dexbody" id="tbody"></div>' +
       '<div class="cta"><button class="btn long" id="own">この品種の苺主になる<span class="ar">→</span></button>' +
       '<button class="fav' + (S.fav === l.no ? ' on' : '') + '" id="fav2">' + IC.heart + '</button></div>' +
-    '</div><div style="height:28px"></div>';
+    '</div></div>';
   $('#cls').onclick = function () { go('home'); };
   $('#own').onclick = function () { S.owner = l.no; S.no = S.no || ('ICY-2027-' + (1000 + Math.floor(Math.random() * 8999))); save(); toast('苺主 ' + S.no); setTimeout(function () { go('club'); }, 600); };
   $('#fav2').onclick = function () { S.fav = S.fav === l.no ? 0 : l.no; save(); $('#fav2').classList.toggle('on', S.fav === l.no); };
@@ -223,7 +222,7 @@ function node(cls, cap, nm, img, show) {
   return '<button class="node ' + cls + '" data-n="' + nm + '"><div class="cap">' + cap + '</div><div class="ph" style="background-image:url(' + (img || imgFor(nm)) + ')"></div><div class="nm">' + (show || nm) + '</div></button>';
 }
 function treeHTML(l) {
-  return '<div class="tree" id="tree"><div class="dnabg">' + dnaSVG(60, 260, .35).replace('class="dna"', 'style="position:absolute;left:40%;top:40px;width:70px;height:260px"') + '</div>' +
+  return '<div class="tree" id="tree"><div class="dnabg">' + dnaSVG(60, 200, .3).replace('class="dna"', 'style="position:absolute;left:42%;top:30px;width:56px;height:200px"') + '</div>' +
     '<svg class="link" id="wires"></svg>' +
     '<div class="head"><div><div class="t">FAMILY TREE</div><div class="s">このいちごが生まれた、系譜。</div></div><div class="r">INHERITING<br>A SWEETER<br>TOMORROW</div></div>' +
     '<div class="gen">' + node('', '祖父A-1', l.ss) + node('', '祖母A-2', l.sd) + node('', '祖父B-1', l.bms) + node('', '祖母B-2', l.dd) + '</div>' +
@@ -231,11 +230,10 @@ function treeHTML(l) {
     '<div class="gen3">' + node('me', '', l.name, l.img, l.no + '号') + '</div>' +
     '<div class="traits"><div><h5>受け継いだ特性</h5>' + l.traitL.map(function (x, i) { return '<li><span class="ic">' + (i ? IC.wave : IC.sun) + '</span>' + x + '</li>'; }).join('') + '</div>' +
       '<div class="r"><h5>受け継いだ特性</h5>' + l.traitR.map(function (x, i) { return '<li><span class="ic">' + (i ? IC.temp : IC.shield) + '</span>' + x + '</li>'; }).join('') + '</div></div>' +
-    '<div class="geneinfo" id="ginfo"></div>' +
-    '<div class="taphint">' + IC.hand + 'タップでそれぞれのいちごの詳細を見られます</div></div>';
+    '<div class="taphint" id="ginfo">' + IC.hand + 'タップでそれぞれのいちごの詳細を見られます</div></div>';
 }
-function geneInfo(nm, l) { var g = $('#ginfo'); if (!g) return; var a = ANC[nm] || [l.kanji, l.desc];
-  g.innerHTML = '<div class="t"><span class="lbl" style="margin-right:8px">' + nm + '</span>' + a[0] + '</div><div class="d">' + a[1] + '</div>'; g.classList.remove('fade'); void g.offsetWidth; g.classList.add('fade'); }
+function geneInfo(nm, l, quiet) { var g = $('#ginfo'); if (!g || quiet) return; var a = ANC[nm] || [l.kanji, l.desc];
+  g.className = 'gline'; g.innerHTML = '<b>' + nm + '</b><span>' + a[0] + '　' + a[1] + '</span>'; g.classList.add('fade'); }
 function wireTree() {
   var tr = $('#tree'), sv = $('#wires'); if (!tr || !sv) return;
   var l = LINES[idx], box = tr.getBoundingClientRect(), g = $$('.gen .node', tr), p = $$('.gen2 .node', tr), me = $('.gen3 .node', tr);
@@ -249,7 +247,7 @@ function wireTree() {
   sv.innerHTML = '<path d="' + d + '"/><path class="r" d="' + rd + '"/>';
   $$('path', sv).forEach(function (x) { var n = 600; try { n = x.getTotalLength(); } catch (e) {} x.style.setProperty('--len', n); });
   $$('.node', tr).forEach(function (b) { b.onclick = function () { $$('.node', tr).forEach(function (o) { o.classList.remove('sel'); }); b.classList.add('sel'); geneInfo(b.dataset.n, l); }; });
-  geneInfo(l.bms, l); $$('.node', tr).forEach(function (b) { if (b.dataset.n === l.bms) b.classList.add('sel'); });
+  geneInfo(l.bms, l, true); $$('.node', tr).forEach(function (b) { if (b.dataset.n === l.bms) b.classList.add('sel'); });
 }
 function brdHTML(l) {
   var b = l.breeder;

@@ -288,3 +288,128 @@ html.still *,html.still *::before,html.still *::after{animation-duration:.01ms!i
   .bstat .v em{font-size:8.5px}
   .bstat div{padding:8px 2px}
 }
+
+/* =========================================================================
+   1画面に収める（375×812）。スクロールさせない。
+   ========================================================================= */
+.view.fixed{overflow:hidden;display:flex;flex-direction:column}
+#tabs{height:calc(70px + var(--safeb))}
+#tabs svg{width:24px;height:20px}
+#tabs span{font-size:10.5px}
+.hh{padding-top:48px}
+.hh .crown{width:30px;height:17px}
+.hh h1{font-size:24px;margin-top:4px}
+.hh .sub{font-size:10.5px;margin-top:4px;letter-spacing:.24em}
+.caro{height:262px;margin-top:0;flex:none}
+.caro .chev{top:112px;width:32px;height:32px}
+.caro .chev.l{left:10px}.caro .chev.r{right:10px}
+.caro .labels{bottom:20px;height:24px}
+.caro .labels span{font-size:11.5px}
+.caro .labels span.on{font-size:16px}
+.caro .labels span.on::after{bottom:-6px}
+.caro .dots{bottom:4px;gap:7px}
+.card{margin:0 16px;padding:14px 18px 14px;border-radius:22px;flex:none}
+.card .dna{width:96px;height:140px;top:4px;right:-6px}
+.card .ctag{top:100px;right:18px;font-size:7.6px;line-height:1.8}
+.nohead{gap:12px}
+.nohead .n{font-size:44px}
+.nohead .n small{font-size:19px}
+.nohead .sep{height:30px;margin-bottom:4px}
+.nohead .cand{font-size:8.5px;line-height:1.7;margin-bottom:2px}
+.nohead .cand b{font-size:10px}
+h2.copy{font-size:16.5px;line-height:1.5;margin-top:8px;padding-right:44px}
+p.b{font-size:10.5px;line-height:1.75}
+.h3{gap:10px;margin-top:6px;grid-template-columns:1fr 92px}
+.mrow{padding:4px 0;grid-template-columns:18px 1fr 1fr 30px;gap:7px}
+.mrow .ic svg{width:15px;height:15px}
+.mrow .k{font-size:11px}
+.mrow .bar{height:6px}
+.mrow .v{font-size:12px}
+.flav .lbl{margin-top:4px;font-size:8px}
+.flav p{font-size:9.3px;line-height:1.7;margin-top:4px}
+.cta{margin-top:12px;gap:10px}
+.btn{height:50px;font-size:14px;letter-spacing:.12em}
+.btn.long{font-size:13.5px;letter-spacing:.08em;padding:0 40px 0 22px}
+.btn .ar{right:22px;font-size:16px}
+.fav{width:50px;height:50px}
+.fav svg{width:19px;height:17px}
+
+/* 詳細 */
+.dexpage{display:flex;flex-direction:column;height:100%;padding-top:46px}
+.dexpage .hero{height:168px;flex:none}
+.dexpage .circ{width:172px;height:172px;top:50%}
+.dexpage .stage{left:118px;right:118px;top:14px;bottom:10px}
+.card.dex{flex:1;display:flex;flex-direction:column;min-height:0;margin:0 14px;border-radius:24px 24px 0 0;padding:14px 18px 10px}
+.dexbody{flex:1;min-height:0;overflow:hidden;position:relative}
+.card.dex .cta{margin-top:8px;flex:none}
+.tabs3{margin-top:6px}
+.tabs3 button{padding:8px 0;font-size:13px;letter-spacing:.16em}
+.tabs3 button+button::before{top:9px;bottom:9px}
+.abil{gap:10px;margin-top:6px;grid-template-columns:1.1fr .9fr}
+.abil .r{padding-left:10px}
+.mrow2{padding:3px 0;grid-template-columns:30px 1fr 26px;gap:8px}
+.mrow2 .k{font-size:11px}
+.mrow2 .bar{height:7px}
+.mrow2 .v{font-size:12px}
+.abil .r p.b{font-size:9.6px;line-height:1.7;margin-top:6px}
+.fpline{margin-top:8px;font-size:7.5px}
+.tree{margin-top:6px}
+.tree .head .t{font-size:8.6px}
+.tree .head .s{font-size:9.6px;margin-top:0}
+.tree .head .r{font-size:7.4px;line-height:1.6}
+.tree .gen{margin-top:8px;gap:4px}
+.gen2{margin-top:10px}
+.gen3{margin-top:8px}
+.node .cap{font-size:8.6px;margin-bottom:3px}
+.node .ph{width:44px;height:44px}
+.node.p .ph{width:52px;height:52px}
+.node.me .ph{width:62px;height:62px;box-shadow:inset 0 0 0 1px rgba(228,20,46,.5),0 0 0 6px rgba(228,20,46,.06)}
+.node .nm{font-size:6.8px;margin-top:3px;letter-spacing:.08em}
+.node.me .nm{font-size:14px;margin-top:3px}
+.traits{margin-top:8px;gap:12px}
+.traits h5{font-size:9.4px;margin-bottom:4px}
+.traits li{padding:2px 0;font-size:11.5px;gap:8px}
+.traits .ic{width:20px;height:20px}
+.traits .ic svg{width:18px;height:18px}
+.taphint{margin-top:8px;font-size:10px;gap:8px}
+.taphint svg{width:15px;height:15px}
+.gline{margin-top:8px;font-size:10px;line-height:1.6;color:#444;display:flex;gap:8px;align-items:baseline;position:relative;z-index:2}
+.gline b{font-family:var(--en);font-size:8px;letter-spacing:.2em;color:var(--rd);flex:none}
+.brd{grid-template-columns:120px minmax(0,1fr);gap:10px;margin-top:8px}
+.brd .ph{width:120px;height:166px;border-radius:8px}
+.brd .ph em{font-size:11.5px;left:9px;bottom:10px}
+.brd .role{font-size:9.4px}
+.brd .nm{font-size:18px;margin-top:0}
+.brd .ro{font-size:7.6px;margin-top:2px}
+.brd .qt{font-size:11px;margin-top:6px}
+.brd .tx{font-size:9.4px;line-height:1.65;margin-top:4px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.bstat{margin-top:8px}
+.bstat div{padding:6px 2px}
+.bstat .k{font-size:8.6px}
+.bstat .v{font-size:15px}
+.bstat .v em{font-size:8.4px}
+.kw{margin-top:8px;font-size:7.8px}
+.chips{margin-top:5px;gap:4px}
+.chips span{padding:3px 8px;font-size:9.4px}
+.gal{margin-top:8px;gap:7px}
+.gal .im{height:50px}
+.gal figcaption{font-size:8.4px;margin-top:3px;line-height:1.5}
+#v-dex .rail.l,#v-dex .rail.r{top:88px;font-size:8px}
+#v-dex .rail .jp{font-size:9px}
+.close{top:50px}
+@media(max-width:400px){
+  .hh h1{font-size:23px}
+  .brd{grid-template-columns:112px minmax(0,1fr)}
+  .brd .ph{width:112px;height:158px}
+}
+
+/* 375px の細部 */
+@media(max-width:400px){ .hh h1{font-size:21.5px;letter-spacing:0} }
+.mrow{grid-template-columns:18px auto 1fr 30px}
+.mrow .k{white-space:nowrap}
+.card.dex .ctag{top:78px;right:16px;font-size:7.2px;line-height:1.7}
+.card.dex .dna{width:88px;height:126px}
+.gal .im{height:46px}
+.gal figcaption{font-size:8px;margin-top:2px;line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#v-dex .rail .more{display:none}
+#v-dex .rail.r .bar{display:none}
