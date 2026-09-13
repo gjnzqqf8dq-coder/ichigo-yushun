@@ -346,7 +346,7 @@ function qr(str) {
 }
 function ticket(l, tno) {
   var r = rankAt(RACE.now, l.no), gap = l.race[RACE.now] - l.race[0];
-  var nf = l.name.length >= 5 ? 30 : l.name.length === 4 ? 35 : 42;   /* 長い名前でも枠に収める */
+  var nf = l.name.length >= 5 ? 28 : l.name.length === 4 ? 34 : 42;   /* 長い名前でも枠に収める */
   return '<div class="tk"><div class="bg"></div>' +
     '<div class="wm" style="left:4%">ISD</div><div class="wm" style="right:4%">ISD</div>' +
     '<div class="in">' +
