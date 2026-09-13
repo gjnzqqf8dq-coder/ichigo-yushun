@@ -22,7 +22,7 @@ body{background:#fff;color:var(--ink);font-family:var(--sans);line-height:1.8;
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;touch-action:manipulation}
 img{max-width:100%;display:block}
 
-#shell{position:relative;width:100%;max-width:430px;margin:0 auto;min-height:100dvh;background:#fff;overflow:hidden}
+#shell{position:relative;width:100%;max-width:430px;margin:0 auto;min-height:100dvh;background:#fff}
 @media(min-width:900px){
   body{display:flex;align-items:center;justify-content:center;background:#eee;padding:20px 0}
   #shell{min-height:0;height:min(900px,calc(100dvh - 40px));border-radius:40px;overflow-y:auto;

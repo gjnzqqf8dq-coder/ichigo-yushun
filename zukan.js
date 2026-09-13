@@ -109,5 +109,11 @@ function move(d) {
 }
 Field.init($('#photo'), $('#field'));
 Field.preload(['berry1', 'berry2', 'berry3', 'berry4', 'berry5', 'berry6'], render);
-window.addEventListener('resize', function () { setTimeout(function () { Field.apply(LINES[idx].shape, $('.stage'), { dir: 'right', spread: 120 }); }, 80); });
+/* キャンバスは画面に固定なので、スクロールしたら図版の位置を取り直す */
+var tick = 0;
+function restage() { if (tick) return; tick = requestAnimationFrame(function () { tick = 0;
+  var st = $('.stage'); if (st) Field.apply(LINES[idx].shape, st, { dir: 'right', spread: 120 }); }); }
+window.addEventListener('scroll', restage, { passive: true });
+$('#shell').addEventListener('scroll', restage, { passive: true });
+window.addEventListener('resize', function () { setTimeout(restage, 80); });
 })();
