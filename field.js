@@ -198,7 +198,7 @@ function stripFrame(now) {
   var n = strip.names.length, box = strip.box; if (!n || !box) return;
   var dt = Math.min(.05, (now - (strip.last || now)) / 1000); strip.last = now;
   if (!strip.drag) strip.off += (strip.target - strip.off) * (1 - Math.exp(-6 * dt));   // λ=6
-  var cx = box.left + box.width / 2, base = box.top + box.height * .70;  // 底を揃える
+  var cx = box.left + box.width / 2, base = box.top + box.height * .84;  // 底を揃える
   var slots = [], sum = 0;
   for (var k = -3; k <= 3; k++) {
     var rel = k - (strip.off - Math.round(strip.off));           // 中央からの距離（連続）
