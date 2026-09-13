@@ -1,5 +1,5 @@
 /* =========================================================================
-   app.js — 日本いちごダービー ｜ 苺優駿
+   app.js — 新・いちご優駿 ｜ 旬を、走り切れ。
    1画面に1つの仕事。ホームは「選ぶ」だけ、図鑑は「知る」だけ。
    ========================================================================= */
 (function () {
@@ -35,6 +35,7 @@ function toast(t) {
   clearTimeout(e._t); e._t = setTimeout(function () { e.classList.remove('on'); }, 2000);
   if (navigator.vibrate) try { navigator.vibrate(8); } catch (x) {}
 }
+function sign(n) { return (n > 0 ? '+' : n < 0 ? '−' : '±') + Math.abs(n); }
 
 /* ---------- ルーター ---------- */
 var cur = '', V = {}, TAB = { home: 1, club: 1, about: 1 };
@@ -66,8 +67,14 @@ V.home = function () {
     v.innerHTML =
       '<div class="hwrap">' +
         '<div class="hbar"><svg viewBox="0 0 44 24"><path d="M3 22 L10 7 L16 15 L22 3 L28 15 L34 7 L41 22 Z"/></svg>' +
-          '<b>日本いちごダービー</b></div>' +
-        '<div class="hsub">次の夏を代表する一粒を選ぶ</div>' +
+          '<b>新・いちご優駿</b></div>' +
+        '<div class="hsub">旬を、走り切れ。</div>' +
+        '<div class="rbar"><div class="rail">' + RACE.legs.map(function (g, i) {
+          return '<b class="' + (i < RACE.now ? 'on' : i === RACE.now ? 'last' : '') +
+            '" style="left:calc(4.5px + (100% - 9px) * ' + (i / 5) + ')"></b>'; }).join('') + '</div>' +
+          '<div class="rms"><span' + (RACE.now < 2 ? ' class="on"' : '') + '>3月</span>' +
+          '<span' + (RACE.now > 1 && RACE.now < 4 ? ' class="on"' : '') + '>4月</span>' +
+          '<span' + (RACE.now > 3 ? ' class="on"' : '') + '>5月末</span></div></div>' +
         '<div class="stagewrap">' +
           '<div class="stage" id="strip" data-strip="1"></div>' +
           '<div class="hits" id="hits"></div>' +
@@ -118,14 +125,16 @@ function onFrame(slots) {
   }
 }
 function paintHome() {
-  var l = LINES[idx];
+  var l = LINES[idx], r = rankAt(RACE.now, l.no), gap = l.race[RACE.now] - l.race[0];
   $$('#dots button').forEach(function (x, i) { x.classList.toggle('on', i === idx); });
   var n = $('#hname'); if (!n) return;
-  n.innerHTML = '<div class="no">CANDIDATE No.0' + l.no + '</div>' +
+  n.innerHTML = '<div class="no' + (r === 1 ? ' w' : '') + '">' +
+      (r === 1 ? RACE.year + ' 優駿　WINNER' : 'CANDIDATE No.0' + l.no) + '</div>' +
     '<div class="nm">' + l.name + '</div><div class="kj">' + l.kanji + '　' + l.ln + '</div>';
-  $('#hstat').innerHTML = [['糖度', l.brix, ''], ['果実硬度', l.firm, ''], ['一果重', l.wt, 'g']].map(function (x) {
-    return '<div><div class="k">' + x[0] + '</div><div class="v num">' + x[1] + (x[2] ? '<em>' + x[2] + '</em>' : '') + '</div></div>';
-  }).join('');
+  $('#hstat').innerHTML =
+    '<div><div class="k">最終順位</div><div class="v num' + (r === 1 ? ' w' : '') + '">' + r + '<em>位</em></div></div>' +
+    '<div><div class="k">5月の糖度</div><div class="v num">' + l.brix + '</div></div>' +
+    '<div><div class="k">3月比</div><div class="v num ' + (gap >= 0 ? 'up' : 'dn') + '">' + sign(gap) + '</div></div>';
   $('#openT').textContent = l.name + 'を見る';
   $('#fav').classList.toggle('on', S.fav === l.no);
 }
@@ -133,28 +142,30 @@ function paintHome() {
 /* =========================================================================
    図鑑 — 知る
    ========================================================================= */
-var dTab = Math.max(0, Math.min(2, +(Q.get('tab') || 0)));
+var DTABS = ['経過', '能力', '血統', '育種者'];
+var dTab = Math.max(0, Math.min(3, +(Q.get('tab') || 0)));
 V.dex = function () {
-  var l = LINES[idx], v = $('#v-dex');
+  var l = LINES[idx], v = $('#v-dex'), win = rankAt(RACE.now, l.no) === 1;
   v.innerHTML =
     '<div class="dbar"><button id="cls">' + IC.back + '一覧へ</button>' +
       '<button id="fav2" style="color:' + (S.fav === l.no ? 'var(--rd)' : 'var(--g2)') + '">' + IC.heart + '</button></div>' +
     '<div class="dhero"><div class="stage" data-shape="' + l.shape + '" data-spread="96"></div></div>' +
-    '<div class="dhead"><div class="no">CANDIDATE No.0' + l.no + '</div>' +
+    '<div class="dhead"><div class="no' + (win ? ' w' : '') + '">' +
+      (win ? RACE.year + ' 新・いちご優駿　WINNER' : 'CANDIDATE No.0' + l.no) + '</div>' +
       '<div class="nm">' + l.name + '</div>' +
       '<div class="cp">' + l.copy[0] + l.copy[1] + '</div></div>' +
-    '<div class="seg" id="seg"><i class="ink"></i>' +
-      ['能力', '血統', '育種者'].map(function (t, i) {
+    '<div class="seg q4" id="seg"><i class="ink"></i>' +
+      DTABS.map(function (t, i) {
         return '<button data-t="' + i + '"' + (i === dTab ? ' class="on"' : '') + '>' + t + '</button>'; }).join('') + '</div>' +
     '<div class="dbody" id="dbody"></div>' +
     '<div class="dfoot"><button class="btn" id="own">' +
-      (S.owner === l.no ? 'この品種の苺主です' : 'この品種の苺主になる') + '<span class="ar">→</span></button></div>';
+      (S.owner === l.no ? 'いちご券を持っています' : 'この系統にいちご券を出す') + '<span class="ar">→</span></button></div>';
   $('#cls').onclick = function () { go('home'); };
   $('#fav2').onclick = function () { S.fav = S.fav === l.no ? 0 : l.no; save();
     $('#fav2').style.color = S.fav === l.no ? 'var(--rd)' : 'var(--g2)'; };
   $('#own').onclick = function () {
     S.owner = l.no; S.no = S.no || ('ICY-2027-' + (1000 + Math.floor(Math.random() * 8999))); save();
-    toast('苺主になりました　' + S.no); setTimeout(function () { go('club'); }, 700);
+    toast('いちご券を発行しました　' + S.no); setTimeout(function () { go('club'); }, 700);
   };
   $$('#seg button').forEach(function (b) { b.onclick = function () { dTab = +b.dataset.t; paintTabs(); }; });
   paintTabs();
@@ -165,11 +176,49 @@ function paintTabs() {
   var b = $$('#seg button')[dTab], ink = $('#seg .ink');
   if (b && ink) { ink.style.width = b.offsetWidth + 'px'; ink.style.transform = 'translateX(' + b.offsetLeft + 'px)'; }
   var t = $('#dbody');
-  t.innerHTML = dTab === 0 ? abil(l) : dTab === 1 ? tree(l) : brd(l);
+  t.innerHTML = dTab === 0 ? runs(l) : dTab === 1 ? abil(l) : dTab === 2 ? tree(l) : brd(l);
   t.scrollTop = 0;
-  if (dTab === 0) { radar(l); bars(t, 150); }
-  if (dTab === 1) { wire(); setTimeout(function () { var e = $('.tree'); if (e) e.classList.add('on'); }, 80); }
+  if (dTab === 0) setTimeout(function () { var e = $('#runs'); if (e) e.classList.add('go'); }, 90);
+  if (dTab === 1) { radar(l); bars(t, 150); }
+  if (dTab === 2) { wire(); setTimeout(function () { var e = $('.tree'); if (e) e.classList.add('on'); }, 80); }
   rise(t, 60);
+}
+
+/* --- 経過：春をどう走ったか --------------------------------------------- */
+var CX0 = 30, CX1 = 310, CY0 = 16, CYG = 24;
+function cx(i) { return CX0 + i * (CX1 - CX0) / 5; }
+function cy(r) { return CY0 + (r - 1) * CYG; }
+function rpath(no) { return rankSeq(no).map(function (r, i) { return (i ? 'L' : 'M') + cx(i).toFixed(1) + ' ' + cy(r); }).join(' '); }
+function runs(l) {
+  var me = rankSeq(l.no), g = '', others = '', r, i;
+  for (r = 1; r <= 6; r++) {
+    g += '<line class="g" x1="' + CX0 + '" y1="' + cy(r) + '" x2="' + CX1 + '" y2="' + cy(r) + '"/>' +
+         '<text class="rk" x="' + (CX0 - 11) + '" y="' + (cy(r) + 3.6) + '">' + r + '</text>';
+  }
+  for (i = 0; i < 6; i++) g += '<line class="v" x1="' + cx(i) + '" y1="' + cy(1) + '" x2="' + cx(i) + '" y2="' + cy(6) + '"/>';
+  LINES.forEach(function (o) { if (o.no !== l.no) others += '<path class="o" d="' + rpath(o.no) + '"/>'; });
+  var dots = me.map(function (rr, k) {
+    return '<circle class="d' + (k === RACE.now ? ' last' : '') + '" cx="' + cx(k) + '" cy="' + cy(rr) +
+      '" r="' + (k === RACE.now ? 5 : 3.2) + '"/>'; }).join('');
+  var mons = [[0, 1, '3月'], [2, 3, '4月'], [4, 5, '5月']].map(function (m) {
+    return '<text class="mo" x="' + ((cx(m[0]) + cx(m[1])) / 2) + '" y="' + (cy(6) + 26) + '">' + m[2] + '</text>'; }).join('');
+  var gap = l.race[RACE.now] - l.race[0];
+
+  return '<div class="runs rise" id="runs">' +
+      '<div class="rhd"><b>順位の推移</b><span>' + RACE.year + '　3/10 → 5/25</span></div>' +
+      '<svg class="rchart" viewBox="0 0 320 186">' + g + others +
+        '<path class="me" d="' + rpath(l.no) + '"/>' + dots + mons + '</svg>' +
+      '<div class="rsum"><div><span>3月</span><b>' + me[1] + '位</b></div>' +
+        '<div><span>4月</span><b>' + me[3] + '位</b></div>' +
+        '<div><span>5月末</span><b class="' + (me[5] === 1 ? 'w' : '') + '">' + me[5] + '位</b></div>' +
+        '<div><span>3月比</span><b class="' + (gap >= 0 ? 'up' : 'dn') + '">' + sign(gap) + '</b></div></div>' +
+    '</div>' +
+    '<p class="note rise">' + l.note + '</p>' +
+    '<div class="legs rise">' + RACE.legs.map(function (x, k) {
+      return '<div' + (k === RACE.now ? ' class="on"' : '') + '><span class="dt num">' + x.d + '</span>' +
+        '<span class="tt">' + x.t + '</span><span class="sc num">' + l.race[k] + '</span>' +
+        '<span class="rr num">' + rankAt(k, l.no) + '位</span></div>'; }).join('') + '</div>' +
+    '<p class="hint">計測は ' + RACE.axes + ' の5項目。順位は数値だけで決まります</p><div style="height:20px"></div>';
 }
 
 /* --- 能力 --- */
@@ -185,7 +234,8 @@ function abil(l) {
     return '<text class="rn" x="' + p[0] + '" y="' + (p[1] + dy) + '" text-anchor="' + an + '">' + k + '</text>' +
            '<text class="rv" x="' + p[0] + '" y="' + (p[1] + dy + 16) + '" text-anchor="' + an + '">' + l.radar[k] + '</text>';
   }).join('');
-  return '<div class="radarbox rise"><svg class="radar" viewBox="0 0 192 192">' + web +
+  return '<div class="ahd rise"><b>最終計測</b><span>5月25日</span></div>' +
+    '<div class="radarbox rise"><svg class="radar" viewBox="0 0 192 192">' + web +
       '<polygon class="area" id="rarea" points="' + RAX.map(function () { return RC + ',' + RC; }).join(' ') + '"/>' +
       RAX.map(function (k, i) { var p = rpt(i, l.radar[k] / 100); return '<circle class="dot" cx="' + p[0] + '" cy="' + p[1] + '" r="3"/>'; }).join('') + labs + '</svg>' +
     '<div>' + RAX.map(function (k) {
@@ -272,31 +322,32 @@ function brd(l) {
     '<div class="chips rise">' + b.keys.map(function (k) { return '<span>' + k + '</span>'; }).join('') + '</div>' +
     '<div class="gal rise">' +
       '<figure><div class="im" style="background-image:url(img/w1.jpg)"></div><figcaption>実生をひとつひとつ、見つめて。</figcaption></figure>' +
-      '<figure><div class="im" style="background-image:url(img/w2.jpg)"></div><figcaption>候補を、何度も食べ比べる。</figcaption></figure>' +
+      '<figure><div class="im" style="background-image:url(img/w2.jpg)"></div><figcaption>隔週で、候補を食べ比べる。</figcaption></figure>' +
       '<figure><div class="im" style="background-image:url(img/w3.jpg)"></div><figcaption>いちごの、あたらしい季節を。</figcaption></figure>' +
     '</div><div style="height:20px"></div>';
 }
 
 /* =========================================================================
-   クラブ / READ
+   いちご券 / READ
    ========================================================================= */
 V.club = function () {
   var v = $('#v-club'), mine = S.owner ? LINES[S.owner - 1] : null;
   v.innerHTML = '<div class="scroll"><div class="ptop">' +
-    '<div class="kicker">OWNERS CLUB</div>' +
-    '<h1 class="disp" style="margin-top:10px">苺主になる、<br>ということ。</h1>' +
-    '<p class="body" style="margin-top:14px">決められるのは、どれを応援するかだけ。オッズも馬券も賞金もない。結果は自分では選べない。</p>' +
+    '<div class="kicker">ICHIGO TICKET</div>' +
+    '<h1 class="disp" style="margin-top:10px">予想する、<br>ということ。</h1>' +
+    '<p class="body" style="margin-top:14px">決められるのは、どれを応援するかだけ。オッズも馬券も賞金もない。結果は5月末の数値だけで決まる。</p>' +
     (mine ? '<div class="club"><div class="hd"><span class="wk" style="background:' + mine.wc + '"></span>' +
-      '<div><div class="nm">' + mine.no + '号　' + mine.name + '</div><div class="rl">あなたが応援している系統</div></div>' +
-      '<div class="mem"><b>' + (S.no || '') + '</b><span>OWNER ID</span></div></div></div>' : '') +
-    '<div class="sec"><b>CLUBS</b><span>' + CLUBS.length + '団体</span></div>' +
+      '<div><div class="nm">' + mine.no + '号　' + mine.name + '</div>' +
+      '<div class="rl">あなたが予想した系統　／　最終 ' + rankAt(RACE.now, mine.no) + '位</div></div>' +
+      '<div class="mem"><b>' + (S.no || '') + '</b><span>TICKET No.</span></div></div></div>' : '') +
+    '<div class="sec"><b>CLUBS</b><span>応援クラブ ' + CLUBS.length + '団体</span></div>' +
     CLUBS.map(function (c) {
       return '<div class="club"><div class="hd"><span class="av" style="background-image:url(' + c.photo + ')"></span>' +
         '<div><div class="nm">' + c.name + '</div><div class="rl">' + c.rep + '　' + c.repRole + '</div></div>' +
         '<div class="mem"><b>' + c.members.toLocaleString() + '</b><span>MEMBERS</span></div></div><p>' + c.text + '</p></div>';
     }).join('') +
-    '<div class="sec"><b>CROSSING</b><span>交配を設計する</span></div>' +
-    '<p class="body" style="margin-top:12px">交配親を2つ選ぶ。生まれる系統は自分では決められない。形質は確率で受け継がれる。</p>' +
+    '<div class="sec"><b>NEXT SEASON</b><span>今年のゴールが、来年のスタート</span></div>' +
+    '<p class="body" style="margin-top:12px">春を走った系統は、翌年の交配親になる。親を2つ選ぶ。生まれる系統は自分では決められない。形質は確率で受け継がれる。</p>' +
     '<div class="pick" id="pick">' + LINES.map(function (l, i) {
       return '<button data-i="' + i + '"><span class="sw" style="background:' + l.wc + '"></span>' +
         '<span class="n2">' + l.no + '号 ' + l.name + '</span></button>'; }).join('') + '</div>' +
@@ -311,40 +362,48 @@ V.club = function () {
     var c = $('#cross'); c.disabled = sel.length !== 2; c.style.opacity = sel.length === 2 ? 1 : .3; }; });
   $('#cross').onclick = function () {
     var c = cross(LINES[sel[0]], LINES[sel[1]]); S.child = c; save();
-    $('#cout').innerHTML = child(c); $('#cout').firstElementChild.classList.add('fade'); toast('新しい系統 ' + c.ln); };
+    $('#cout').innerHTML = child(c); $('#cout').firstElementChild.classList.add('fade');
+    toast((RACE.year + 1) + '年の出走候補　' + c.ln); };
 };
 function cross(a, b) {
   var m = function (x, y, s) { return (x + y) / 2 + (Math.random() - .5) * s; };
   var an = function (l) { return [l.sire, l.dam, l.bms]; };
   var sh = an(a).filter(function (x) { return an(b).indexOf(x) >= 0; }).length;
   return { ln: 'i-28-' + String(1 + Math.floor(Math.random() * 40)).padStart(2, '0'), a: a.name, b: b.name,
-    brix: m(a.brix, b.brix, 1.1).toFixed(1), firm: Math.round(m(a.firm, b.firm, 12)),
+    brix: m(a.brix, b.brix, 1.1).toFixed(1), heat: Math.round(m(a.heat, b.heat, 12)),
     ci: (0.0625 * sh + (a.ci + b.ci) / 4).toFixed(3) };
 }
 function child(c) {
-  return '<div class="club" style="margin-top:16px"><div class="kicker">YOUR LINE</div>' +
+  return '<div class="club" style="margin-top:16px"><div class="kicker">' + (RACE.year + 1) + ' ENTRY</div>' +
     '<div class="nm" style="font-family:var(--serif);font-size:20px;margin-top:6px">' + c.ln + '</div>' +
     '<div class="row" style="margin-top:8px"><span class="k">両親</span><span class="v" style="font-weight:500;font-size:12px">' + c.a + ' × ' + c.b + '</span></div>' +
-    '<div class="row"><span class="k">糖度</span><span class="v">' + c.brix + '</span></div>' +
-    '<div class="row"><span class="k">果実硬度</span><span class="v">' + c.firm + '</span></div>' +
+    '<div class="row"><span class="k">糖度の見込み</span><span class="v">' + c.brix + '</span></div>' +
+    '<div class="row"><span class="k">耐暑性の見込み</span><span class="v">' + c.heat + '</span></div>' +
     '<div class="row" style="border:0"><span class="k">近交係数</span><span class="v">' + c.ci + '</span></div></div>';
 }
 V.about = function () {
-  var v = $('#v-about');
+  var v = $('#v-about'), w = LINES[CROWN.line - 1];
   v.innerHTML = '<div class="scroll"><div class="ptop">' +
     '<div class="kicker">READ</div>' +
-    '<h1 class="disp" style="margin-top:10px">東京優駿と同じ日に、<br>いちごの日本一を決める。</h1>' +
-    '<div class="sec"><b>THE NAME</b><span>名前の由来</span></div>' +
-    '<p class="body" style="margin-top:12px">日本ダービーの正式名称は東京優駿。優駿とは、すぐれた馬のこと。苺優駿は、そのいちご版という意味です。</p>' +
-    '<div class="sec"><b>WHY THE DERBY</b><span>なぜこの日か</span></div>' +
-    '<p class="body" style="margin-top:12px">東京優駿は三歳のその年しか出られず、去勢馬は出走できません。血統をつないできた結果を、一日で見届ける競走です。品種改良も、同じことをしている。</p>' +
+    '<h1 class="disp" style="margin-top:10px">いちごの旬が<br>終わる季節を、<br>新しい春いちごが<br>決まる季節へ。</h1>' +
+    '<p class="body" style="margin-top:16px">CULTAは、一般に約10年かかるいちごの品種改良を、AIを使って約2年に縮めている。掛け合わせ、育て、特徴を見極め、選ぶ。その過程そのものを公開したのが、新・いちご優駿です。</p>' +
+    '<div class="sec"><b>WHY THE RACE</b><span>なぜ競馬なのか</span></div>' +
+    '<p class="body" style="margin-top:12px">親から特徴を受け継いで生まれ、育てられ、実力を見られ、優れたものが選ばれ、その結果が次の世代へつながる。CULTAの育種は、もともと競馬と同じ構造を持っている。違うのは、いちごだけ「生まれるまで」が見えていないことでした。</p>' +
+    '<div class="sec"><b>THE COURSE</b><span>春が、コースになる</span></div>' +
+    '<p class="body" style="margin-top:12px">一般的ないちごは、暖かくなるほど品質を保つのが難しくなる。CULTAが開発しているのは、5月末まで甘さを保てる可能性を持つ品種。だからレースは一日では終わりません。3月から5月末までの春そのものが、コースです。</p>' +
     '<div class="sec"><b>RULES</b><span>出走条件</span></div>' +
-    [['出走', 'まだ商品化されていない6系統のみ'], ['審査', '専門家5分野のブラインド70％＋苺主投票30％'],
-     ['賞', 'なし。優勝系統だけが品種名を得る'], ['翌年', '優勝系統は交配親になり、その子が走る']].map(function (x) {
+    [['出走', 'まだ発売されていない品種候補6系統のみ'], ['計測', '3月10日から5月25日まで、隔週で6回'],
+     ['項目', RACE.axes], ['優駿', '5月末に最も高い品質を保った系統'],
+     ['賞', 'なし。優駿だけが正式な品種名を得る'], ['翌年', '走った系統が交配親になり、その子が走る']].map(function (x) {
       return '<div class="row"><span class="k">' + x[0] + '</span><span class="v" style="font-weight:500;font-size:12.5px">' + x[1] + '</span></div>'; }).join('') +
+    '<div class="sec"><b>' + RACE.year + ' WINNER</b><span>売り場へ</span></div>' +
+    '<div class="crown"><div class="l">' + RACE.year + ' 新・いちご優駿　WINNER</div>' +
+      '<div class="n">' + CROWN.name + '</div>' +
+      '<div class="k">' + CROWN.kana + '　／　' + w.no + '号 ' + w.name + '（' + w.ln + '）</div>' +
+      '<p>走り切った系統は、ここで初めて品種名を与えられる。この一行を帯に巻いて、翌年の春、売り場に並ぶ。</p></div>' +
     '<div class="sec"><b>QUESTIONS</b><span>想定問答</span></div>' +
     QA.map(function (q) { return '<div class="qa"><button><span class="q">' + q[0] + '</span><span class="pm"></span></button><div class="a"><p>' + q[1] + '</p></div></div>'; }).join('') +
-    '<div class="sec"><b>CREDIT</b><span>2027</span></div>' +
+    '<div class="sec"><b>CREDIT</b><span>' + RACE.year + '</span></div>' +
     '<p class="body" style="margin-top:12px">企画：桑田航希　／　CULTA 課題提出用のプロトタイプ。</p>' +
     '<div style="height:40px"></div></div></div>';
   $$('.qa button', v).forEach(function (b) { b.onclick = function () {
