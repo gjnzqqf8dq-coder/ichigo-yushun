@@ -387,7 +387,8 @@ function issue(l) {
     '<button class="btn go">クラブで見る<span class="ar">→</span></button>';
   sh.appendChild(d);
   fitTicket($('.tk', d), 330);
-  requestAnimationFrame(function () { d.classList.add('on'); });
+  void d.offsetHeight;            /* rAFが止まっていても演出が始まるように */
+  d.classList.add('on');
   if (navigator.vibrate) try { navigator.vibrate([6, 40, 14]); } catch (x) {}
   var close = function () { d.classList.remove('on');
     setTimeout(function () { if (d.parentNode) d.parentNode.removeChild(d); go('club'); }, 240); };
