@@ -166,8 +166,8 @@ V.dex = function () {
     '<div class="hero">' +
       '<div class="stage" data-shape="' + l.shape + '" data-dir="right" data-spread="120"></div>' +
       '<div class="circ"><i></i><i></i><b class="t n"></b><b class="t s"></b><b class="t w"></b><b class="t e"></b></div>' +
-      '<div class="tag" style="left:72px;top:60px">No.0' + l.no + '</div>' +
-      '<div class="tag" style="right:22px;top:132px;line-height:1.6;font-size:7.2px;text-align:right">FRAGARIA × SCIENCE<br>= A SWEETER<br>TOMORROW</div>' +
+      '<div class="tag" style="left:24px;top:98px">No.0' + l.no + '</div>' +
+      '<div class="tag" style="left:24px;top:116px;line-height:1.6;font-size:7.2px">FRAGARIA × SCIENCE<br>= A SWEETER<br>TOMORROW</div>' +
     '</div>' +
     '<div class="card dex">' + dnaSVG(96, 140, .6) + '<div class="ctag">A SMALL<br>STRAWBERRY<br>A BIGGER<br>TOMORROW</div>' +
       '<div class="nohead"><div class="n">' + l.no + '<small>号</small></div><div class="sep"></div>' +
@@ -255,9 +255,9 @@ function brdHTML(l) {
     '<div><div class="role">育種責任者</div><div class="nm">' + b.name + '</div><div class="ro">' + b.roma + '</div><div class="qt">' + b.quote + '</div><div class="tx">' + b.text + '</div>' +
     '<div class="bstat"><div><div class="k">育種歴</div><div class="v">' + b.years + '<em>年</em></div></div><div><div class="k">選抜</div><div class="v">' + b.seedlings + '<em>株</em></div></div><div><div class="k">開発</div><div class="v">' + b.dev + '<em>年</em></div></div></div>' +
     '<div class="kw">KEYWORD</div><div class="chips">' + b.keys.map(function (k) { return '<span>' + k + '</span>'; }).join('') + '</div></div></div>' +
-    '<div class="gal"><figure><div class="im" style="background-image:url(img/w1.png)"></div><figcaption>実生をひとつひとつ、見つめて。</figcaption></figure>' +
-    '<figure><div class="im" style="background-image:url(img/w2.png)"></div><figcaption>候補を、何度も食べ比べる。</figcaption></figure>' +
-    '<figure><div class="im" style="background-image:url(img/w3.png)"></div><figcaption>いちごの、あたらしい季節を。</figcaption></figure></div>';
+    '<div class="gal"><figure><div class="im" style="background-image:url(img/w1.jpg)"></div><figcaption>実生をひとつひとつ、見つめて。</figcaption></figure>' +
+    '<figure><div class="im" style="background-image:url(img/w2.jpg)"></div><figcaption>候補を、何度も食べ比べる。</figcaption></figure>' +
+    '<figure><div class="im" style="background-image:url(img/w3.jpg)"></div><figcaption>いちごの、あたらしい季節を。</figcaption></figure></div>';
 }
 
 /* =========================================================================
@@ -301,6 +301,7 @@ V.about = function () {
 /* ---------- 起動 ---------- */
 document.addEventListener('click', function (e) { var t = e.target.closest('[data-go]'); if (t) go(t.dataset.go); });
 deco();
+(function () { var pre = ['img/w1.jpg','img/w2.jpg','img/w3.jpg']; LINES.forEach(function (l) { pre.push(l.breeder.photo); }); CLUBS.forEach(function (c) { pre.push(c.photo); }); pre.forEach(function (u) { var im = new Image(); im.src = u; }); })();
 Field.init($('#photo'), $('#field'));
 Field.preload(['berry1', 'berry2', 'berry3', 'berry4', 'berry5', 'berry6'], function () {
   var st = (location.hash || '').replace('#', ''); go(V[st] ? st : 'home');

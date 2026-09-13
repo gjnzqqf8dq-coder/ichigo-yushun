@@ -17,7 +17,7 @@ const LINES = [
     ci: 0.000, cross: '共通祖先なし',
     traitL: ['白い果皮', 'やわらかな香り'], traitR: ['棚持ち', '酸のバランス'],
     breeder: {
-      name: '佐藤 遥', roma: 'SATO HARUKA', photo: 'img/br1.png',
+      name: '佐藤 遥', roma: 'SATO HARUKA', photo: 'img/br1.jpg',
       quote: '「白いのに、ちゃんと甘い。」',
       text: '白い果実は見た目で敬遠されます。だからこそ、食べた瞬間に評価がひっくり返る一粒を探しました。全国1,842株の実生から、この1号にたどり着きました。',
       years: 8, seedlings: '1,842', dev: 2,
@@ -37,7 +37,7 @@ const LINES = [
     ci: 0.031, cross: 'CRIMSON ROOT 3×3',
     traitL: ['果実硬度', '濃い果皮色'], traitR: ['日持ち', '輸送耐性'],
     breeder: {
-      name: '大島 悠真', roma: 'OSHIMA YUMA', photo: 'img/br2.png',
+      name: '大島 悠真', roma: 'OSHIMA YUMA', photo: 'img/br2.jpg',
       quote: '「壊れないいちごを、つくりたかった。」',
       text: 'いちごが売り場で傷むのは、運び方ではなく品種の問題です。硬さを上げると味が痩せる。その両立だけを2年追いかけました。',
       years: 11, seedlings: '2,310', dev: 2,
@@ -57,7 +57,7 @@ const LINES = [
     ci: 0.031, cross: 'CRIMSON ROOT 3×3',
     traitL: ['甘さ', '香り'], traitR: ['硬さ', '暑さへの強さ'],
     breeder: {
-      name: '三宅 千尋', roma: 'MIYAKE CHIHIRO', photo: 'img/br3.png',
+      name: '三宅 千尋', roma: 'MIYAKE CHIHIRO', photo: 'img/br3.jpg',
       quote: '「5月にも、摘みたてのおいしさを。」',
       text: 'いちごのシーズンを、もっと長く。その想いから、全国の1,842株の実生の中で、たったひとつ、この3号にたどり着きました。季節を越えて、変わらないおいしさを、これからも。',
       years: 8, seedlings: '1,842', dev: 2,
@@ -77,7 +77,7 @@ const LINES = [
     ci: 0.000, cross: '共通祖先なし',
     traitL: ['香気成分量', '酸味'], traitR: ['果形の揃い', '加工適性'],
     breeder: {
-      name: '岸本 蓮', roma: 'KISHIMOTO REN', photo: 'img/br4.png',
+      name: '岸本 蓮', roma: 'KISHIMOTO REN', photo: 'img/br4.jpg',
       quote: '「甘いだけの果物は、飽きられる。」',
       text: '甘さの競争からは降りました。香りと酸が立つ系統は、菓子と乳製品の世界で強い。生食で一番になれなくても、使われる場所がある。',
       years: 6, seedlings: '1,504', dev: 2,
@@ -97,7 +97,7 @@ const LINES = [
     ci: 0.000, cross: '共通祖先なし',
     traitL: ['果汁量', '甘さ'], traitR: ['早生性', '果皮の艶'],
     breeder: {
-      name: '白井 奈央', roma: 'SHIRAI NAO', photo: 'img/br5.png',
+      name: '白井 奈央', roma: 'SHIRAI NAO', photo: 'img/br5.jpg',
       quote: '「運べない味を、守りたい。」',
       text: '柔らかいことは欠点として扱われます。でも、産地でしか食べられない味が消えていくほうが損失だと思っています。直売と観光農園だけを見て育てました。',
       years: 9, seedlings: '1,990', dev: 2,
@@ -117,7 +117,7 @@ const LINES = [
     ci: 0.063, cross: 'CRIMSON ROOT 2×3',
     traitL: ['果形の揃い', '糖酸バランス'], traitR: ['収量', '秀品率'],
     breeder: {
-      name: '東 郁弥', roma: 'AZUMA IKUYA', photo: 'img/br6.png',
+      name: '東 郁弥', roma: 'AZUMA IKUYA', photo: 'img/br6.jpg',
       quote: '「揃っていることが、いちばん難しい。」',
       text: '大きい粒を一つ作るより、同じ粒を千個作るほうが難しい。ばらつきの小さい系統は、農家の手取りをそのまま増やします。',
       years: 14, seedlings: '2,760', dev: 2,
@@ -191,12 +191,12 @@ const ANC = {
 /* 苺主クラブ */
 const CLUBS = [
   { id: 3, name: 'アカツキ苺主会', rep: '峰岸 和真', repRole: '代表・福岡',
-    photo: 'img/cl1.png', members: 3184, wc: '#E8002D',
+    photo: 'img/cl1.jpg', members: 3184, wc: '#E8002D',
     text: '八女の圃場に月一で通い、着色と糖度の推移を自分たちで記録している。会報は年6回。口取り式には抽選で30名が出る。' },
   { id: 2, name: '黒鉄の会', rep: '小野塚 みずき', repRole: '代表・佐賀',
-    photo: 'img/cl2.png', members: 1962, wc: '#141414',
+    photo: 'img/cl2.jpg', members: 1962, wc: '#141414',
     text: '硬度95という数字だけで集まった人たち。輸送試験に同行し、四日後の断面をそろって確認するのが恒例になっている。' },
   { id: 5, name: 'ミツシズク直売部',  rep: '嘉手納 千歳', repRole: '代表・栃木',
-    photo: 'img/cl3.png', members: 1147, wc: '#E8B800',
+    photo: 'img/cl3.jpg', members: 1147, wc: '#E8B800',
     text: '運べない味を守る、が合言葉。真岡の直売所と観光農園を回り、その日のうちに食べる体験を各地でひらいている。' }
 ];

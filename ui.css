@@ -413,3 +413,24 @@ p.b{font-size:10.5px;line-height:1.75}
 .gal figcaption{font-size:8px;margin-top:2px;line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #v-dex .rail .more{display:none}
 #v-dex .rail.r .bar{display:none}
+
+/* 血統タブを収める */
+.dexpage .hero{height:152px}
+.dexpage .circ{width:156px;height:156px}
+.dexpage .stage{left:124px;right:124px;top:10px;bottom:8px}
+#v-dex .rail.l,#v-dex .rail.r{top:60px}
+#v-dex .rail.l{display:none}
+.tree .gen{margin-top:6px}
+.gen2{margin-top:6px}
+.gen3{margin-top:4px}
+.node .ph{width:40px;height:40px}
+.node.p .ph{width:46px;height:46px}
+.node.me .ph{width:54px;height:54px}
+.node .cap{font-size:8px;margin-bottom:2px}
+.node .nm{font-size:6.4px;margin-top:2px}
+.node.me .nm{font-size:13px;margin-top:2px}
+.traits{margin-top:6px}
+.traits h5{margin-bottom:2px;font-size:9px}
+.traits li{padding:1px 0;font-size:11px}
+.taphint,.gline{margin-top:6px}
+.brd .ph{height:156px}
