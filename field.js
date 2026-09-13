@@ -176,6 +176,7 @@ function makeStrip(names, el, opt) {
     strip.names = names; strip.el = el; strip.box = rect(el);
     strip.cb = opt.onIndex || null; strip.frame = opt.onFrame || null;
     strip.idx = opt.index || 0; strip.off = strip.target = strip.idx;
+    stripFrame(performance.now());   // rAFが止まっていても当たり判定を作る
   });
 }
 function spin(dx) { if (mode !== 'strip') return; strip.drag = true; strip.off -= dx / 150; strip.vel = -dx / 150; }
