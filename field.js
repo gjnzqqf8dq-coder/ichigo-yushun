@@ -233,7 +233,7 @@ function stripFrame(now) {
   if (strip.frame) strip.frame(slots.map(function (s) { return { x: s.x, k: s.k, i: s.i, ad: s.ad }; }));
 }
 
-function hide() { mode = 'none'; single = null; px2.clearRect(0, 0, W, H); for (var i = 0; i < N; i++) Ta[i] = 0; }
+function hide() { mode = 'none'; single = null; px2.clearRect(0, 0, W, H); for (var i = 0; i < N; i++) { Ta[i] = 0; al[i] = 0; } }
 
 /* ---------------- 描画ループ ---------------- */
 function loop(now) {
