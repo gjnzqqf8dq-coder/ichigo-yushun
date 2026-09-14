@@ -1,5 +1,5 @@
 /* =========================================================================
-   app.js — 新・いちご優駿 ｜ 旬を、走り切れ。
+   app.js — 日本いちごダービー ｜ 旬を、走り切れ。
    1画面に1つの仕事。ホームは「選ぶ」だけ、図鑑は「知る」だけ。
    ========================================================================= */
 (function () {
@@ -68,7 +68,7 @@ V.home = function () {
     v.innerHTML =
       '<div class="hwrap">' +
         '<div class="hbar"><svg viewBox="0 0 44 24"><path d="M3 22 L10 7 L16 15 L22 3 L28 15 L34 7 L41 22 Z"/></svg>' +
-          '<b>新・いちご優駿</b></div>' +
+          '<b>日本いちごダービー</b></div>' +
         '<div class="hsub">旬を、走り切れ。</div>' +
         '<div class="rbar"><div class="rail">' + RACE.legs.map(function (g, i) {
           return '<b class="' + (i < RACE.now ? 'on' : i === RACE.now ? 'last' : '') +
@@ -130,7 +130,7 @@ function paintHome() {
   $$('#dots button').forEach(function (x, i) { x.classList.toggle('on', i === idx); });
   var n = $('#hname'); if (!n) return;
   n.innerHTML = '<div class="no' + (r === 1 ? ' w' : '') + '">' +
-      (r === 1 ? RACE.year + ' 優駿　WINNER' : 'CANDIDATE No.0' + l.no) + '</div>' +
+      (r === 1 ? RACE.year + '　WINNER' : 'CANDIDATE No.0' + l.no) + '</div>' +
     '<div class="nm">' + l.name + '</div><div class="kj">' + l.kanji + '　' + l.ln + '</div>';
   $('#hstat').innerHTML =
     '<div><div class="k">最終順位</div><div class="v num' + (r === 1 ? ' w' : '') + '">' + r + '<em>位</em></div></div>' +
@@ -152,7 +152,7 @@ V.dex = function () {
       '<button id="fav2" style="color:' + (S.fav === l.no ? 'var(--rd)' : 'var(--g2)') + '">' + IC.heart + '</button></div>' +
     '<div class="dhero"><div class="stage" data-shape="' + l.shape + '" data-spread="96"></div></div>' +
     '<div class="dhead"><div class="no' + (win ? ' w' : '') + '">' +
-      (win ? RACE.year + ' 新・いちご優駿　WINNER' : 'CANDIDATE No.0' + l.no) + '</div>' +
+      (win ? RACE.year + ' 日本いちごダービー　WINNER' : 'CANDIDATE No.0' + l.no) + '</div>' +
       '<div class="nm">' + l.name + '</div>' +
       '<div class="cp">' + l.copy[0] + l.copy[1] + '</div></div>' +
     '<div class="seg q4" id="seg"><i class="ink"></i>' +
@@ -160,7 +160,7 @@ V.dex = function () {
         return '<button data-t="' + i + '"' + (i === dTab ? ' class="on"' : '') + '>' + t + '</button>'; }).join('') + '</div>' +
     '<div class="dbody" id="dbody"></div>' +
     '<div class="dfoot"><button class="btn" id="own">' +
-      (S.owner === l.no ? 'いちご券を見る' : 'このいちご券を購入する') +
+      (S.owner === l.no ? 'いちご券を見る' : 'この系統のいちご券をもらう') +
       '<span class="ar">→</span></button></div>';
   $('#cls').onclick = function () { go('home'); };
   $('#fav2').onclick = function () { S.fav = S.fav === l.no ? 0 : l.no; save();
@@ -205,7 +205,7 @@ function runs(l) {
   var gap = l.race[RACE.now] - l.race[0];
 
   return '<div class="runs rise" id="runs">' +
-      '<div class="rhd"><b>順位の推移</b><span>' + RACE.year + '　3/10 → 5/25</span></div>' +
+      '<div class="rhd"><b>順位の推移</b><span>' + RACE.year + '　3/10 → 5/30</span></div>' +
       '<svg class="rchart" viewBox="0 0 320 186">' + g + others +
         '<path class="me" d="' + rpath(l.no) + '"/>' + dots + mons + '</svg>' +
       '<div class="rsum"><div><span>3月</span><b>' + me[1] + '位</b></div>' +
@@ -234,7 +234,7 @@ function abil(l) {
     return '<text class="rn" x="' + p[0] + '" y="' + (p[1] + dy) + '" text-anchor="' + an + '">' + k + '</text>' +
            '<text class="rv" x="' + p[0] + '" y="' + (p[1] + dy + 16) + '" text-anchor="' + an + '">' + l.radar[k] + '</text>';
   }).join('');
-  return '<div class="ahd rise"><b>最終計測</b><span>5月25日</span></div>' +
+  return '<div class="ahd rise"><b>最終計測</b><span>5月30日</span></div>' +
     '<div class="radarbox rise"><svg class="radar" viewBox="0 0 192 192">' + web +
       '<polygon class="area" id="rarea" points="' + RAX.map(function () { return RC + ',' + RC; }).join(' ') + '"/>' +
       RAX.map(function (k, i) { var p = rpt(i, l.radar[k] / 100); return '<circle class="dot" cx="' + p[0] + '" cy="' + p[1] + '" r="3"/>'; }).join('') + labs + '</svg></div>' +
@@ -392,7 +392,7 @@ function issue(l) {
   var first = S.owner !== l.no;
   S.owner = l.no; S.no = S.no || ('ICY-' + RACE.year + '-' + (1000 + Math.floor(Math.random() * 8999))); save();
   pop({ art: ticket(l), color: l.wc, from: '#own', max: 330,
-    title: first ? 'いちご券を購入しました' : 'あなたのいちご券',
+    title: first ? 'いちご券を受け取りました' : 'あなたのいちご券',
     sub: l.no + '号　' + l.name + '　／　最終 ' + rankAt(RACE.now, l.no) + '着',
     id: S.no, cta: 'クラブで見る', then: function () { go('club'); } });
 }
@@ -413,7 +413,7 @@ V.club = function () {
   v.innerHTML = '<div class="scroll"><div class="ptop">' +
     '<div class="kicker">ICHIGO TICKET</div>' +
     '<h1 class="disp" style="margin-top:10px">いちご券と、<br>応援クラブ。</h1>' +
-    '<p class="body" style="margin-top:14px">いちご券は、6系統のうちどれが5月末まで走り切るかを予想して買うカードです。当たっても払い戻しはありません。売上はそのまま次の品種改良に回ります。</p>' +
+    '<p class="body" style="margin-top:14px">3月の出走発表で配られる、候補品種が1つ割り当てられたカードです。投票券ではありません。自分のいちごが5月末までどう順位を変えていくかを、見守るためのものです。</p>' +
     (mine ? '<div class="mytk"><div class="cap"><b>YOUR TICKET</b><span>' + (S.no || '') + '</span></div>' +
       ticket(mine) + tkline(mine) + '</div>'
           : '<div class="empt">まだいちご券を持っていません。<br>ホームから系統を選ぶと購入できます。</div>') +
@@ -467,8 +467,7 @@ V.team = function () {
           '<span class="d num">' + g.d + '</span><span class="t">' + g.t + '</span>' +
           '<span class="cv">' + IC.next + '</span></button>'; }).join('') +
       '<div class="sec"><b>JOIN</b><span>入会</span></div>' +
-      '<p class="body" style="margin-top:12px">入会に費用はかかりません。' + c.base +
-        'の集まりに一度来てもらうのが、条件です。会員証を発行します。</p>' +
+      '<p class="body" style="margin-top:12px">' + c.base + 'の集まりに一度来てもらうと、会員証が出ます。</p>' +
       '<button class="btn' + (joined ? ' ghost' : '') + '" id="join" style="margin-top:14px">' +
         (joined ? '会員証を見る' : 'この会に入る') + '<span class="ar">→</span></button>' +
       '<div style="height:40px"></div></div></div>';
@@ -501,32 +500,41 @@ V.post = function () {
 
 V.about = function () {
   var v = $('#v-about'), w = LINES[CROWN.line - 1];
+  function sec(en, ja, body) {
+    return '<div class="sec"><b>' + en + '</b><span>' + ja + '</span></div>' +
+      body.map(function (t) { return '<p class="body" style="margin-top:12px">' + t + '</p>'; }).join('');
+  }
   v.innerHTML = '<div class="scroll"><div class="ptop">' +
     '<div class="kicker">READ</div>' +
-    '<h1 class="disp" style="margin-top:10px">いちごの旬が<br>終わる季節を、<br>新しい春いちごが<br>決まる季節へ。</h1>' +
-    '<p class="body" style="margin-top:16px">CULTAは、一般に約10年かかるいちごの品種改良を、AIを使って約2年に縮めている。掛け合わせ、育て、特徴を見極め、選ぶ。その過程そのものを公開したのが、新・いちご優駿です。</p>' +
-    '<div class="sec"><b>WHY THE RACE</b><span>なぜ競馬なのか</span></div>' +
-    '<p class="body" style="margin-top:12px">親から特徴を受け継いで生まれ、育てられ、実力を見られ、優れたものが選ばれ、その結果が次の世代へつながる。CULTAの育種は、もともと競馬と同じ構造を持っている。違うのは、いちごだけ「生まれるまで」が見えていないことでした。</p>' +
-    '<div class="sec"><b>THE COURSE</b><span>春が、コースになる</span></div>' +
-    '<p class="body" style="margin-top:12px">一般的ないちごは、暖かくなるほど品質を保つのが難しくなる。CULTAが開発しているのは、5月末まで甘さを保てる可能性を持つ品種。だからレースは一日では終わりません。3月から5月末までの春そのものが、コースです。</p>' +
-    '<div class="sec"><b>RULES</b><span>出走条件</span></div>' +
-    [['出走', 'まだ発売されていない品種候補6系統のみ'], ['計測', '3月10日から5月25日まで、隔週で6回'],
-     ['項目', RACE.axes], ['優駿', '5月末に最も高い品質を保った系統'],
-     ['いちご券', '予想して買う。払い戻しはない'],
-     ['売上', 'そのまま次の品種改良へ'],
-     ['賞', 'なし。優駿だけが正式な品種名を得る'], ['翌年', '走った系統が交配親になり、その子が走る']].map(function (x) {
-      return '<div class="row"><span class="k">' + x[0] + '</span><span class="v" style="font-weight:500;font-size:12.5px">' + x[1] + '</span></div>'; }).join('') +
+    '<h1 class="disp" style="margin-top:10px">新しいいちごが<br>生まれるまでを、<br>3か月のダービーにする。</h1>' +
+    '<p class="body" style="margin-top:16px">CULTAが開発中の春いちご候補を、完成してから発表するのではなく、育種の途中から公開する。3月に出走を発表し、暖かくなっていく春の中で品質を見て、5月末にその年の頂点を決める。新商品の発表ではなく、いちごが生まれていく過程そのものを見せる企画です。</p>' +
+
+    sec('WHY THE DERBY', 'なぜダービーなのか', [
+      '親を掛け合わせる。生まれた候補を育てる。それぞれの特徴を見る。優れたものを選ぶ。その強さを次の世代へつなげる。CULTAの育種は、競走馬の世界と同じ構造を持っています。',
+      '競馬では、結果が出るまでの部分も物語として楽しまれている。どんな血統なのか、どんな強さを受け継いだのか、前の世代とどうつながっているのか。一方いちごは、店頭に完成品が突然現れる。だからその手前を、ダービーという形式を借りて見せます。']) +
+
+    sec('THE SEASON', 'なぜ3月から5月末なのか', [
+      'CULTAが持っている価値は、一般的ないちごの旬を越えて、春から5月まで高い品質を保てること。だから暖かくなっていく3月から5月を、そのまま競技期間にします。',
+      '競馬も春にレースが続き、5月末の日本ダービーで世代の頂点が決まる。競馬の春シーズンと、春いちごが価値を発揮する季節が重なっている。日本ダービーでその世代の頂点が決まる季節に、その年の春いちごの頂点も決まります。']) +
+
+    sec('HOW IT RUNS', '走らせ方', [
+      '同じ一粒を保存するのではありません。同じ候補系統を栽培し続け、その時期に実った果実を見ます。3月に実った果実、4月に実った果実、5月に実った果実。春が進み、気温が上がっていく中で、その系統がどこまで品質を維持できるかを追います。',
+      '順位が変わること自体が、このコンテンツの中身です。']) +
+
+    sec('THE COURSE', 'レース会場', [
+      '新しい会場はつくりません。CULTAが普段、育種・栽培・評価をしている研究現場そのものが会場です。企業の裏側にあった栽培・計測・選抜・次世代候補を、そのまま表に出します。',
+      'いちごが走るのではなく、研究員がいちごを計測すること自体を中継します。']) +
+
+    sec('EVERY MAY', '毎年5月', [
+      '3月「今年はどんないちごが出るんだろう」。4月「今年はナデシコが強いらしい」。5月「今年の春いちごはどれになるんだろう」。',
+      'これを毎年繰り返して、「5月になったら、今年の春いちごが決まる」という新しい季節の習慣をつくります。']) +
+
     '<div class="sec"><b>' + RACE.year + ' WINNER</b><span>売り場へ</span></div>' +
-    '<div class="crown"><div class="l">' + RACE.year + ' 新・いちご優駿　WINNER</div>' +
+    '<div class="crown"><div class="l">' + RACE.year + ' 日本いちごダービー　WINNER</div>' +
       '<div class="n">' + CROWN.name + '</div>' +
       '<div class="k">' + CROWN.kana + '　／　' + w.no + '号 ' + w.name + '（' + w.ln + '）</div>' +
       '<p>走り切った系統は、ここで初めて品種名を与えられる。この一行を帯に巻いて、翌年の春、売り場に並ぶ。</p></div>' +
-    '<div class="sec"><b>QUESTIONS</b><span>想定問答</span></div>' +
-    QA.map(function (q) { return '<div class="qa"><button><span class="q">' + q[0] + '</span><span class="pm"></span></button><div class="a"><p>' + q[1] + '</p></div></div>'; }).join('') +
     '<div style="height:40px"></div></div></div>';
-  $$('.qa button', v).forEach(function (b) { b.onclick = function () {
-    var qa = b.parentNode, a = $('.a', qa), o = qa.classList.toggle('open');
-    a.style.maxHeight = o ? a.scrollHeight + 'px' : 0; }; });
 };
 
 /* ---------- 起動 ---------- */
