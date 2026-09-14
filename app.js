@@ -161,7 +161,7 @@ V.dex = function () {
     '<div class="dbody" id="dbody"></div>' +
     '<div class="dfoot"><button class="btn" id="own">' +
       (S.owner === l.no ? 'いちご券を見る' : 'このいちご券を購入する') +
-      '<span class="ar">' + (S.owner === l.no ? '→' : TICKET.yen) + '</span></button></div>';
+      '<span class="ar">→</span></button></div>';
   $('#cls').onclick = function () { go('home'); };
   $('#fav2').onclick = function () { S.fav = S.fav === l.no ? 0 : l.no; save();
     $('#fav2').style.color = S.fav === l.no ? 'var(--rd)' : 'var(--g2)'; };
@@ -393,7 +393,7 @@ function issue(l) {
   S.owner = l.no; S.no = S.no || ('ICY-' + RACE.year + '-' + (1000 + Math.floor(Math.random() * 8999))); save();
   pop({ art: ticket(l), color: l.wc, from: '#own', max: 330,
     title: first ? 'いちご券を購入しました' : 'あなたのいちご券',
-    sub: l.no + '号　' + l.name + '　／　最終 ' + rankAt(RACE.now, l.no) + '着　／　100口 ' + TICKET.yen,
+    sub: l.no + '号　' + l.name + '　／　最終 ' + rankAt(RACE.now, l.no) + '着',
     id: S.no, cta: 'クラブで見る', then: function () { go('club'); } });
 }
 function joinClub(c) {
@@ -413,8 +413,7 @@ V.club = function () {
   v.innerHTML = '<div class="scroll"><div class="ptop">' +
     '<div class="kicker">ICHIGO TICKET</div>' +
     '<h1 class="disp" style="margin-top:10px">いちご券と、<br>応援クラブ。</h1>' +
-    '<p class="body" style="margin-top:14px">いちご券は、6系統のうちどれが5月末まで走り切るかを予想して買うカードです。1口' + TICKET.kuchi +
-      '円、100口＝' + TICKET.yen + 'から。当たっても払い戻しはありません。売上はそのまま次の品種改良に回ります。</p>' +
+    '<p class="body" style="margin-top:14px">いちご券は、6系統のうちどれが5月末まで走り切るかを予想して買うカードです。当たっても払い戻しはありません。売上はそのまま次の品種改良に回ります。</p>' +
     (mine ? '<div class="mytk"><div class="cap"><b>YOUR TICKET</b><span>' + (S.no || '') + '</span></div>' +
       ticket(mine) + tkline(mine) + '</div>'
           : '<div class="empt">まだいちご券を持っていません。<br>ホームから系統を選ぶと購入できます。</div>') +
@@ -513,7 +512,7 @@ V.about = function () {
     '<div class="sec"><b>RULES</b><span>出走条件</span></div>' +
     [['出走', 'まだ発売されていない品種候補6系統のみ'], ['計測', '3月10日から5月25日まで、隔週で6回'],
      ['項目', RACE.axes], ['優駿', '5月末に最も高い品質を保った系統'],
-     ['いちご券', '1口' + TICKET.kuchi + '円、100口＝' + TICKET.yen + '。払い戻しなし'],
+     ['いちご券', '予想して買う。払い戻しはない'],
      ['売上', 'そのまま次の品種改良へ'],
      ['賞', 'なし。優駿だけが正式な品種名を得る'], ['翌年', '走った系統が交配親になり、その子が走る']].map(function (x) {
       return '<div class="row"><span class="k">' + x[0] + '</span><span class="v" style="font-weight:500;font-size:12.5px">' + x[1] + '</span></div>'; }).join('') +
@@ -524,8 +523,6 @@ V.about = function () {
       '<p>走り切った系統は、ここで初めて品種名を与えられる。この一行を帯に巻いて、翌年の春、売り場に並ぶ。</p></div>' +
     '<div class="sec"><b>QUESTIONS</b><span>想定問答</span></div>' +
     QA.map(function (q) { return '<div class="qa"><button><span class="q">' + q[0] + '</span><span class="pm"></span></button><div class="a"><p>' + q[1] + '</p></div></div>'; }).join('') +
-    '<div class="sec"><b>CREDIT</b><span>' + RACE.year + '</span></div>' +
-    '<p class="body" style="margin-top:12px">企画：桑田航希　／　CULTA 課題提出用のプロトタイプ。</p>' +
     '<div style="height:40px"></div></div></div>';
   $$('.qa button', v).forEach(function (b) { b.onclick = function () {
     var qa = b.parentNode, a = $('.a', qa), o = qa.classList.toggle('open');

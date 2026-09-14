@@ -322,6 +322,11 @@ body.nofoot #tabs{display:none}
 .club .mem b{font-family:var(--serif);font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}
 .club .mem span{display:block;font-size:8px;letter-spacing:.18em;color:var(--g3)}
 .club p{font-size:12px;line-height:1.85;color:var(--g1);margin-top:11px}
+.crown{margin-top:14px;border-radius:16px;background:var(--pale);padding:20px 18px 18px;text-align:center}
+.crown .l{font-size:10px;letter-spacing:.2em;color:var(--rd);font-weight:700}
+.crown .n{font-family:var(--serif);font-size:34px;font-weight:900;letter-spacing:.12em;margin-top:8px;line-height:1.15}
+.crown .k{font-size:10.5px;letter-spacing:.12em;color:var(--g2);margin-top:7px}
+.crown p{font-size:12px;line-height:1.85;color:var(--g1);margin-top:12px;text-align:left}
 .qa{border-bottom:1px solid var(--line)}
 .qa>button{width:100%;display:flex;gap:12px;padding:16px 0;text-align:left;min-height:var(--tap);
   transition:opacity var(--t-m) var(--ez)}
